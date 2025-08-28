@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "sonnet",
+  "enableAllProjectMcpServers": true,
+  "mcpServers": {
+    "basic-memory": {
+      "command": "basic-memory",
+      "args": ["mcp"]
+    }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); printf \"\\033[1;32m➜\\033[0m \\033[36m%s\\033[0m\" \"$(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"; if git -C \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" rev-parse --git-dir >/dev/null 2>&1; then branch=$(git -C \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" branch --show-current 2>/dev/null || echo 'HEAD'); if git -C \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" diff --quiet 2>/dev/null && git -C \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" diff --cached --quiet 2>/dev/null; then printf \" \\033[1;34mgit:(\\033[31m%s\\033[1;34m)\\033[0m\" \"$branch\"; else printf \" \\033[1;34mgit:(\\033[31m%s\\033[1;34m) \\033[33m✗\\033[0m\" \"$branch\"; fi; fi"
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754150782060
+  }
+}
