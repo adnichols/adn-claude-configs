@@ -7,12 +7,14 @@ A comprehensive Claude Code configuration system that provides specialized agent
 ### Installation
 
 1. **Clone this repository**:
+
    ```bash
    git clone <repository-url>
    cd adn-claude-configs
    ```
 
 2. **Set up the symlink structure** (required for proper operation):
+
    ```bash
    # Create the symlink from .claude to .agents (if not already present)
    ln -sf agents .claude
@@ -59,18 +61,21 @@ adn-claude-configs/
 ### Core Development Agents
 
 **`@developer`** - Production-ready implementation
+
 - Implements specifications with comprehensive tests
 - Enforces zero linting violations
 - Follows project-specific standards from CLAUDE.md
 - Handles error cases and edge conditions
 
 **`@quality-reviewer`** - Pre-production validation
+
 - Reviews code for security, performance, and data integrity issues
 - Identifies potential production failures
 - Validates test coverage and error handling
 - Provides structured quality reports
 
 **`@technical-writer`** - Post-implementation documentation
+
 - Creates concise, actionable documentation
 - Focuses on practical usage patterns
 - Maintains strict token limits for readability
@@ -79,18 +84,21 @@ adn-claude-configs/
 ### Specialized Agents
 
 **`@simplify-planner`** - Code complexity reduction
+
 - Analyzes codebases for simplification opportunities
 - Creates structured refactoring plans
 - Identifies over-engineering and technical debt
 - Generates risk-assessed improvement strategies
 
 **`@debugger`** - Systematic issue analysis
+
 - Evidence-based bug investigation
 - Step-by-step debugging workflows
 - Root cause analysis with clear action items
 - Handles complex, hard-to-reproduce issues
 
 **`@plan-architect`** - High-level system design
+
 - Creates architectural plans from requirements
 - Designs scalable system structures
 - Plans integration strategies and data flows
@@ -101,11 +109,13 @@ adn-claude-configs/
 ### 1. Feature Development Workflow
 
 **PRD-Based Development** (Simple features):
+
 ```
-/build:create-prd → /build:process-tasks → /build:review → /build:document
+/build:create-prd → /build:generate-tasks.md -> /build:process-tasks → /build:review → /build:document
 ```
 
 **Research-Driven Development** (Complex features):
+
 ```
 [Research Doc] → /build:exec-spec → /build:process-tasks → /build:review → /build:document
 ```
@@ -113,11 +123,13 @@ adn-claude-configs/
 ### 2. Code Quality Workflows
 
 **Simplification Workflow**:
+
 ```
 /simplify:create-plan → @quality-reviewer → /simplify:process-plan
 ```
 
 **Quality Assurance**:
+
 ```
 /build:review → [Fix Issues] → [Re-review] → [Approve for PR]
 ```
@@ -145,15 +157,19 @@ adn-claude-configs/
 ## ⚙️ Configuration Features
 
 ### Custom Status Line
+
 Shows current directory and git branch with status:
+
 - **Clean branch**: `➜ project-name git:(main)`
 - **Dirty branch**: `➜ project-name git:(feature) ✗`
 
 ### MCP Integration
+
 - **basic-memory** server for persistent memory across sessions
 - Extensible MCP server configuration
 
 ### Model Configuration
+
 - Uses "sonnet" model as default
 - Optimized for development tasks
 
@@ -162,12 +178,14 @@ Shows current directory and git branch with status:
 ### Creating New Features
 
 1. **Start with requirements gathering**:
+
    ```bash
    /build:create-prd
    # Follow interactive prompts to create detailed PRD
    ```
 
 2. **Process the implementation**:
+
    ```bash
    git checkout -b feature/new-feature
    /build:process-tasks
@@ -175,12 +193,14 @@ Shows current directory and git branch with status:
    ```
 
 3. **Quality review**:
+
    ```bash
    /build:review
    # Comprehensive pre-PR quality check
    ```
 
 4. **Generate documentation**:
+
    ```bash
    /build:document
    # Creates user and technical documentation
@@ -189,12 +209,14 @@ Shows current directory and git branch with status:
 ### Working with Complex Research
 
 1. **Convert research to execution plan**:
+
    ```bash
    /build:exec-spec
    # Converts strategy/research documents to detailed task lists
    ```
 
 2. **Execute with full context**:
+
    ```bash
    /build:process-tasks
    # Preserves all research context during implementation
@@ -203,17 +225,20 @@ Shows current directory and git branch with status:
 ### Code Simplification
 
 1. **Analyze for improvements**:
+
    ```bash
    /simplify:create-plan
    # Creates detailed simplification plan
    ```
 
 2. **Review with quality agent**:
+
    ```bash
    @quality-reviewer review the simplification plan
    ```
 
 3. **Execute approved changes**:
+
    ```bash
    /simplify:process-plan
    ```
@@ -225,6 +250,7 @@ Shows current directory and git branch with status:
 When setting up this configuration in a new repository:
 
 1. **Copy the directory structure**:
+
    ```bash
    cp -r adn-claude-configs/agents new-project/.claude/
    cp -r adn-claude-configs/commands new-project/.claude/
@@ -232,6 +258,7 @@ When setting up this configuration in a new repository:
    ```
 
 2. **Create the symlink** (important for proper operation):
+
    ```bash
    cd new-project
    ln -sf .claude agents
@@ -242,6 +269,7 @@ When setting up this configuration in a new repository:
 ### Project-Specific Customization
 
 Edit `CLAUDE.md` in your project to define:
+
 - Language-specific conventions
 - Testing requirements and commands
 - Build and linting commands
@@ -295,6 +323,7 @@ Edit `CLAUDE.md` in your project to define:
 ## 🤝 Contributing
 
 This configuration system is designed to be:
+
 - **Extensible**: Add new agents and commands easily
 - **Adaptable**: Customize for different project types
 - **Maintainable**: Clear documentation and consistent patterns
@@ -308,3 +337,4 @@ When adding new commands or agents, follow the existing patterns and update docu
 ---
 
 **Need help?** Check the `commands/README.md` for detailed workflow documentation or use the specialized agents for guidance on specific tasks.
+
