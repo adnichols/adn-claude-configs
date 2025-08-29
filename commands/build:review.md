@@ -202,7 +202,7 @@ The command writes a detailed Markdown report to `/reports/quality-review-[times
 - **Recommended Actions**: [Specific next steps]
 
 ## 🔧 Suggested Actions
-- [ ] **Create task list for critical fixes**: `/user:generate-tasks @reports/quality-review-[timestamp].md`
+- [ ] **Create task list for critical fixes**: `/build:generate-tasks @reports/quality-review-[timestamp].md`
 - [ ] **Review recommendations and create selective task list**
 - [ ] **Re-run quality review after fixes**
 ```

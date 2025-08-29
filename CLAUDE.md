@@ -25,7 +25,7 @@ Key specialized agents available:
 Important slash commands:
 
 - `/user:add-command`: Create new personal slash commands in ~/.claude/commands
-- `/user:process-tasks`: Process task lists with git branch management and test requirements
+- `/build:process-tasks`: Process task lists with git branch management and test requirements
 - `/simplify:create-plan`: Generate code simplification plans using simplify-planner agent
 - `/simplify:process-plan`: Execute existing simplification plans
 
@@ -40,7 +40,7 @@ Important slash commands:
 
 ### Task Processing Requirements
 
-When using `/user:process-tasks`:
+When using `/build:process-tasks`:
 - Must be on a git branch other than main
 - One sub-task at a time (requires user confirmation unless NOSUBCONF specified)
 - Test suite must pass before committing

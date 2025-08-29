@@ -57,6 +57,8 @@ The AI will need to read and analyze the referenced source document file to crea
    - Include security requirements where applicable
    - Specify exact implementation details from the source document
    - Include validation and testing requirements
+   - Include documentation tasks for user-facing features
+   - Add technical-writer agent integration for comprehensive documentation
    - Maintain traceability back to the source document
 8. **Identify Implementation Files:** Based on the source document and tasks, identify files that will need creation or modification
 9. **Generate Final Output:** Combine everything into the comprehensive execution plan
@@ -130,6 +132,25 @@ The generated execution plan _must_ follow this structure:
 **Tasks:**
 - [ ] 2.0 [High-level task name]
   - [ ] 2.1 [Detailed sub-task]
+
+### Phase N: Documentation & Integration (Final Phase)
+**Objective:** Create comprehensive documentation and finalize feature integration
+
+**Documentation Requirements:**
+- Update README.md with new feature descriptions and usage
+- Create/update API documentation for new interfaces  
+- Generate user guides and configuration documentation
+- Validate documentation accuracy against implementation
+
+**Tasks:**
+- [ ] N.0 Complete Feature Documentation
+  - [ ] N.1 Run `/build:document` to generate comprehensive documentation
+  - [ ] N.2 Update main README.md with feature overview and usage
+  - [ ] N.3 Create/update API documentation for new endpoints/interfaces
+  - [ ] N.4 Generate configuration documentation for new settings
+  - [ ] N.5 Create user guides and integration examples  
+  - [ ] N.6 Validate all documentation against actual implementation
+  - [ ] N.7 Review documentation for completeness and accuracy
 
 ## 🔍 Technical Specifications
 

@@ -4,26 +4,26 @@
 
 This directory contains three interconnected commands that work together to support a complete development workflow from requirements to implementation:
 
-1. **`user:create-prd.md`** - Creates Product Requirements Documents
+1. **`build:create-prd.md`** - Creates Product Requirements Documents
 2. **`user:research-to-execution.md`** - Converts source documents into execution plans  
-3. **`user:process-tasks.md`** - Processes and executes task lists
+3. **`build:process-tasks.md`** - Processes and executes task lists
 
 ## Command Relationships
 
 ### Workflow 1: PRD-Based Development
 ```
-user:create-prd → user:process-tasks
+build:create-prd → build:process-tasks
 ```
 - Create a PRD for a feature
-- Process the PRD tasks directly using `user:process-tasks`
+- Process the PRD tasks directly using `build:process-tasks`
 
 ### Workflow 2: Research-Driven Development
 ```
-[Research Document] → user:research-to-execution → user:process-tasks
+[Research Document] → build:exec-spec → build:process-tasks
 ```
 - Start with a comprehensive research document (strategy, architecture, technical analysis)
 - Convert to rich execution plan using `user:research-to-execution`
-- Process the execution plan using `user:process-tasks`
+- Process the execution plan using `build:process-tasks`
 
 ## Key Features
 
@@ -49,7 +49,7 @@ All commands use consistent:
 
 ### When to Use Each Command
 
-**`user:create-prd`**: 
+**`build:create-prd`**: 
 - New feature development
 - Clear, scoped requirements
 - Junior developer implementation
@@ -60,7 +60,7 @@ All commands use consistent:
 - Need for context preservation
 - Multi-phase development
 
-**`user:process-tasks`**:
+**`build:process-tasks`**:
 - Any task list execution
 - Both simple and complex plans
 - Requires git branch (not main)
