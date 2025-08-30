@@ -13,16 +13,13 @@ A comprehensive Claude Code configuration system that provides specialized agent
    cd adn-claude-configs
    ```
 
-2. **Set up the symlink structure** (required for proper operation):
+2. **Run the installer**:
 
    ```bash
-   # Create the symlink from .claude to .agents (if not already present)
-   ln -sf agents .claude
+   ./install.sh
    ```
 
-3. **Configure Claude Code**:
-   - Copy `settings.json` to your project's `.claude/` directory
-   - Or copy individual agents/commands to your global `~/.claude/` directory
+   The installer will automatically set up symlinks from `~/.claude/` to this repository, backing up any existing configuration.
 
 ### First Use
 
@@ -134,45 +131,6 @@ adn-claude-configs/
 /build:review → [Fix Issues] → [Re-review] → [Approve for PR]
 ```
 
-## 📋 Command Reference
-
-### Build Commands
-
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `/build:create-prd` | Generate Product Requirements Documents | New feature development, clear requirements |
-| `/build:exec-spec` | Convert research to execution plans | Complex implementations, architecture-heavy projects |
-| `/build:generate-tasks` | Create task lists from specifications | Breaking down large projects |
-| `/build:process-tasks` | Execute task lists with git management | Any task list execution, requires feature branch |
-| `/build:review` | Pre-PR quality reviews | Before creating pull requests |
-| `/build:document` | Generate post-implementation docs | After feature completion |
-
-### Simplify Commands
-
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `/simplify:create-plan` | Analyze code for simplification | Code cleanup, technical debt reduction |
-| `/simplify:process-plan` | Execute simplification plans | Implementing approved refactoring plans |
-
-## ⚙️ Configuration Features
-
-### Custom Status Line
-
-Shows current directory and git branch with status:
-
-- **Clean branch**: `➜ project-name git:(main)`
-- **Dirty branch**: `➜ project-name git:(feature) ✗`
-
-### MCP Integration
-
-- **basic-memory** server for persistent memory across sessions
-- Extensible MCP server configuration
-
-### Model Configuration
-
-- Uses "sonnet" model as default
-- Optimized for development tasks
-
 ## 🔄 Usage Patterns
 
 ### Creating New Features
@@ -183,6 +141,14 @@ Shows current directory and git branch with status:
    /build:create-prd
    # Follow interactive prompts to create detailed PRD
    ```
+
+2. Build out the task lists
+  
+  ```bash
+  /build:generate-tasks
+  # Generate parent tasks, review, and then say "Go" to build sub-tasks.
+  # Should detect if you are on a branch and create one if not
+  ```
 
 2. **Process the implementation**:
 
@@ -249,6 +215,23 @@ Shows current directory and git branch with status:
 
 When setting up this configuration in a new repository:
 
+**Recommended Approach**:
+
+1. **Clone this repository as a submodule or copy**:
+
+   ```bash
+   # Option 1: As submodule
+   cd new-project
+   git submodule add <repository-url> .claude-config
+   cd .claude-config && ./install.sh
+
+   # Option 2: Copy repository
+   cp -r adn-claude-configs new-project/.claude-config
+   cd new-project/.claude-config && ./install.sh
+   ```
+
+**Manual Setup** (if installer cannot be used):
+
 1. **Copy the directory structure**:
 
    ```bash
@@ -265,6 +248,8 @@ When setting up this configuration in a new repository:
    ```
 
 3. **Customize CLAUDE.md** for project-specific standards
+
+**Important**: When copying this configuration setup, remember to recreate the symlink structure that the installer automatically handles.
 
 ### Project-Specific Customization
 
@@ -301,6 +286,30 @@ Edit `CLAUDE.md` in your project to define:
 
 ## 🆘 Troubleshooting
 
+### Installation Issues
+
+**Installer fails with "Script must be run from repository root"**:
+
+- Ensure you're in the correct directory: `cd adn-claude-configs`
+- Run `pwd` to confirm you're in the repository root
+
+**Permission denied when running installer**:
+
+- Make the script executable: `chmod +x install.sh`
+- Try running with: `bash install.sh`
+
+**Backup creation fails**:
+
+- Check disk space in your home directory
+- Ensure `~/.claude-backup/` directory is writable
+- Review the backup location in installer output
+
+**Symlink creation fails**:
+
+- Check that `~/.claude/` directory permissions allow writing
+- Ensure no other process is accessing the files
+- Try manual cleanup: `rm -rf ~/.claude/agents ~/.claude/commands`
+
 ### Common Issues
 
 **Command not found**: Ensure agents are properly symlinked and commands are in `.claude/commands/`
@@ -313,9 +322,11 @@ Edit `CLAUDE.md` in your project to define:
 
 ### Getting Help
 
-1. Check `CLAUDE.md` for project-specific guidance
-2. Review command documentation in `commands/README.md`
-3. Use agents for specific help:
+1. **Installation Issues**: See [INSTALLATION.md](INSTALLATION.md) for detailed installer documentation
+2. **Testing**: Run `./test_install.sh` or see [TESTING.md](TESTING.md) for testing procedures
+3. **Project-Specific Guidance**: Check `CLAUDE.md` for repository standards
+4. **Command Documentation**: Review `commands/README.md` for workflow details
+5. **Agent-Specific Help**:
    - `@developer` for implementation questions
    - `@quality-reviewer` for code quality issues
    - `@debugger` for systematic issue analysis
@@ -334,7 +345,12 @@ When adding new commands or agents, follow the existing patterns and update docu
 
 [Add your license information here]
 
+## 📚 Documentation
+
+- **[INSTALLATION.md](INSTALLATION.md)** - Comprehensive installer documentation, troubleshooting, and advanced configuration
+- **[TESTING.md](TESTING.md)** - Testing procedures, validation, and platform-specific testing guidance
+- **[CLAUDE.md](CLAUDE.md)** - Repository-specific guidance for Claude Code integration
+
 ---
 
-**Need help?** Check the `commands/README.md` for detailed workflow documentation or use the specialized agents for guidance on specific tasks.
-
+**Need help?** Check the documentation files above, review `commands/README.md` for detailed workflow guidance, or use the specialized agents for specific tasks.

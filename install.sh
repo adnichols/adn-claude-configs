@@ -143,6 +143,51 @@ progress_msg() {
     echo -e "${GREEN}▶ $1${NC}"
 }
 
+# Validate symlink target to prevent path traversal attacks
+validate_symlink_target() {
+    local link_path="$1"
+    local expected_prefix="$2"
+    
+    if [[ ! -L "$link_path" ]]; then
+        return 1
+    fi
+    
+    # Use realpath for safe path resolution instead of readlink
+    local target=$(realpath "$link_path" 2>/dev/null)
+    if [[ $? -ne 0 ]]; then
+        error_exit "Failed to resolve symlink: $link_path" $EXIT_SYMLINK_FAILED
+    fi
+    
+    # Validate target is within expected directory to prevent traversal
+    if [[ "$target" != "$expected_prefix"* ]]; then
+        error_exit "Symlink target outside expected directory: $target" $EXIT_SYMLINK_FAILED
+    fi
+    
+    echo "$target"
+}
+
+# Safe readlink wrapper that validates paths to prevent traversal attacks  
+safe_readlink() {
+    local link_path="$1"
+    local expected_prefix="$2"
+    
+    if [[ ! -L "$link_path" ]]; then
+        echo "ERROR: Not a symlink: $link_path" >&2
+        return 1
+    fi
+    
+    # If expected_prefix provided, validate against traversal
+    if [[ -n "$expected_prefix" ]]; then
+        validate_symlink_target "$link_path" "$expected_prefix"
+    else
+        # For display purposes, still use realpath for safety
+        realpath "$link_path" 2>/dev/null || {
+            echo "ERROR: Failed to resolve symlink: $link_path" >&2
+            return 1
+        }
+    fi
+}
+
 # Analyze existing path (directory, symlink, file, or non-existent)
 analyze_path() {
     local path="$1"
@@ -174,10 +219,14 @@ analyze_claude_paths() {
     
     case "$agents_type" in
         "symlink")
-            local target=$(readlink "$agents_path")
-            info_msg "  → Links to: $(display_path "$target")"
-            if [[ ! -e "$target" ]]; then
-                warning_msg "  → Symlink target does not exist!"
+            local target=$(safe_readlink "$agents_path")
+            if [[ $? -eq 0 ]]; then
+                info_msg "  → Links to: $(display_path "$target")"
+                if [[ ! -e "$target" ]]; then
+                    warning_msg "  → Symlink target does not exist!"
+                fi
+            else
+                warning_msg "  → Invalid or unsafe symlink detected"
             fi
             ;;
         "directory")
@@ -198,10 +247,14 @@ analyze_claude_paths() {
     
     case "$commands_type" in
         "symlink")
-            local target=$(readlink "$commands_path")
-            info_msg "  → Links to: $(display_path "$target")"
-            if [[ ! -e "$target" ]]; then
-                warning_msg "  → Symlink target does not exist!"
+            local target=$(safe_readlink "$commands_path")
+            if [[ $? -eq 0 ]]; then
+                info_msg "  → Links to: $(display_path "$target")"
+                if [[ ! -e "$target" ]]; then
+                    warning_msg "  → Symlink target does not exist!"
+                fi
+            else
+                warning_msg "  → Invalid or unsafe symlink detected"
             fi
             ;;
         "directory")
@@ -252,25 +305,57 @@ prepare_backup_directory() {
     success_msg "Backup directory prepared: $(display_path "$BACKUP_DIR")"
 }
 
-# Backup existing directory
+# Basic backup validation - check that backup files exist after copy
+verify_backup_basic() {
+    local source_path="$1"
+    local backup_path="$2"
+    
+    # Basic validation - ensure backup directory exists and has content
+    if [[ ! -d "$backup_path" ]]; then
+        error_exit "Backup directory was not created: $backup_path" $EXIT_BACKUP_FAILED
+    fi
+    
+    # Count files in source and backup (basic completeness check)
+    local source_count=$(find "$source_path" -type f 2>/dev/null | wc -l | tr -d ' ')
+    local backup_count=$(find "$backup_path" -type f 2>/dev/null | wc -l | tr -d ' ')
+    
+    if [[ "$source_count" -ne "$backup_count" ]]; then
+        error_exit "Backup file count mismatch. Source: $source_count, Backup: $backup_count" $EXIT_BACKUP_FAILED
+    fi
+    
+    success_msg "Basic backup validation passed for $source_path ($source_count files)"
+}
+
+# Backup existing directory (SECURE VERSION - fixes TOCTOU vulnerability)
 backup_directory() {
     local source_path="$1"
     local backup_name="$2"
     local backup_path="$BACKUP_DIR/$backup_name"
     
-    if [[ ! -d "$source_path" ]]; then
-        info_msg "Skipping backup of $source_path (not a directory)"
-        return 0
-    fi
-    
-    progress_msg "Backing up directory: $(display_path "$source_path")"
-    
-    # Use cp -r to preserve permissions and structure
-    cp -r "$source_path" "$backup_path" || {
-        error_exit "Failed to backup directory from $source_path to $backup_path" $EXIT_BACKUP_FAILED
-    }
-    
-    success_msg "Directory backed up to: $(display_path "$backup_path")"
+    # Use atomic operations with file locking to prevent TOCTOU attacks
+    (
+        # Create lock file for atomic operations
+        flock 200
+        
+        # Validate again immediately before operation to prevent race conditions
+        if [[ ! -d "$source_path" ]]; then
+            info_msg "Skipping backup of $source_path (not a directory)"
+            return 0
+        fi
+        
+        progress_msg "Backing up directory: $(display_path "$source_path")"
+        
+        # Use cp -r to preserve permissions and structure
+        cp -r "$source_path" "$backup_path" || {
+            error_exit "Failed to backup directory from $source_path to $backup_path" $EXIT_BACKUP_FAILED
+        }
+        
+        # Perform basic backup validation
+        verify_backup_basic "$source_path" "$backup_path"
+        
+        success_msg "Directory backed up to: $(display_path "$backup_path")"
+        
+    ) 200>/tmp/claude-installer.lock
 }
 
 # Create backups for existing directories
@@ -419,9 +504,10 @@ create_agents_symlink() {
         error_exit "Symlink was not created: $link_path" $EXIT_SYMLINK_FAILED
     fi
     
-    # Verify symlink points to correct target
-    local actual_target=$(readlink "$link_path")
-    if [[ "$actual_target" != "$target_path" ]]; then
+    # Verify symlink points to correct target using safe validation
+    local expected_dir=$(dirname "$target_path")
+    local actual_target=$(validate_symlink_target "$link_path" "$expected_dir")
+    if [[ $? -ne 0 ]] || [[ "$actual_target" != "$target_path" ]]; then
         error_exit "Symlink points to wrong target. Expected: $target_path, Actual: $actual_target" $EXIT_SYMLINK_FAILED
     fi
     
@@ -454,9 +540,10 @@ create_commands_symlink() {
         error_exit "Symlink was not created: $link_path" $EXIT_SYMLINK_FAILED
     fi
     
-    # Verify symlink points to correct target
-    local actual_target=$(readlink "$link_path")
-    if [[ "$actual_target" != "$target_path" ]]; then
+    # Verify symlink points to correct target using safe validation
+    local expected_dir=$(dirname "$target_path")
+    local actual_target=$(validate_symlink_target "$link_path" "$expected_dir")
+    if [[ $? -ne 0 ]] || [[ "$actual_target" != "$target_path" ]]; then
         error_exit "Symlink points to wrong target. Expected: $target_path, Actual: $actual_target" $EXIT_SYMLINK_FAILED
     fi
     
@@ -477,8 +564,9 @@ validate_symlinks() {
         error_exit "Agents symlink does not exist: $agents_link" $EXIT_SYMLINK_FAILED
     fi
     
-    local agents_target=$(readlink "$agents_link")
-    if [[ "$agents_target" != "$REPO_AGENTS_DIR" ]]; then
+    local expected_dir=$(dirname "$REPO_AGENTS_DIR")
+    local agents_target=$(validate_symlink_target "$agents_link" "$expected_dir")
+    if [[ $? -ne 0 ]] || [[ "$agents_target" != "$REPO_AGENTS_DIR" ]]; then
         error_exit "Agents symlink has wrong target. Expected: $REPO_AGENTS_DIR, Found: $agents_target" $EXIT_SYMLINK_FAILED
     fi
     
@@ -496,8 +584,9 @@ validate_symlinks() {
         error_exit "Commands symlink does not exist: $commands_link" $EXIT_SYMLINK_FAILED
     fi
     
-    local commands_target=$(readlink "$commands_link")
-    if [[ "$commands_target" != "$REPO_COMMANDS_DIR" ]]; then
+    local expected_dir=$(dirname "$REPO_COMMANDS_DIR")
+    local commands_target=$(validate_symlink_target "$commands_link" "$expected_dir")
+    if [[ $? -ne 0 ]] || [[ "$commands_target" != "$REPO_COMMANDS_DIR" ]]; then
         error_exit "Commands symlink has wrong target. Expected: $REPO_COMMANDS_DIR, Found: $commands_target" $EXIT_SYMLINK_FAILED
     fi
     
@@ -556,7 +645,7 @@ analyze_and_confirm() {
     if [[ "$AGENTS_PATH_TYPE" == "directory" ]]; then
         echo -e "• ${YELLOW}BACKUP${NC}: Existing ~/.claude/agents directory → $(display_path "$HOME/.claude-backup/claude-backup-$TIMESTAMP/agents")"
     elif [[ "$AGENTS_PATH_TYPE" == "symlink" ]]; then
-        local current_target=$(readlink "$CLAUDE_DIR/agents" 2>/dev/null || echo "unknown")
+        local current_target=$(safe_readlink "$CLAUDE_DIR/agents" 2>/dev/null || echo "unknown")
         echo -e "• ${YELLOW}REPLACE${NC}: Existing ~/.claude/agents symlink (→ $current_target)"
     elif [[ "$AGENTS_PATH_TYPE" == "file" ]]; then
         echo -e "• ${YELLOW}BACKUP${NC}: Existing ~/.claude/agents file → $(display_path "$HOME/.claude-backup/claude-backup-$TIMESTAMP/agents-file")"
@@ -565,7 +654,7 @@ analyze_and_confirm() {
     if [[ "$COMMANDS_PATH_TYPE" == "directory" ]]; then
         echo -e "• ${YELLOW}BACKUP${NC}: Existing ~/.claude/commands directory → $(display_path "$HOME/.claude-backup/claude-backup-$TIMESTAMP/commands")"
     elif [[ "$COMMANDS_PATH_TYPE" == "symlink" ]]; then
-        local current_target=$(readlink "$CLAUDE_DIR/commands" 2>/dev/null || echo "unknown")
+        local current_target=$(safe_readlink "$CLAUDE_DIR/commands" 2>/dev/null || echo "unknown")
         echo -e "• ${YELLOW}REPLACE${NC}: Existing ~/.claude/commands symlink (→ $current_target)"
     elif [[ "$COMMANDS_PATH_TYPE" == "file" ]]; then
         echo -e "• ${YELLOW}BACKUP${NC}: Existing ~/.claude/commands file → $(display_path "$HOME/.claude-backup/claude-backup-$TIMESTAMP/commands-file")"
@@ -629,17 +718,25 @@ display_final_summary() {
     
     # Show created symlinks
     if [[ -L "$CLAUDE_DIR/agents" ]]; then
-        local agents_target=$(readlink "$CLAUDE_DIR/agents")
-        local agents_count=$(find "$agents_target" -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
-        echo -e "• ${GREEN}Agents${NC}: $(display_path "$CLAUDE_DIR/agents") → $(display_path "$agents_target")"
-        echo -e "  └─ $agents_count custom agent definitions available"
+        local agents_target=$(safe_readlink "$CLAUDE_DIR/agents")
+        if [[ $? -eq 0 ]]; then
+            local agents_count=$(find "$agents_target" -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+            echo -e "• ${GREEN}Agents${NC}: $(display_path "$CLAUDE_DIR/agents") → $(display_path "$agents_target")"
+            echo -e "  └─ $agents_count custom agent definitions available"
+        else
+            echo -e "• ${RED}Agents${NC}: $(display_path "$CLAUDE_DIR/agents") → Invalid symlink"
+        fi
     fi
     
     if [[ -L "$CLAUDE_DIR/commands" ]]; then
-        local commands_target=$(readlink "$CLAUDE_DIR/commands")
-        local commands_count=$(find "$commands_target" -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
-        echo -e "• ${GREEN}Commands${NC}: $(display_path "$CLAUDE_DIR/commands") → $(display_path "$commands_target")"
-        echo -e "  └─ $commands_count custom slash commands available"
+        local commands_target=$(safe_readlink "$CLAUDE_DIR/commands")
+        if [[ $? -eq 0 ]]; then
+            local commands_count=$(find "$commands_target" -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+            echo -e "• ${GREEN}Commands${NC}: $(display_path "$CLAUDE_DIR/commands") → $(display_path "$commands_target")"
+            echo -e "  └─ $commands_count custom slash commands available"
+        else
+            echo -e "• ${RED}Commands${NC}: $(display_path "$CLAUDE_DIR/commands") → Invalid symlink"
+        fi
     fi
     
     # Show backup information if any backups were created
