@@ -68,6 +68,7 @@ for domain in \
     "registry.npmjs.org" \
     "api.anthropic.com" \
     "sentry.io" \
+    "deb.debian.org" \
     "statsig.anthropic.com" \
     "statsig.com" \
     "marketplace.visualstudio.com" \

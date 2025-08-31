@@ -1,4 +1,4 @@
-FROM node:20
+FROM mcr.microsoft.com/devcontainers/typescript-node:20
 
 ARG TZ
 ENV TZ="$TZ"
@@ -22,10 +22,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   iproute2 \
   dnsutils \
   aggregate \
+  python3 \
+  python3-pip \
   jq \
   nano \
   vim \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install UV
+RUN pip3 install uv --break-system-packages
 
 # Ensure default node user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
@@ -65,8 +70,8 @@ ENV PATH=$PATH:/usr/local/share/npm-global/bin
 ENV SHELL=/bin/zsh
 
 # Set the default editor and visual
-ENV EDITOR=nano
-ENV VISUAL=nano
+ENV EDITOR=vim
+ENV VISUAL=vim
 
 # Default powerline10k theme
 ARG ZSH_IN_DOCKER_VERSION=1.2.0
