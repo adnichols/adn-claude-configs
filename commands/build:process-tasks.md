@@ -18,12 +18,39 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
 ## Task Implementation
 
+## Critical Task Update Protocol
+
+**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, Claude MUST follow this exact sequence:
+
+1. **Declare completion with mandatory update statement:**
+   "✅ Subtask [X.Y] [task name] completed.
+   🔄 UPDATING MARKDOWN FILE NOW..."
+
+2. **Immediately perform the markdown update:**
+- Use Edit tool to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
+- Show the actual edit operation in the response
+
+3. **Confirm update completion:**
+   "✅ Markdown file updated: [ ] → [x] for subtask X.Y
+   📋 Task list is now current."
+
+4. **Request permission to proceed (unless NOSUBCONF specified):**
+   "Ready to proceed to next subtask. May I continue? (y/n)"
+
+**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If Claude completes a subtask without immediately updating the markdown file, it MUST:
+- Stop all work immediately
+- State: "❌ CRITICAL ERROR: I failed to update the task list. Stopping work."
+- Wait for user intervention before proceeding
+
+**VERIFICATION REQUIREMENT:** After each edit, Claude must show the updated section of the markdown file to confirm the change was made correctly.
+
 - Do not proceed with tasks unless you are on a git branch other than main
 - If needed, create a branch for the phase of work you are implementing
   - Parent agent (you) are responsible for git branch creation, not subagents
 - **One sub-task at a time:** Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
 - **Completion protocol:**
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
+  - **MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
   - **First**: Run the full test suite as defined in TESTING.md or CLAUDE.md
   - **Only if all tests pass**: Stage changes (`git add .`)
@@ -75,3 +102,4 @@ When working with task lists, the AI must:
 7. For rich execution plans: Reference preserved context when making implementation decisions.
 8. For rich execution plans: Ensure traceability between implementation and source document rationale.
 9. For rich execution plans: Validate against success criteria throughout implementation.
+10. **CRITICAL CHECKPOINT:** After each subtask completion, Claude MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.
