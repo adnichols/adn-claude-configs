@@ -99,7 +99,7 @@ The solution is implemented as a single Claude Code command (`docs:fetch`) that 
 
 ## 🗂️ Relevant Files
 
-- `docs-fetch-command.md` - Main command definition file with front-matter and execution logic (created in workspace, needs to be moved to .claude/commands/)
+- `commands/docs:fetch.md` - Main command definition file with front-matter and execution logic ✅ COMPLETED
 - `scripts/docs-fetch.py` - Core Python script for web scraping and content processing ✅ COMPLETED
 - `scripts/markdown-converter.py` - HTML to Markdown conversion with AI-friendly formatting ✅ COMPLETED
 - `scripts/site-patterns.json` - Configuration for documentation site patterns and selectors ✅ COMPLETED
