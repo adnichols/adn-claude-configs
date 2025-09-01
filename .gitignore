@@ -44,3 +44,6 @@ venv.bak/
 .env
 .env.local
 .env.*.local
+
+# Bind-mounted .claude directory (managed by devcontainer)
+.claude/
