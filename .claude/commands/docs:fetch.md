@@ -1,6 +1,6 @@
 ---
 description: "Fetch and convert documentation for libraries, frameworks, and languages into AI-friendly Markdown format"
-argument-hint: "[library_name] [--version VERSION] [--sections SECTIONS] [--update] [--format FORMAT]"
+argument-hint: "[library_name] [--version VERSION] [--sections SECTIONS] [--update] [--format FORMAT] [--url URL]"
 ---
 
 # Documentation Fetch Command
@@ -15,6 +15,7 @@ Fetch and curate documentation for programming libraries, frameworks, coding lan
 /docs:fetch lodash --sections api    # API reference only
 /docs:fetch vue --update             # Update existing docs
 /docs:fetch express --format minimal # Condensed format
+/docs:fetch mylibrary --url https://docs.mylibrary.com/  # Manual URL
 ```
 
 ## Arguments
@@ -24,6 +25,7 @@ Fetch and curate documentation for programming libraries, frameworks, coding lan
 - **--sections** (optional): Specific sections to fetch (api, guides, examples)  
 - **--update** (optional): Update existing documentation
 - **--format** (optional): Output format (full, minimal, api-only)
+- **--url** (optional): Manually specify documentation URL when auto-discovery fails
 
 ## Implementation
 
@@ -44,4 +46,33 @@ Let me start by parsing your arguments and executing the documentation fetch pro
 <invoke name="Bash">
 <parameter name="command">cd /workspace && python scripts/docs-fetch.py $ARGUMENTS</parameter>
 <parameter name="description">Execute documentation fetch script with user arguments</parameter>
+</invoke>
+
+Now let me update CLAUDE.md to reference the newly fetched documentation so Claude Code knows where to find it for future assistance.
+
+<function_calls>
+<invoke name="Edit">
+<parameter name="file_path">/workspace/CLAUDE.md</parameter>
+<parameter name="old_string">## Repository Structure
+
+This is a Claude Code configuration repository containing:
+
+- **agents/**: Custom agent definitions for specialized tasks (developer, quality-reviewer, simplify-planner, etc.)
+- **commands/**: Custom slash commands for task processing and code management
+- **settings.json**: Claude Code configuration with custom status line and MCP servers</parameter>
+<parameter name="new_string">## Repository Structure
+
+This is a Claude Code configuration repository containing:
+
+- **agents/**: Custom agent definitions for specialized tasks (developer, quality-reviewer, simplify-planner, etc.)
+- **commands/**: Custom slash commands for task processing and code management
+- **docs/**: Fetched documentation for libraries, frameworks, and languages (AI-optimized Markdown format)
+- **settings.json**: Claude Code configuration with custom status line and MCP servers</parameter>
+</invoke>
+
+<function_calls>
+<invoke name="Read">
+<parameter name="file_path">/workspace/CLAUDE.md</parameter>
+<parameter name="offset">40</parameter>
+<parameter name="limit">20</parameter>
 </invoke>

@@ -53,6 +53,16 @@ Important slash commands:
 - Custom status line shows current directory and git branch with status
 - Repository follows symlink pattern: .claude directory should link to .agents when copying
 
+
+## Available Documentation
+- **Reactjs** (librarie): `docs/libraries/reactjs/` - 0% complete - *Updated 2025-08-31*
+
+
+Fetched documentation available for enhanced Claude Code assistance:
+
+- **Express** (framework): `docs/frameworks/express/` - 0% complete - *Updated 2025-08-31*
+- **Lodash** (library): `docs/libraries/lodash/` - 0% complete - *Updated 2025-08-31*
+
 ## Important Workflow Patterns
 
 ### Task Processing Requirements

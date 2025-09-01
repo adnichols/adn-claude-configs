@@ -434,50 +434,132 @@ class DocsFetcher:
     
     def _discover_documentation_urls(self, library_name: str) -> List[str]:
         """Discover official documentation URLs for a given library."""
-        # Common URL patterns for documentation
-        common_patterns = [
-            f"https://{library_name.lower()}.dev/",
-            f"https://docs.{library_name.lower()}.org/",
-            f"https://{library_name.lower()}.org/docs/",
-            f"https://{library_name.lower()}.readthedocs.io/",
-            f"https://developer.mozilla.org/en-US/docs/Web/{library_name}",
-            f"https://github.com/{library_name}/{library_name}/tree/main/docs"
-        ]
+        logger.info(f"Discovering documentation URLs for: {library_name}")
         
-        # Special cases for well-known libraries
+        # Special cases for well-known libraries (most reliable)
         special_cases = {
-            'react': ['https://react.dev/'],
-            'vue': ['https://vuejs.org/guide/'],
-            'angular': ['https://angular.dev/'],
+            'react': ['https://react.dev/', 'https://reactjs.org/docs/'],
+            'vue': ['https://vuejs.org/guide/', 'https://v2.vuejs.org/v2/guide/'],
+            'angular': ['https://angular.dev/', 'https://angular.io/docs'],
             'python': ['https://docs.python.org/3/'],
             'javascript': ['https://developer.mozilla.org/en-US/docs/Web/JavaScript'],
             'typescript': ['https://www.typescriptlang.org/docs/'],
-            'lodash': ['https://lodash.com/docs/'],
-            'express': ['https://expressjs.com/'],
-            'nextjs': ['https://nextjs.org/docs']
+            'lodash': ['https://lodash.com/docs/', 'https://github.com/lodash/lodash/tree/main/docs'],
+            'express': ['https://expressjs.com/', 'https://expressjs.com/en/4x/api.html'],
+            'nextjs': ['https://nextjs.org/docs'],
+            'svelte': ['https://svelte.dev/docs'],
+            'tailwindcss': ['https://tailwindcss.com/docs'],
+            'bootstrap': ['https://getbootstrap.com/docs/'],
+            'jquery': ['https://api.jquery.com/', 'https://jquery.com/'],
+            'webpack': ['https://webpack.js.org/concepts/'],
+            'vite': ['https://vitejs.dev/guide/'],
+            'eslint': ['https://eslint.org/docs/'],
+            'prettier': ['https://prettier.io/docs/'],
+            'jest': ['https://jestjs.io/docs/'],
+            'cypress': ['https://docs.cypress.io/'],
+            'storybook': ['https://storybook.js.org/docs/'],
+            'material-ui': ['https://mui.com/getting-started/'],
+            'antd': ['https://ant.design/components/overview/'],
+            'chakra-ui': ['https://chakra-ui.com/docs/'],
+            'redis': ['https://redis.io/documentation'],
+            'mongodb': ['https://docs.mongodb.com/'],
+            'postgresql': ['https://www.postgresql.org/docs/'],
+            'mysql': ['https://dev.mysql.com/doc/'],
+            'django': ['https://docs.djangoproject.com/'],
+            'flask': ['https://flask.palletsprojects.com/'],
+            'fastapi': ['https://fastapi.tiangolo.com/'],
+            'rails': ['https://guides.rubyonrails.org/'],
+            'laravel': ['https://laravel.com/docs'],
+            'spring': ['https://docs.spring.io/spring-framework/docs/current/reference/html/'],
+            'numpy': ['https://numpy.org/doc/stable/'],
+            'pandas': ['https://pandas.pydata.org/docs/'],
+            'tensorflow': ['https://www.tensorflow.org/guide'],
+            'pytorch': ['https://pytorch.org/docs/stable/'],
+            'rust': ['https://doc.rust-lang.org/book/'],
+            'go': ['https://golang.org/doc/', 'https://pkg.go.dev/std'],
+            'java': ['https://docs.oracle.com/javase/tutorial/'],
+            'kotlin': ['https://kotlinlang.org/docs/'],
+            'swift': ['https://docs.swift.org/swift-book/'],
+            'dart': ['https://dart.dev/guides'],
+            'flutter': ['https://docs.flutter.dev/'],
         }
         
         if library_name.lower() in special_cases:
+            logger.info(f"Using known URLs for {library_name}")
             return special_cases[library_name.lower()]
         
-        # Test common patterns to find working URLs
+        # Extended URL patterns for discovery
+        lib_lower = library_name.lower()
+        common_patterns = [
+            # Primary documentation sites
+            f"https://{lib_lower}.dev/",
+            f"https://docs.{lib_lower}.org/",
+            f"https://{lib_lower}.org/docs/",
+            f"https://{lib_lower}.org/documentation/",
+            f"https://{lib_lower}.readthedocs.io/",
+            f"https://{lib_lower}.readthedocs.io/en/latest/",
+            f"https://readthedocs.org/projects/{lib_lower}/",
+            
+            # Alternative patterns
+            f"https://www.{lib_lower}.org/docs/",
+            f"https://www.{lib_lower}.com/docs/",
+            f"https://{lib_lower}.com/docs/",
+            f"https://{lib_lower}.io/docs/",
+            f"https://docs.{lib_lower}.io/",
+            f"https://guide.{lib_lower}.org/",
+            f"https://api.{lib_lower}.org/",
+            
+            # GitHub documentation
+            f"https://github.com/{lib_lower}/{lib_lower}/tree/main/docs",
+            f"https://github.com/{lib_lower}/{lib_lower}/wiki",
+            f"https://{lib_lower}.github.io/",
+            f"https://{lib_lower}.github.io/docs/",
+            
+            # NPM package docs
+            f"https://www.npmjs.com/package/{lib_lower}",
+            
+            # Python package docs
+            f"https://pypi.org/project/{lib_lower}/",
+            f"https://{lib_lower}.pypa.io/",
+            
+            # Language-specific patterns
+            f"https://pkg.go.dev/{lib_lower}",
+            f"https://crates.io/crates/{lib_lower}",
+            f"https://packagist.org/packages/{lib_lower}",
+        ]
+        
+        logger.info(f"Testing {len(common_patterns)} URL patterns...")
         working_urls = []
-        for url in common_patterns:
+        
+        for i, url in enumerate(common_patterns):
             try:
                 self._enforce_rate_limit()
+                logger.debug(f"Testing URL {i+1}/{len(common_patterns)}: {url}")
+                
                 # Use curl to test URL accessibility
                 result = subprocess.run([
-                    'curl', '-s', '-I', '--connect-timeout', '10', 
+                    'curl', '-s', '-I', '--connect-timeout', '8', '--max-time', '15',
                     '-H', f'User-Agent: {self.user_agent}', url
-                ], capture_output=True, text=True, timeout=15)
+                ], capture_output=True, text=True, timeout=20)
                 
-                if result.returncode == 0 and 'HTTP/' in result.stdout and '200' in result.stdout:
-                    working_urls.append(url)
-                    logger.info(f"Found working URL: {url}")
-            except (subprocess.SubprocessError, subprocess.TimeoutExpired):
+                if result.returncode == 0 and result.stdout:
+                    # Check for successful HTTP responses
+                    if any(status in result.stdout for status in ['200 OK', '301 ', '302 ', '303 ']):
+                        working_urls.append(url)
+                        logger.info(f"✅ Found working URL: {url}")
+                        if len(working_urls) >= 3:  # Limit to first 3 working URLs
+                            break
+                            
+            except (subprocess.SubprocessError, subprocess.TimeoutExpired) as e:
+                logger.debug(f"Failed to test {url}: {str(e)}")
                 continue
         
-        return working_urls[:3]  # Limit to first 3 working URLs
+        if working_urls:
+            logger.info(f"Discovered {len(working_urls)} working URLs for {library_name}")
+        else:
+            logger.warning(f"No working URLs found for {library_name} after testing {len(common_patterns)} patterns")
+        
+        return working_urls
     
     def _requires_enhanced_fetching(self, url: str) -> bool:
         """Check if URL requires enhanced fetching strategies."""
@@ -730,10 +812,35 @@ Please create well-structured, AI-optimized documentation."""
             # Create directory structure
             lib_dir = self._create_directory_structure(library_name)
             
-            # Discover documentation URLs
-            urls = self._discover_documentation_urls(library_name)
+            # Check if user provided manual URL
+            if 'url' in options:
+                urls = [options['url']]
+                logger.info(f"Using manually provided URL: {options['url']}")
+            else:
+                # Discover documentation URLs
+                urls = self._discover_documentation_urls(library_name)
+            
             if not urls:
-                logger.warning(f"No documentation URLs found for {library_name}")
+                logger.error(f"❌ Could not find documentation URLs for '{library_name}'")
+                print(f"\n❌ Documentation Discovery Failed")
+                print(f"Could not automatically discover documentation URLs for '{library_name}'.")
+                print(f"")
+                print(f"This could happen because:")
+                print(f"• The library name might be spelled incorrectly")
+                print(f"• The library might not have online documentation")
+                print(f"• The documentation might be at a non-standard URL")
+                print(f"• Network connectivity issues")
+                print(f"")
+                print(f"Please provide the documentation URL manually:")
+                print(f"Example: /docs:fetch {library_name} --url https://example.com/docs/")
+                print(f"")
+                print(f"Or check if you meant one of these popular libraries:")
+                
+                # Suggest similar library names
+                similar_libs = self._suggest_similar_libraries(library_name)
+                if similar_libs:
+                    print(f"• " + "\n• ".join(similar_libs))
+                
                 return False
             
             # Create metadata
@@ -777,8 +884,40 @@ Please create well-structured, AI-optimized documentation."""
                     )
                     processed_content[url] = organized_content
             
+            # Check if we actually got any useful content
+            if not processed_content:
+                logger.error(f"❌ Failed to fetch any documentation content for '{library_name}'")
+                print(f"\n❌ Content Fetch Failed")
+                print(f"Found documentation URLs for '{library_name}' but failed to fetch content from all of them.")
+                print(f"This could be due to:")
+                print(f"• Network connectivity issues")
+                print(f"• Website blocking automated requests")
+                print(f"• Temporary server issues")
+                print(f"• URLs requiring authentication")
+                print(f"")
+                print(f"Found URLs attempted:")
+                for url in urls:
+                    print(f"• {url}")
+                print(f"")
+                print(f"Please try again later, or provide a different URL:")
+                print(f"Example: /docs:fetch {library_name} --url https://alternative-docs-url.com/")
+                
+                # Clean up empty directory structure
+                import shutil
+                try:
+                    if lib_dir.exists():
+                        shutil.rmtree(lib_dir)
+                        logger.info(f"Cleaned up empty directory: {lib_dir}")
+                except:
+                    pass
+                
+                return False
+            
             # Create documentation files
             self._create_documentation_files(lib_dir, library_name, metadata, urls, processed_content)
+            
+            # Update CLAUDE.md to reference the new documentation
+            self._update_claude_md(library_name, lib_dir, metadata)
             
             logger.info(f"Documentation created for {library_name} in {lib_dir}")
             return True
@@ -913,6 +1052,121 @@ This document contains current patterns, conventions, and best practices for usi
         if domain.startswith('www.'):
             domain = domain[4:]
         return domain
+    
+    def _suggest_similar_libraries(self, library_name: str) -> List[str]:
+        """Suggest similar library names based on common patterns."""
+        # Get list of known libraries from special cases
+        known_libraries = [
+            'react', 'vue', 'angular', 'python', 'javascript', 'typescript',
+            'lodash', 'express', 'nextjs', 'svelte', 'tailwindcss', 'bootstrap',
+            'jquery', 'webpack', 'vite', 'eslint', 'prettier', 'jest', 'cypress',
+            'storybook', 'material-ui', 'antd', 'chakra-ui', 'redis', 'mongodb',
+            'postgresql', 'mysql', 'django', 'flask', 'fastapi', 'rails', 'laravel',
+            'spring', 'numpy', 'pandas', 'tensorflow', 'pytorch', 'rust', 'go',
+            'java', 'kotlin', 'swift', 'dart', 'flutter'
+        ]
+        
+        library_lower = library_name.lower()
+        suggestions = []
+        
+        # Find libraries with similar names
+        for lib in known_libraries:
+            # Exact substring match
+            if library_lower in lib or lib in library_lower:
+                suggestions.append(lib)
+            # Similar starting letters
+            elif len(library_lower) >= 3 and len(lib) >= 3:
+                if library_lower[:3] == lib[:3] and len(suggestions) < 5:
+                    suggestions.append(lib)
+        
+        # Add some common alternatives for popular misspellings
+        alternatives = {
+            'reactjs': ['react'],
+            'vuejs': ['vue'],
+            'angularjs': ['angular'],
+            'nodejs': ['javascript', 'express'],
+            'node': ['javascript', 'express'],
+            'js': ['javascript'],
+            'ts': ['typescript'],
+            'py': ['python'],
+            'tf': ['tensorflow'],
+            'torch': ['pytorch'],
+            'pg': ['postgresql'],
+            'postgres': ['postgresql'],
+            'mongo': ['mongodb'],
+            'css': ['bootstrap', 'tailwindcss'],
+            'mui': ['material-ui'],
+            'ant': ['antd'],
+            'chakra': ['chakra-ui']
+        }
+        
+        if library_lower in alternatives:
+            suggestions.extend(alternatives[library_lower])
+        
+        return list(set(suggestions))[:5]  # Return top 5 unique suggestions
+    
+    def _update_claude_md(self, library_name: str, lib_dir: Path, metadata: Dict):
+        """Update CLAUDE.md to reference the newly fetched documentation."""
+        try:
+            claude_md_path = Path('/workspace/CLAUDE.md')
+            if not claude_md_path.exists():
+                logger.warning("CLAUDE.md not found, skipping documentation reference update")
+                return
+            
+            with open(claude_md_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Determine library category
+            library_type = self._determine_library_type(library_name)
+            relative_path = f"docs/{library_type}/{library_name.lower()}"
+            
+            # Create documentation reference section if it doesn't exist
+            docs_section = "\n## Available Documentation\n\nFetched documentation available for enhanced Claude Code assistance:\n\n"
+            
+            if "## Available Documentation" not in content:
+                # Add the section before the "Important Workflow Patterns" section
+                if "## Important Workflow Patterns" in content:
+                    content = content.replace("## Important Workflow Patterns", docs_section + "## Important Workflow Patterns")
+                else:
+                    # Add at the end
+                    content += docs_section
+            
+            # Create the documentation entry
+            type_singular = library_type[:-1] if library_type.endswith('s') else library_type
+            doc_entry = f"- **{library_name.title()}** ({type_singular}): `{relative_path}/` - {metadata.get('completeness', 0)}% complete"
+            if metadata.get('version', 'latest') != 'latest':
+                doc_entry += f" (v{metadata['version']})"
+            doc_entry += f" - *Updated {metadata['last_fetched']}*\n"
+            
+            # Check if this library is already documented
+            library_pattern = f"- **{library_name.title()}**"
+            if library_pattern in content:
+                # Update existing entry
+                import re
+                pattern = rf"- \*\*{re.escape(library_name.title())}\*\*.*?\n"
+                content = re.sub(pattern, doc_entry, content)
+                logger.info(f"Updated existing {library_name} reference in CLAUDE.md")
+            else:
+                # Add new entry
+                docs_section_start = content.find("## Available Documentation")
+                if docs_section_start != -1:
+                    # Find the end of the section header and add the entry
+                    section_end = content.find("\n\n", docs_section_start + len("## Available Documentation"))
+                    if section_end != -1:
+                        content = content[:section_end] + "\n" + doc_entry + content[section_end:]
+                    else:
+                        content += "\n" + doc_entry
+                else:
+                    content += doc_entry
+                logger.info(f"Added new {library_name} reference to CLAUDE.md")
+            
+            # Write the updated content
+            with open(claude_md_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+                
+        except Exception as e:
+            logger.error(f"Error updating CLAUDE.md: {str(e)}")
+            # Don't fail the entire operation if CLAUDE.md update fails
 
 def main():
     """Main entry point for the script."""
