@@ -44,3 +44,8 @@ venv.bak/
 .env
 .env.local
 .env.*.local
+
+# Claude Devcontainer configs
+.claude/agents/
+.claude/commands/
+.claude/scripts/

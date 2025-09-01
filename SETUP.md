@@ -14,27 +14,10 @@ cd ~/claude-configs
 # Copy agents and commands to global Claude directory
 cp -r agents/* ~/.claude/agents/
 cp -r commands/* ~/.claude/commands/
+cp -r scripts/* ~/.claude/scripts/
 cp settings.json ~/.claude/
 
 # Update your global settings (merge with existing if present)
-```
-
-### Option 2: Project-Specific Installation
-
-Install in a specific project directory:
-
-```bash
-cd your-project
-git clone <repository-url> .claude-configs
-
-# Create .claude directory and copy files
-mkdir -p .claude
-cp -r .claude-configs/agents .claude/
-cp -r .claude-configs/commands .claude/
-cp .claude-configs/settings.json .claude/
-
-# Create the required symlink
-ln -sf .claude agents
 ```
 
 ### Option 3: Symlink Setup (Development)
@@ -69,11 +52,13 @@ Test your installation:
 ## First Usage
 
 1. **Create your first PRD**:
+
    ```bash
    /build:create-prd
    ```
 
 2. **Set up a feature branch**:
+
    ```bash
    git checkout -b feature/test-feature
    ```

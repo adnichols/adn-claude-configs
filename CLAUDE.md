@@ -10,6 +10,23 @@ This is a Claude Code configuration repository containing:
 - **commands/**: Custom slash commands for task processing and code management
 - **settings.json**: Claude Code configuration with custom status line and MCP servers
 
+Note that when tools in this repository are used, they will be bind mounted into other code repos inside the .claude directory
+ONLY the following directories will be available for use:
+
+- commands/
+- agents/
+- scripts/
+
+When used, these 3 directories will appear to be in these paths in another repo:
+
+- .claude/commands/
+- .claude/agents/
+- .claude/scripts/
+
+Other directories are local to this repository and will be unavailable when the tools are used.
+
+The .claude directory in this repository is, in fact, a bind mounted example of how these commands present to other repos
+
 ## Custom Agents
 
 Key specialized agents available:
@@ -36,11 +53,22 @@ Important slash commands:
 - Custom status line shows current directory and git branch with status
 - Repository follows symlink pattern: .claude directory should link to .agents when copying
 
+
+## Available Documentation
+- **Reactjs** (librarie): `docs/libraries/reactjs/` - 0% complete - *Updated 2025-08-31*
+
+
+Fetched documentation available for enhanced Claude Code assistance:
+
+- **Express** (framework): `docs/frameworks/express/` - 0% complete - *Updated 2025-08-31*
+- **Lodash** (library): `docs/libraries/lodash/` - 0% complete - *Updated 2025-08-31*
+
 ## Important Workflow Patterns
 
 ### Task Processing Requirements
 
 When using `/build:process-tasks`:
+
 - Must be on a git branch other than main
 - One sub-task at a time (requires user confirmation unless NOSUBCONF specified)
 - Test suite must pass before committing
@@ -56,6 +84,7 @@ When using `/build:process-tasks`:
 ### Quality Standards
 
 All agents reference CLAUDE.md for:
+
 - Project-specific quality standards
 - Error handling patterns
 - Testing requirements

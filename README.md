@@ -85,7 +85,19 @@ adn-claude-configs/
 
 ## 🛠️ Command Workflows
 
-### 1. Feature Development Workflow
+### 1. Documentation Fetch Workflow
+
+**Fetch Library Documentation**:
+
+```
+/docs:fetch react                    # Fetch React documentation
+/docs:fetch typescript --version 5.3 # Specific version
+/docs:fetch lodash --sections api    # API reference only
+/docs:fetch vue --update             # Update existing docs
+/docs:fetch express --format minimal # Condensed format
+```
+
+### 2. Feature Development Workflow
 
 **PRD-Based Development** (Simple features):
 
@@ -99,7 +111,7 @@ adn-claude-configs/
 [Research Doc] → /build:exec-spec → /build:process-tasks → /build:review
 ```
 
-### 2. Code Quality Workflows
+### 3. Code Quality Workflows
 
 **Simplification Workflow**:
 
@@ -114,6 +126,53 @@ adn-claude-configs/
 ```
 
 ## 🔄 Usage Patterns
+
+### Fetching Documentation
+
+The `/docs:fetch` command transforms scattered online documentation into locally stored, AI-friendly Markdown files for enhanced Claude Code integration:
+
+1. **Basic usage**:
+
+   ```bash
+   /docs:fetch react
+   # Fetches React documentation to /workspace/docs/frameworks/react/
+   ```
+
+2. **Advanced options**:
+
+   ```bash
+   /docs:fetch typescript --version 5.3
+   # Fetch specific version
+
+   /docs:fetch lodash --sections api
+   # Fetch only API reference sections
+   
+   /docs:fetch vue --update
+   # Update existing documentation
+   
+   /docs:fetch express --format minimal
+   # Use condensed format
+   ```
+
+3. **Generated structure**:
+
+   ```
+   /workspace/docs/
+   ├── libraries/lodash/
+   ├── frameworks/react/
+   └── languages/typescript/
+       ├── index.md              # Overview and navigation
+       ├── api-reference.md      # Complete API documentation  
+       ├── best-practices.md     # Current patterns and conventions
+       └── examples/             # Code examples and tutorials
+   ```
+
+**Features:**
+- **AI-Optimized**: Content processed by Technical Writer agent for Claude Code understanding
+- **Self-Learning**: Automatically discovers and saves site patterns for future use
+- **Quality Validation**: Comprehensive content analysis with completeness metrics
+- **Error Recovery**: Robust retry logic with exponential backoff
+- **Enhanced Fetching**: Smart handling of JavaScript-heavy documentation sites
 
 ### Creating New Features
 
