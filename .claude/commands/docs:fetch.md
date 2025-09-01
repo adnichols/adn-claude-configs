@@ -44,7 +44,7 @@ Let me start by parsing your arguments and executing the documentation fetch pro
 
 <function_calls>
 <invoke name="Bash">
-<parameter name="command">cd /workspace && python scripts/docs-fetch.py $ARGUMENTS</parameter>
+<parameter name="command">python scripts/docs-fetch.py $ARGUMENTS</parameter>
 <parameter name="description">Execute documentation fetch script with user arguments</parameter>
 </invoke>
 
@@ -52,7 +52,7 @@ Now let me update CLAUDE.md to reference the newly fetched documentation so Clau
 
 <function_calls>
 <invoke name="Edit">
-<parameter name="file_path">/workspace/CLAUDE.md</parameter>
+<parameter name="file_path">CLAUDE.md</parameter>
 <parameter name="old_string">## Repository Structure
 
 This is a Claude Code configuration repository containing:
@@ -72,7 +72,7 @@ This is a Claude Code configuration repository containing:
 
 <function_calls>
 <invoke name="Read">
-<parameter name="file_path">/workspace/CLAUDE.md</parameter>
+<parameter name="file_path">CLAUDE.md</parameter>
 <parameter name="offset">40</parameter>
 <parameter name="limit">20</parameter>
 </invoke>
