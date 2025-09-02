@@ -5,12 +5,12 @@
 This directory contains a comprehensive set of commands that support a complete development workflow from requirements to implementation and quality assurance:
 
 ### Core Build Commands
-1. **`build:create-prd.md`** - Creates Product Requirements Documents
-2. **`build:exec-spec.md`** - Converts source documents into execution plans  
-3. **`build:generate-tasks.md`** - Generates task lists from specifications
+1. **`plan:create-prd.md`** - Creates Product Requirements Documents
+2. **`plan:generate-tasks-from-spec.md`** - Converts source documents into execution plans  
+3. **`plan:generate-tasks.md`** - Generates task lists from specifications
 4. **`build:process-tasks.md`** - Processes and executes task lists
-5. **`build:review.md`** - Pre-PR quality reviews and validation
-6. **`build:document.md`** - Post-implementation documentation generation
+5. **`plan:review.md`** - Pre-PR quality reviews and validation
+6. **`docs:update.md`** - Post-implementation documentation generation
 
 ### Simplification Commands
 7. **`simplify:create-plan.md`** - Analyzes code for simplification opportunities
@@ -20,19 +20,19 @@ This directory contains a comprehensive set of commands that support a complete 
 
 ### Workflow 1: PRD-Based Development
 ```
-build:create-prd → build:process-tasks → build:review → build:document
+plan:create-prd → build:process-tasks → plan:review → docs:update
 ```
 - Create a PRD for a feature
 - Process the PRD tasks directly using `build:process-tasks`
-- Review code quality before PR using `build:review`
-- Generate documentation after implementation using `build:document`
+- Review code quality before PR using `plan:review`
+- Generate documentation after implementation using `docs:update`
 
 ### Workflow 2: Research-Driven Development
 ```
-[Research Document] → build:exec-spec → build:process-tasks → build:review → build:document
+[Research Document] → plan:generate-tasks-from-spec → build:process-tasks → plan:review → docs:update
 ```
 - Start with a comprehensive research document (strategy, architecture, technical analysis)
-- Convert to rich execution plan using `build:exec-spec`
+- Convert to rich execution plan using `plan:generate-tasks-from-spec`
 - Process the execution plan using `build:process-tasks`
 - Review and document the completed implementation
 
@@ -68,18 +68,18 @@ All commands use consistent:
 
 ### When to Use Each Command
 
-**`build:create-prd`**: 
+**`plan:create-prd`**: 
 - New feature development
 - Clear, scoped requirements
 - Junior developer implementation
 
-**`build:exec-spec`**:
+**`plan:generate-tasks-from-spec`**:
 - Complex technical implementations
 - Architecture-heavy projects
 - Need for context preservation
 - Multi-phase development
 
-**`build:generate-tasks`**:
+**`plan:generate-tasks`**:
 - Breaking down large specifications
 - Creating structured task lists from complex requirements
 - Converting PRDs to actionable development tasks
@@ -90,13 +90,13 @@ All commands use consistent:
 - Requires git branch (not main)
 - Supports `NOSUBCONF` for batch processing
 
-**`build:review`**:
+**`plan:review`**:
 - Pre-PR quality validation
 - Security and performance checks
 - Code quality assessment
 - Production readiness verification
 
-**`build:document`**:
+**`docs:update`**:
 - Post-implementation documentation
 - User guides and technical references
 - API documentation generation

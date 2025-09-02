@@ -42,7 +42,7 @@ The generated task list _must_ follow this structure:
 ### Notes
 
 - Use test commands defined in TESTING.md or CLAUDE.md.
-- Use `/build:document` command for comprehensive documentation generation.
+- Use `/docs:update` command for comprehensive documentation updates.
 - Integrate technical-writer agent for complex documentation tasks.
 
 ## Tasks
@@ -54,7 +54,7 @@ The generated task list _must_ follow this structure:
   - [ ] 2.1 [Sub-task description 2.1]
 - [ ] 3.0 Parent Task Title (may not require sub-tasks if purely structural or configuration)
 - [ ] N.0 Complete Feature Documentation
-  - [ ] N.1 Run `/build:document` to generate comprehensive documentation
+  - [ ] N.1 Run `/docs:update` to update comprehensive documentation
   - [ ] N.2 Update README.md with feature overview and usage examples
   - [ ] N.3 Create/update API documentation for new endpoints or interfaces  
   - [ ] N.4 Create user guides for complex features or workflows

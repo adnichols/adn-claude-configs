@@ -41,7 +41,7 @@ Test your installation:
 ```bash
 # Open Claude Code in your project
 # Try running a command:
-/build:create-prd
+/plan:create-prd
 
 # Verify agents are available:
 @developer
@@ -54,7 +54,7 @@ Test your installation:
 1. **Create your first PRD**:
 
    ```bash
-   /build:create-prd
+   /plan:create-prd
    ```
 
 2. **Set up a feature branch**:

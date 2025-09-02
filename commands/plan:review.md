@@ -12,9 +12,9 @@ To automatically identify and review pending changes in a repository using the q
 ## Usage
 
 ```bash
-/build:review                              # Auto-detect context and changes
-/build:review @tasks/tasks-feature-xyz.md  # Use specific specification file
-/build:review @prd/user-authentication.md  # Use PRD as context
+/plan:review                               # Auto-detect context and changes
+/plan:review @tasks/tasks-feature-xyz.md   # Use specific specification file
+/plan:review @prd/user-authentication.md   # Use PRD as context
 ```
 
 **Parameters:**
@@ -202,7 +202,7 @@ The command writes a detailed Markdown report to `/reports/quality-review-[times
 - **Recommended Actions**: [Specific next steps]
 
 ## 🔧 Suggested Actions
-- [ ] **Create task list for critical fixes**: `/build:generate-tasks @reports/quality-review-[timestamp].md`
+- [ ] **Create task list for critical fixes**: `/plan:generate-tasks @reports/quality-review-[timestamp].md`
 - [ ] **Review recommendations and create selective task list**
 - [ ] **Re-run quality review after fixes**
 ```

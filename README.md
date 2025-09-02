@@ -102,13 +102,13 @@ adn-claude-configs/
 **PRD-Based Development** (Simple features):
 
 ```
-/build:create-prd → /build:generate-tasks.md -> /build:process-tasks → /build:review
+/plan:create-prd → /plan:generate-tasks.md -> /build:process-tasks → /plan:review
 ```
 
 **Research-Driven Development** (Complex features):
 
 ```
-[Research Doc] → /build:exec-spec → /build:process-tasks → /build:review
+[Research Doc] → /plan:generate-tasks-from-spec → /build:process-tasks → /plan:review
 ```
 
 ### 3. Code Quality Workflows
@@ -122,7 +122,7 @@ adn-claude-configs/
 **Quality Assurance**:
 
 ```
-/build:review → [Fix Issues] → [Re-review] → [Approve for PR]
+/plan:review → [Fix Issues] → [Re-review] → [Approve for PR]
 ```
 
 ## 🔄 Usage Patterns
@@ -179,7 +179,7 @@ The `/docs:fetch` command transforms scattered online documentation into locally
 1. **Start with requirements gathering**:
 
    ```bash
-   /build:create-prd
+   /plan:create-prd
    # Follow interactive prompts to create detailed PRD
    ```
 
@@ -187,7 +187,7 @@ The `/docs:fetch` command transforms scattered online documentation into locally
   
   ```bash
    git checkout -b feature/new-feature # optional, claude should do this
-  /build:generate-tasks @path-to-prd.md
+  /plan:generate-tasks @path-to-prd.md
   # Generate parent tasks, review, and then say "Go" to build sub-tasks.
   # Should detect if you are on a branch and create one if not
   ```
@@ -205,14 +205,14 @@ The `/docs:fetch` command transforms scattered online documentation into locally
 3. **Quality review**:
 
    ```bash
-   /build:review
+   /plan:review
    # Comprehensive pre-PR quality check
    ```
 
 4. **Generate documentation**:
 
    ```bash
-   /build:document
+   /docs:update
    # Creates user and technical documentation
    ```
 
@@ -221,7 +221,7 @@ The `/docs:fetch` command transforms scattered online documentation into locally
 1. **Convert research to execution plan**:
 
    ```bash
-   /build:exec-spec @research-markdown-file.md
+   /plan:generate-tasks-from-spec @research-markdown-file.md
    # Converts strategy/research documents to detailed task lists
    ```
 

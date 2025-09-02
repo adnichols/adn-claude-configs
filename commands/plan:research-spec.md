@@ -7,7 +7,18 @@ argument-hint: [Idea/Feature Description]
 
 ## Goal
 
-To guide an AI assistant in researching a user's idea and creating a detailed, comprehensive specification document in Markdown format. This document will serve as input to the `build:exec-spec.md` command and should contain all necessary context, research findings, technical analysis, and implementation guidance. Think harder.
+To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format. This document will serve as input to the `plan:generate-tasks-from-spec.md` command and should contain core functionality context, essential research findings, and straightforward implementation guidance. Think harder.
+
+<simplicity_protocol>
+MANDATORY PROTOCOL for scoping specifications:
+
+- Avoid enterprise features unless specifically requested
+- Avoid backward compatability unless requested.
+- Avoid additional scope that was not requested
+- Ask for permission before adding scope that you feel is critical or missing
+
+**This protocol applies throughout the research and specification process.**
+  </simplicity_protocol>
 
 ## Input
 
@@ -16,6 +27,7 @@ The user will provide an initial idea, feature concept, or problem statement tha
 ## Instructions
 
 The AI will need to:
+
 1. Analyze the user's idea for completeness
 2. Conduct comprehensive research (web search, codebase analysis, best practices)
 3. Ask clarifying questions ONLY if critical information is missing
@@ -29,50 +41,48 @@ The AI will need to:
    - Core problem being solved (if ambiguous)
    - Scope boundaries (if undefined)
    - Technical constraints (if relevant and unknown)
-3. **Comprehensive Research Phase:**
-   - **Industry Analysis:** Research current solutions, competitors, best practices
-   - **Technical Research:** Investigate implementation patterns, frameworks, libraries
-   - **Codebase Analysis:** Examine existing code for integration patterns and conventions
-   - **Security Research:** Identify security considerations and requirements
-   - **Performance Research:** Analyze performance implications and benchmarks
-   - **User Experience Research:** Study UX patterns and accessibility requirements
-4. **Specification Generation:** Create comprehensive document with research findings
+3. **Focused Research Phase:**
+   - **Codebase Analysis:** Examine existing patterns and conventions (priority)
+   - **Technical Research:** Find simple implementation approaches using existing tools
+   - **Basic Security:** Identify essential security considerations only
+   - **Extended Research:** Ask permission before researching enterprise features
+4. **Specification Generation:** Create focused document with core research findings
 5. **Save Specification:** Save as `research-spec-[idea-name].md` in `/tasks/` directory
 
 ## Research Areas (Think Harder)
 
-For each idea, research should cover:
+Start with core research, ask permission before expanding to enterprise features:
 
-### Technical Research
+### Core Technical Research
+
 - Existing implementations and design patterns
-- Framework and library recommendations
-- Architecture considerations
-- Integration requirements with existing systems
-- Data modeling and storage requirements
-- API design patterns
-- Performance optimization strategies
+- Framework and library recommendations (from current codebase)
+- Basic integration with existing systems
+- Simple data modeling requirements
+- Basic security considerations
 
-### Industry & Best Practices Research
-- Current market solutions and approaches
+### Extended Research (Ask Permission First)
+
+**Ask user before researching these areas:**
+- Complex architecture considerations
+- Performance optimization strategies
 - Industry standards and compliance requirements
-- Accessibility standards (WCAG, etc.)
-- Security best practices and threat models
-- Testing strategies and quality assurance
 - Deployment and monitoring considerations
+- Scalability and enterprise features
 
 ### User Experience Research
-- User journey mapping
-- Interface design patterns
-- Usability heuristics
-- Mobile and responsive considerations
-- Error handling and edge case UX
+
+- Core user journey mapping
+- Essential interface patterns
+- Basic accessibility considerations
+- Error handling for core functionality
 
 ### Codebase Integration Research
+
 - Existing code patterns and conventions
 - Available utilities and shared components
-- Configuration management approach
-- Testing framework and patterns
-- Build and deployment processes
+- Current testing approaches
+- Existing configuration patterns
 
 ## Clarifying Questions (Only When Needed)
 
@@ -80,10 +90,17 @@ Ask questions using letter/number lists for easy selection. Examples:
 
 **If problem scope is unclear:**
 "To better research this idea, I need to understand the scope. Which best describes your vision?
-A) A complete standalone application
-B) A feature addition to existing system  
-C) An enhancement to current functionality
+A) A simple feature addition to existing system  
+B) An enhancement to current functionality
+C) A complete standalone application
 D) A developer tool or utility"
+
+**If additional scope might be needed:**
+"Should I research additional enterprise features?
+A) Keep it simple - core functionality only
+B) Research performance optimization needs
+C) Research compliance and security requirements  
+D) Research scalability and enterprise features"
 
 **If target users are ambiguous:**
 "Who is the primary user for this feature?
@@ -92,128 +109,124 @@ B) Internal team members
 C) Developers/technical users
 D) System administrators"
 
-**If technical constraints are unknown:**
-"Are there any technical constraints I should research?
-A) Must integrate with existing auth system
-B) Performance requirements (high traffic/low latency)
-C) Mobile-first or responsive requirements
-D) Specific technology stack preferences
-E) None/No constraints"
+**If backward compatibility is relevant:**
+"Are there backward compatibility requirements?
+A) No - can break existing interfaces
+B) Yes - must maintain existing API compatibility
+C) Partial - some breaking changes acceptable
+D) Not applicable"
 
 ## Output Format
 
-The specification document must follow this structure:
+The specification document follows this structure (include only relevant sections):
 
 ```markdown
 # [Idea Name] - Research Specification
 
 ## 🎯 Executive Summary
 
-[Concise overview of the idea and its value proposition]
+[Concise overview of the idea and its core value]
 
-## 🔍 Research Findings
+## 🔍 Core Research Findings
 
-### Industry Analysis
-[Current solutions, competitors, market approaches]
+### Technical Approach
 
-### Technical Landscape
-[Implementation patterns, frameworks, best practices found through research]
+[Simple implementation patterns and framework recommendations from codebase]
 
-### User Experience Patterns
-[UX research findings, design patterns, accessibility considerations]
+### Integration Points
 
-## 📊 Problem Statement & Opportunity
+[How this fits with existing code patterns]
 
-### Problem Analysis
-[Detailed analysis of the problem being solved]
+## 📊 Problem & Solution
+
+### Core Problem
+
+[Clear problem statement]
 
 ### Target Users
-[User personas and use cases based on research]
 
-### Success Metrics
-[How success will be measured]
+[Primary users and basic use cases]
 
-## 🏗️ Technical Architecture
+### Success Criteria
 
-### Recommended Approach
-[Technical strategy based on research findings]
+[How success will be measured - keep simple]
 
-### Integration Requirements
-[How this integrates with existing systems based on codebase analysis]
+## 🏗️ Technical Design
 
-### Data Architecture
-[Data modeling and storage recommendations]
+### Implementation Strategy
 
-### Security Architecture
-[Security requirements and implementation approach]
+[Straightforward technical approach based on existing codebase]
 
-## 🎨 User Experience Design
+### Data Requirements
 
-### User Journey
-[Step-by-step user interaction flow]
+[Simple data modeling needs]
 
-### Interface Requirements
-[UI/UX specifications based on research]
+### Basic Security
 
-### Accessibility Requirements
-[WCAG compliance and accessibility considerations]
+[Essential security considerations only]
 
-## ⚡ Performance & Scalability
+## 🎨 User Interface
 
-### Performance Requirements
-[Performance benchmarks and optimization strategies]
+### User Flow
 
-### Scalability Considerations
-[How the solution scales based on research]
+[Core user interaction steps]
 
-## 🔒 Security & Compliance
+### Interface Needs
 
-### Security Requirements
-[Security analysis and requirements]
+[Essential UI requirements]
 
-### Compliance Considerations
-[Regulatory or compliance requirements if applicable]
+## 🧪 Testing Approach
 
-## 🧪 Testing Strategy
+### Test Strategy
 
-### Testing Approach
-[Comprehensive testing strategy based on best practices]
+[Basic testing approach based on current patterns]
 
-### Quality Assurance
-[QA requirements and validation approach]
+---
 
-## 📈 Implementation Strategy
+## 📋 Enterprise Sections (Include only if requested)
+
+### ⚡ Performance & Scalability (Optional)
+[Include only if performance requirements specified]
+
+### 🔒 Advanced Security & Compliance (Optional)
+[Include only if compliance requirements specified]
+
+### 📈 Industry Analysis (Optional)
+[Include only if competitor research requested]
+
+## 📈 Implementation Plan
 
 ### Development Phases
-[Logical breakdown of implementation phases]
 
-### Risk Assessment
-[Potential risks and mitigation strategies]
+[Simple breakdown - typically MVP first, then iterations]
 
-### Dependencies
-[External dependencies and requirements]
+### Key Dependencies
+
+[Critical external requirements only]
+
+### Basic Risks
+
+[Major risks and simple mitigation approaches]
 
 ## 📚 Research References
 
 ### Technical References
-[Links to technical documentation, patterns, examples researched]
 
-### Industry References  
-[Market research, competitor analysis, industry standards]
+[Key documentation and examples found]
 
-### Best Practice References
-[Security, performance, accessibility guidelines researched]
+### Framework References
+
+[Library and framework documentation used]
 
 ## 🎯 Success Criteria
 
-### Functional Success
+### Core Functionality
+
 [What the feature must accomplish]
 
-### Technical Success
-[Performance, security, quality metrics]
+### Quality Standards
 
-### User Success
-[User satisfaction and adoption metrics]
+[Basic performance and security requirements]
 
 ## 📋 Next Steps
 
@@ -228,26 +241,28 @@ The specification document must follow this structure:
 
 ## Key Principles
 
-1. **Research First:** Conduct thorough research before specification
-2. **Evidence-Based:** Ground all recommendations in research findings
-3. **Implementation-Ready:** Provide sufficient detail for execution planning
-4. **Context-Rich:** Include all necessary background and rationale
-5. **Actionable:** Focus on specific, implementable requirements
-6. **Quality-Focused:** Include security, performance, and accessibility from the start
+1. **Simplicity First:** Start with core functionality, avoid enterprise features unless requested
+2. **Ask Permission:** Get approval before adding scope beyond the original request  
+3. **Evidence-Based:** Ground recommendations in codebase analysis and simple research
+4. **Implementation-Ready:** Provide sufficient detail for execution planning
+5. **Avoid Over-Engineering:** Focus on specific, simple, implementable requirements
+6. **Essential Quality:** Include basic security and testing, advanced features only if requested
 
 ## Target Audience
 
-The specification document should be comprehensive enough that:
-- A developer can understand the full context and requirements
-- The `build:exec-spec.md` command has all necessary input
-- Implementation decisions are grounded in research and best practices
-- Security and performance considerations are built-in from the start
+The specification document should be focused enough that:
+
+- A developer can understand the core requirements without complexity overload
+- The `plan:generate-tasks-from-spec.md` command has necessary input for simple implementation
+- Implementation decisions prioritize existing codebase patterns
+- Enterprise features are clearly separated and optional
 
 ## Success Indicators
 
 A well-researched specification should:
-- Demonstrate thorough understanding of the problem space
-- Provide evidence-based technical recommendations
-- Include comprehensive security and performance analysis
-- Offer clear implementation guidance based on research
-- Serve as a complete input for execution planning
+
+- Focus on solving the core problem stated by the user
+- Provide simple, implementable technical recommendations
+- Include only essential security and quality considerations
+- Ask permission before adding enterprise scope
+- Serve as input for straightforward execution planning

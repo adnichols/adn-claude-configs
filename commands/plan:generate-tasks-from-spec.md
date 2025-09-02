@@ -144,7 +144,7 @@ The generated execution plan _must_ follow this structure:
 
 **Tasks:**
 - [ ] N.0 Complete Feature Documentation
-  - [ ] N.1 Run `/build:document` to generate comprehensive documentation
+  - [ ] N.1 Run `/docs:update` to update comprehensive documentation
   - [ ] N.2 Update main README.md with feature overview and usage
   - [ ] N.3 Create/update API documentation for new endpoints/interfaces
   - [ ] N.4 Generate configuration documentation for new settings
