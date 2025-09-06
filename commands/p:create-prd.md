@@ -7,7 +7,7 @@ argument-hint: [Feature Description] [manual-complexity: minimum|basic|moderate|
 
 ## Goal
 
-To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using the complexity inheritance router for automatic complexity determination and agent selection. The document depth should match the computed complexity level. Think harder.
+To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using the complexity inheritance router for automatic complexity determination. The document creation is the sole purpose of this command - implementation is handled by separate commands. Think harder.
 
 ## Router Integration
 
@@ -58,6 +58,7 @@ The user will provide:
 3. **Ask Complexity-Appropriate Questions:** Based on router-determined complexity level, ask additional questions for that level
 4. **Generate PRD with Front-Matter:** Create PRD with YAML front-matter containing routing metadata
 5. **Save PRD:** Save as `prd-[feature-name].md` in `/tasks` directory with full complexity metadata
+6. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
 
 ## Clarifying Questions by Complexity Level
 
@@ -172,8 +173,8 @@ routing:
 - [How we know it works]
 - [Key success indicator]
 
-## Next Steps
-[Path to implementation - use router-selected agents]
+## Document Complete
+[This PRD is ready for review and task generation]
 ```
 
 ### Basic Level Template (DEFAULT)
@@ -234,8 +235,8 @@ routing:
 - [Remaining questions needing clarification]
 - [Areas needing further discussion]
 
-## Next Steps
-[Path to implementation]
+## Document Complete
+[This PRD is ready for review and task generation]
 ```
 
 ### Moderate Level Template
@@ -327,13 +328,8 @@ routing:
 - [Technical questions needing resolution]
 - [Business questions needing clarification]
 
-## Next Steps
-### Immediate Actions
-1. [First step]
-2. [Second step]
-
-### Follow-up Planning
-- [Future considerations]
+## Document Complete
+[This PRD is ready for review and task generation]
 ```
 
 ### Complex Level Template
@@ -562,14 +558,8 @@ routing:
 |---------|------|--------|---------|
 | 1.0 | [Date] | [Author] | Initial draft |
 
-## Next Steps
-### Immediate Actions
-1. [Critical first step with owner]
-2. [Required approvals needed]
-
-### Planning Phase
-- [Detailed planning activities]
-- [Team formation and kickoff]
+## Document Complete
+[This PRD is ready for review and task generation]
 ```
 
 ## Target Audience by Complexity Level

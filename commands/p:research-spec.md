@@ -87,6 +87,7 @@ The AI will need to:
    - **Complex:** Add enterprise requirements and comprehensive analysis
 5. **Generate Specification:** Create document with YAML front-matter containing router metadata
 6. **Save Specification:** Save as `research-spec-[idea-name].md` in `/tasks/` directory
+7. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
 ## Research Areas by Complexity Level
 
@@ -200,8 +201,8 @@ The specification document structure varies by complexity level:
 ### Interface Needs
 [Essential UI elements]
 
-## 📋 Next Steps
-[Path to execution]
+## 📋 Specification Complete
+[This specification is ready for task generation]
 ```
 
 ### Basic Level Template (DEFAULT)
@@ -257,8 +258,8 @@ The specification document structure varies by complexity level:
 ### Key Dependencies
 [Critical requirements]
 
-## 📋 Next Steps
-[Path to execution planning]
+## 📋 Specification Complete
+[This specification is ready for task generation]
 ```
 
 ### Moderate Level Template
@@ -330,8 +331,8 @@ The specification document structure varies by complexity level:
 ## 📚 Research References
 [Technical documentation and references]
 
-## 📋 Next Steps
-[Execution planning approach]
+## 📋 Specification Complete
+[This specification is ready for task generation]
 ```
 
 ### Complex Level Template
@@ -421,8 +422,8 @@ The specification document structure varies by complexity level:
 ### Industry Standards
 [Relevant standards and best practices]
 
-## 📋 Next Steps
-[Enterprise execution planning approach]
+## 📋 Specification Complete
+[This specification is ready for task generation]
 ```
 
 ## Output
@@ -437,7 +438,7 @@ The specification document structure varies by complexity level:
 2. **Default to Basic:** Use "basic" complexity when level is not specified
 3. **No Complexity Creep:** Never exceed the requested complexity level without permission
 4. **Evidence-Based:** Ground recommendations in research appropriate to complexity level  
-5. **Implementation-Ready:** Provide detail sufficient for execution planning at the target complexity
+5. **Well-Defined:** Provide detail sufficient for downstream task generation at the target complexity
 6. **Codebase Integration:** Prioritize existing patterns and conventions at all complexity levels
 
 ## Target Audience by Complexity Level
