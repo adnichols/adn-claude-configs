@@ -1,8 +1,18 @@
-# Rule: Generating a Task List from a PRD
+# Rule: Generating a Task List from a PRD with Router Integration
 
 ## Goal
 
-To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format based on an existing Product Requirements Document (PRD). The task list should guide a developer through implementation. Think harder.
+To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format with YAML front-matter based on an existing Product Requirements Document (PRD). The complexity router will determine appropriate task detail level, agent selection, and validation requirements based on the PRD's complexity metadata. Think harder.
+
+## Router Integration
+
+This command integrates with the central complexity router to:
+
+1. **Parse PRD Metadata:** Extract complexity information from PRD YAML front-matter
+2. **Inherit Complexity Level:** Use PRD's router-determined complexity for task planning
+3. **Select Appropriate Agents:** Use PRD's selected agents for task implementation
+4. **Scale Task Detail:** Adjust task granularity based on complexity level
+5. **Apply Validation Requirements:** Include complexity-appropriate testing and validation tasks
 
 ## Output
 
@@ -13,20 +23,57 @@ To guide an AI assistant in creating a detailed, step-by-step task list in Markd
 ## Process
 
 1.  **Receive PRD Reference:** The user points the AI to a specific PRD file
-2.  **Analyze PRD:** The AI reads and analyzes the functional requirements, user stories, and other sections of the specified PRD.
-3.  **Assess Current State:** Review the existing codebase to understand existing infrastructre, architectural patterns and conventions. Also, identify any existing components or features that already exist and could be relevant to the PRD requirements. Then, identify existing related files, components, and utilities that can be leveraged or need modification.
-4.  **Phase 1: Generate Parent Tasks:** Based on the PRD analysis and current state assessment, create the file and generate the main, high-level tasks required to implement the feature. Use your judgement on how many high-level tasks to use. It's likely to be about 5. Present these tasks to the user in the specified format (without sub-tasks yet). Inform the user: "I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed."
-5.  **Wait for Confirmation:** Pause and wait for the user to respond with "Go".
-6.  **Phase 2: Generate Sub-Tasks:** Once the user confirms, break down each parent task into smaller, actionable sub-tasks necessary to complete the parent task. Ensure sub-tasks logically follow from the parent task, cover the implementation details implied by the PRD, include documentation tasks for user-facing features, and consider existing codebase patterns where relevant without being constrained by them.
-7.  **Identify Relevant Files:** Based on the tasks and PRD, identify potential files that will need to be created or modified. List these under the `Relevant Files` section, including corresponding test files if applicable.
-8.  **Generate Final Output:** Combine the parent tasks, sub-tasks, relevant files, and notes into the final Markdown structure.
-9.  **Save Task List:** Save the generated document in the `/tasks/` directory with the filename `tasks-[prd-file-name].md`, where `[prd-file-name]` matches the base name of the input PRD file (e.g., if the input was `prd-user-profile-editing.md`, the output is `tasks-prd-user-profile-editing.md`).
+2.  **Parse PRD Metadata:** Extract complexity information from PRD YAML front-matter:
+    - Router-determined complexity level
+    - Selected agents (developer and reviewer)
+    - Risk and nonfunctional requirements
+    - Validation requirements
+3.  **Call Router for Task Context:** Execute `python3 scripts/route_complexity.py [prd-file]` to get:
+    - Inherited complexity level
+    - Validation requirements for the complexity level
+    - Selected agents for implementation
+4.  **Analyze PRD Content:** Read and analyze functional requirements, user stories, and other sections
+5.  **Assess Current State:** Review existing codebase with complexity-appropriate depth:
+    - **Minimum:** Basic pattern identification
+    - **Basic:** Standard architecture analysis
+    - **Moderate:** Comprehensive integration analysis
+    - **Complex:** Enterprise architecture and compliance review
+6.  **Phase 1: Generate Complexity-Appropriate Parent Tasks:** Create high-level tasks scaled to complexity:
+    - **Minimum:** 3-5 essential tasks
+    - **Basic:** 5-7 standard tasks
+    - **Moderate:** 7-10 comprehensive tasks
+    - **Complex:** 10-15 enterprise-grade tasks
+7.  **Wait for Confirmation:** Pause and wait for user to respond with "Go"
+8.  **Phase 2: Generate Sub-Tasks with Validation:** Break down tasks including complexity-appropriate validation:
+    - Include testing tasks matching router validation requirements
+    - Add security tasks based on complexity level
+    - Include documentation tasks appropriate to complexity
+9.  **Generate Task List with Metadata:** Create file with YAML front-matter containing router metadata
+10. **Save Task List:** Save as `tasks-[prd-file-name].md` with complete metadata inheritance
 
 ## Output Format
 
-The generated task list _must_ follow this structure:
+The generated task list _must_ follow this structure with YAML front-matter:
 
 ```markdown
+---
+version: 1
+complexity: [inherited from PRD]
+source_prd: [path to source PRD file]
+agents:
+  developer: [router-selected developer agent]
+  reviewer: [router-selected reviewer agent]
+risk: [inherited from PRD]
+nonfunctional: [inherited from PRD]
+routing:
+  inherited_from: [source PRD file]
+  computed_score: [router score]
+  validation_requirements: [router validation requirements]
+  audit_trail: [router audit information]
+---
+
+# [Feature Name] - Implementation Tasks
+
 ## Relevant Files
 
 - `path/to/potential/file1.ts` - Brief description of why this file is relevant (e.g., Contains the main component for this feature).

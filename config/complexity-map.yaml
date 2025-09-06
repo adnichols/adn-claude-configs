@@ -1,0 +1,184 @@
+# Complexity Inheritance System Configuration
+# Defines scoring rubric, agent mappings, and validation requirements
+
+version: 1
+
+# Ordinal mappings for complexity scoring
+scoring:
+  ordinals:
+    blast_radius:
+      file: 0
+      package: 1
+      service: 2
+      org: 3
+    
+    data_sensitivity:
+      none: 0
+      pii: 2
+      regulated: 3
+    
+    perf_budget_ms:
+      "<=100": 4
+      "101-200": 3
+      "201-300": 2
+      ">300": 1
+      none: 0
+    
+    backward_compat:
+      "false": 0
+      "true": 2
+    
+    migration:
+      "false": 0
+      "true": 2
+    
+    external_api_change:
+      "false": 0
+      "true": 1
+  
+  # Scoring formula weights
+  weights:
+    blast_radius: 2
+    data_sensitivity: 2
+    backward_compat: 1
+    perf_budget_ms: 1
+    migration: 2
+    external_api_change: 1
+  
+  # Complexity level thresholds
+  thresholds:
+    minimum: [0, 2]    # 0-2 points
+    basic: [3, 4]      # 3-4 points
+    moderate: [5, 7]   # 5-7 points
+    complex: [8, 999]  # 8+ points
+
+# Agent mappings by complexity level
+agents:
+  minimum:
+    developer: "developer-minimum"
+    quality_reviewer: "quality-reviewer-minimum"
+  
+  basic:
+    developer: "developer-basic"
+    quality_reviewer: "quality-reviewer-basic"
+  
+  moderate:
+    developer: "developer-moderate"
+    quality_reviewer: "quality-reviewer-moderate"
+  
+  complex:
+    developer: "developer-complex"
+    quality_reviewer: "quality-reviewer-complex"
+
+# Validation requirements by complexity level
+validation:
+  minimum:
+    required_checks:
+      - lint
+      - build
+      - secrets_scan
+    testing_depth: "basic"
+    performance_checks: false
+    security_scan: "secrets_only"
+    
+  basic:
+    required_checks:
+      - lint
+      - build
+      - secrets_scan
+      - unit_core
+      - dependency_audit
+    testing_depth: "unit_tests"
+    performance_checks: false
+    security_scan: "basic"
+    
+  moderate:
+    required_checks:
+      - lint
+      - build
+      - secrets_scan
+      - unit_core
+      - integration_tests
+      - performance_smoke
+      - basic_sast
+    testing_depth: "integration"
+    performance_checks: true
+    security_scan: "sast_basic"
+    
+  complex:
+    required_checks:
+      - lint
+      - build
+      - secrets_scan
+      - unit_core
+      - integration_tests
+      - e2e_tests
+      - performance_benchmark
+      - sast_advanced
+      - dast
+      - sbom_generation
+    testing_depth: "comprehensive"
+    performance_checks: true
+    security_scan: "full_suite"
+
+# Precedence rules for metadata resolution
+precedence:
+  # Order from highest to lowest priority
+  order:
+    - task_metadata      # task.md front-matter
+    - spec_metadata      # spec.md front-matter
+    - prd_metadata       # prd.md front-matter
+    - repo_config        # repository-level config
+    - system_default     # hard default: "basic"
+  
+  # Conflict resolution rules
+  resolution:
+    complexity_level: "highest_priority_wins"
+    agents: "highest_priority_wins"
+    risk_parameters: "merge_with_precedence"
+    validation_overrides: "require_explicit_reason"
+
+# Default values when no metadata is found
+defaults:
+  complexity: "basic"
+  agents:
+    developer: "auto"
+    quality_reviewer: "auto"
+  risk:
+    blast_radius: "package"
+    external_api_change: false
+    migration: false
+  nonfunctional:
+    perf_budget_ms_p95: null
+    data_sensitivity: "none"
+    backward_compat_required: false
+  routing:
+    allow_override: true
+    strict_validation: false
+
+# Per-axis complexity tracking
+axes:
+  security:
+    factors: ["data_sensitivity", "external_api_change"]
+    weights: [3, 1]
+  
+  performance:
+    factors: ["perf_budget_ms", "blast_radius"]
+    weights: [2, 1]
+  
+  change_scope:
+    factors: ["blast_radius", "migration", "backward_compat"]
+    weights: [2, 2, 1]
+
+# Override validation rules
+overrides:
+  require_reason_for:
+    - complexity_downgrade
+    - security_bypass
+    - performance_exemption
+  
+  auto_approve:
+    - complexity_upgrade
+    - additional_validation
+  
+  audit_trail_required: true

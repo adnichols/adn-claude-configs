@@ -1,13 +1,23 @@
 ---
-description: Convert a research plan into a comprehensive execution plan with full context
+description: Convert a research plan into a comprehensive execution plan with router-driven complexity inheritance
 argument-hint: [Files]
 ---
 
-# Rule: Converting Research Plans to Execution Plans
+# Rule: Converting Research Plans to Execution Plans with Router Integration
 
 ## Goal
 
-To guide an AI assistant in converting a comprehensive source document (like a strategy document, architecture plan, technical analysis, or research plan) into a detailed, step-by-step execution plan in Markdown format. Unlike basic task lists, this preserves ALL context from the source document to ensure the executing agent has complete understanding of the background, rationale, and implementation details. Think harder.
+To guide an AI assistant in converting a comprehensive source document (like a strategy document, architecture plan, technical analysis, or research plan) into a detailed, step-by-step execution plan in Markdown format with YAML front-matter. The complexity router will inherit complexity information from the source specification and select appropriate agents for execution. Unlike basic task lists, this preserves ALL context from the source document to ensure the executing agent has complete understanding of the background, rationale, and implementation details. Think harder.
+
+## Router Integration
+
+This command integrates with the central complexity router to:
+
+1. **Parse Source Specification Metadata:** Extract complexity information from specification YAML front-matter
+2. **Inherit Complexity Level:** Use source specification's router-determined complexity for execution planning
+3. **Select Appropriate Agents:** Use specification's selected agents for task implementation
+4. **Scale Task Detail:** Adjust execution plan granularity based on complexity level
+5. **Apply Validation Requirements:** Include complexity-appropriate testing and validation phases
 
 ## Input
 
@@ -26,7 +36,16 @@ The AI will need to read and analyze the referenced source document file to crea
 ## Process
 
 1. **Receive Source Document Reference:** The user points the AI to a specific source document file
-2. **Read and Analyze Source Document:** The AI reads and analyzes the source document, extracting:
+2. **Parse Source Specification Metadata:** Extract complexity information from source specification YAML front-matter:
+   - Router-determined complexity level
+   - Selected agents (developer and reviewer)
+   - Risk and nonfunctional requirements
+   - Validation requirements
+3. **Call Router for Execution Context:** Execute `python3 scripts/route_complexity.py [source-spec-file]` to get:
+   - Inherited complexity level
+   - Validation requirements for the complexity level
+   - Selected agents for implementation
+4. **Read and Analyze Source Document:** The AI reads and analyzes the source document, extracting:
    - Executive summary and key requirements
    - Technical analysis and architectural decisions
    - Implementation designs and code examples
@@ -34,41 +53,58 @@ The AI will need to read and analyze the referenced source document file to crea
    - Performance implications and tradeoffs
    - Risk assessments and mitigation strategies
    - Success criteria and validation requirements
-3. **Context Preservation:** Unlike basic task generation, preserve the full context by:
+5. **Context Preservation with Complexity Awareness:** Unlike basic task generation, preserve the full context by:
    - Including relevant sections from the source document in the execution document
    - Maintaining code examples and technical specifications
    - Preserving rationale and decision-making context
-   - Including security requirements and considerations
+   - Including security requirements and considerations scaled to complexity
    - Maintaining performance benchmarks and success criteria
-4. **Execution Planning:** Convert the source document into actionable phases:
-   - Break down the implementation plan into logical phases
-   - Identify dependencies between phases
-   - Extract specific technical requirements for each phase
-   - Maintain the original phasing and sequencing from source document
-5. **Phase 1: Generate High-Level Execution Plan:** Create the execution file with:
-   - Full context section (preserving key insights from source document)
-   - High-level phases with clear objectives
+6. **Complexity-Appropriate Execution Planning:** Convert the source document into actionable phases scaled by complexity:
+   - **Minimum:** 3-5 essential phases with basic validation
+   - **Basic:** 5-7 standard phases with unit testing requirements
+   - **Moderate:** 7-10 comprehensive phases with integration testing
+   - **Complex:** 10-15 enterprise phases with full compliance validation
+7. **Phase 1: Generate High-Level Execution Plan:** Create the execution file with YAML front-matter containing:
+   - Inherited metadata from source specification
+   - Router-selected agents
+   - Complexity-appropriate phases with clear objectives
    - Technical requirements and constraints
-   - Success criteria for each phase
+   - Success criteria for each phase scaled to complexity level
    - Present to user: "I have generated the high-level execution plan with full context preserved. Ready to generate the detailed sub-tasks? Respond with 'Go' to proceed."
-6. **Wait for Confirmation:** Pause and wait for the user to respond with "Go"
-7. **Phase 2: Generate Detailed Sub-Tasks:** Break down each phase into specific, actionable sub-tasks that:
+8. **Wait for Confirmation:** Pause and wait for the user to respond with "Go"
+9. **Phase 2: Generate Detailed Sub-Tasks with Validation:** Break down each phase into specific, actionable sub-tasks that:
    - Reference the preserved context and technical specifications
-   - Include security requirements where applicable
+   - Include security requirements scaled to complexity level
    - Specify exact implementation details from the source document
-   - Include validation and testing requirements
-   - Include documentation tasks for user-facing features
-   - Add technical-writer agent integration for comprehensive documentation
+   - Include complexity-appropriate validation and testing requirements
+   - Include documentation tasks appropriate to complexity
+   - Use router-selected agents for implementation
    - Maintain traceability back to the source document
-8. **Identify Implementation Files:** Based on the source document and tasks, identify files that will need creation or modification
-9. **Generate Final Output:** Combine everything into the comprehensive execution plan
-10. **Save Execution Plan:** Save in `/tasks/` directory with filename `tasks-execution-[source-document-name].md`
+10. **Identify Implementation Files:** Based on the source document and tasks, identify files that will need creation or modification
+11. **Generate Final Output with Metadata:** Combine everything into the comprehensive execution plan with complete router metadata
+12. **Save Execution Plan:** Save in `/tasks/` directory with filename `tasks-execution-[source-document-name].md` with complete metadata inheritance
 
 ## Output Format
 
-The generated execution plan _must_ follow this structure:
+The generated execution plan _must_ follow this structure with YAML front-matter:
 
 ```markdown
+---
+version: 1
+complexity: [inherited from source spec]
+source_spec: [path to source specification file]
+agents:
+  developer: [router-selected developer agent]
+  reviewer: [router-selected reviewer agent]
+risk: [inherited from source spec]
+nonfunctional: [inherited from source spec]
+routing:
+  inherited_from: [source specification file]
+  computed_score: [router score]
+  validation_requirements: [router validation requirements]
+  audit_trail: [router audit information]
+---
+
 # [Source Document Title] - Execution Plan
 
 ## 🎯 Executive Summary

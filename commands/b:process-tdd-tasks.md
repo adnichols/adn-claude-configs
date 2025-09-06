@@ -1,13 +1,32 @@
 ---
-description: Execute TDD task lists with strict Red-Green-Refactor cycle enforcement and test-first validation
+description: Execute TDD task lists with router-driven complexity detection and strict Red-Green-Refactor cycle enforcement
 argument-hint: [@tdd-task-file] [NOSUBCONF]
 ---
 
-# Rule: TDD Task Processing with Cycle Enforcement
+# Rule: TDD Task Processing with Router Integration and Cycle Enforcement
 
 ## Goal
 
-To guide an AI assistant through executing a TDD (Test-Driven Development) task list with strict enforcement of the Red-Green-Refactor cycle. This ensures tests are written first, fail appropriately, then implementation makes them pass, followed by refactoring while maintaining green tests. Think harder.
+To guide an AI assistant through executing a TDD (Test-Driven Development) task list with router-driven complexity detection, appropriate agent selection, and strict enforcement of the Red-Green-Refactor cycle. The complexity router automatically detects the appropriate complexity level, selects suitable developer and quality agents, and applies complexity-appropriate validation requirements while ensuring tests are written first, fail appropriately, then implementation makes them pass, followed by refactoring. Think harder.
+
+## Router Integration Process
+
+Before starting TDD task implementation:
+
+1. **Parse Task File Metadata:** Extract complexity information from task file YAML front-matter
+2. **Call Complexity Router:** Execute `python3 scripts/route_complexity.py [task-file]` to get:
+   - Computed complexity level
+   - Selected developer and quality-reviewer agents  
+   - Required TDD validation checks for the complexity level
+   - Performance and security requirements for TDD cycles
+3. **Auto-select Agents:** Use router-selected agents for TDD implementation:
+   - Developer agent: `@[router-selected-developer]` for TDD cycles
+   - Quality reviewer: `@[router-selected-quality-reviewer]` for final validation
+4. **Apply TDD Validation Requirements:** Include complexity-appropriate checks in each TDD phase:
+   - **Minimum:** basic unit tests + lint + build
+   - **Basic:** + comprehensive unit tests + dependency audit
+   - **Moderate:** + integration tests + performance tests + basic SAST
+   - **Complex:** + e2e tests + performance benchmarks + SAST+DAST + compliance validation
 
 ## Usage
 
@@ -256,8 +275,14 @@ Each TDD cycle must achieve:
 
 ## Git Workflow Integration
 
-### Commit Strategy
-- Commit after each complete TDD cycle (Red-Green-Refactor)
+### Commit Strategy with Router Validation
+- Complete TDD cycle (Red-Green-Refactor) with complexity-appropriate validation
+- Run router-determined validation checks before commit:
+  - Always: lint, build, unit tests
+  - Basic+: dependency audit, comprehensive unit tests
+  - Moderate+: integration tests, performance tests, basic SAST
+  - Complex: e2e tests, performance benchmarks, advanced security scans
+- Use router-selected quality reviewer agent for final validation
 - Use conventional commit format with TDD phase indicator
 - Example: `feat(auth): implement user login validation (TDD cycle 1)`
 
@@ -266,4 +291,4 @@ Each TDD cycle must achieve:
 - Create phase-specific branches if needed
 - Merge only when full phase is complete and tested
 
-This command ensures rigorous adherence to TDD methodology while maintaining code quality and specification compliance.
+This command ensures rigorous adherence to TDD methodology with router-driven complexity awareness, automatic agent selection, and complexity-appropriate validation while maintaining code quality and specification compliance.

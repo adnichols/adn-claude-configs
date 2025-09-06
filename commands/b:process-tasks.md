@@ -1,12 +1,31 @@
 ---
-description: Process tasks in a task list
+description: Process tasks in a task list with router-driven complexity detection and agent selection
 argument-hint: [Files]
 ---
 
 # Instructions
 
-Take the tasks (either in a list or a file) below and process them according to the instructions in Task List Management. This command handles both simple task lists and complex execution plans with rich context from source documents (PRDs, research plans, etc.).
+Process the task list using the complexity inheritance router to automatically detect complexity level, select appropriate developer and quality agents, and apply complexity-appropriate validation requirements. This command handles both simple task lists and complex execution plans with rich context from source documents (PRDs, research plans, etc.).
 $ARGUMENTS. Think harder.
+
+## Router Integration Process
+
+Before starting task implementation:
+
+1. **Parse Task File Metadata:** Extract complexity information from task file YAML front-matter
+2. **Call Complexity Router:** Execute `python3 scripts/route_complexity.py [task-file]` to get:
+   - Computed complexity level
+   - Selected developer and quality-reviewer agents  
+   - Required validation checks for the complexity level
+   - Performance and security requirements
+3. **Auto-select Agents:** Use router-selected agents for implementation:
+   - Developer agent: `@[router-selected-developer]`
+   - Quality reviewer: `@[router-selected-quality-reviewer]`
+4. **Apply Validation Requirements:** Include complexity-appropriate checks:
+   - **Minimum:** lint + build + secrets scan
+   - **Basic:** + unit-core + dependency audit
+   - **Moderate:** + integration tests + performance smoke + basic SAST
+   - **Complex:** + e2e + performance benchmark + SAST+DAST + SBOM
 
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
@@ -52,8 +71,13 @@ Guidelines for managing task lists in markdown files to track progress on comple
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
   - **MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
-  - **First**: Run the full test suite as defined in TESTING.md or CLAUDE.md
-  - **Only if all tests pass**: Stage changes (`git add .`)
+  - **First**: Run complexity-appropriate validation checks (from router requirements):
+    - Always: lint, build, secrets scan
+    - Basic+: unit tests, dependency audit  
+    - Moderate+: integration tests, performance smoke tests, basic SAST
+    - Complex: e2e tests, performance benchmarks, advanced security scans
+  - **Only if all validations pass**: Stage changes (`git add .`)
+  - **Quality Review**: Use router-selected quality reviewer agent for final approval
   - **Clean up**: Remove any temporary files and temporary code before committing
   - **Commit**: Use a descriptive commit message that:
     - Uses conventional commit format (`feat:`, `fix:`, `refactor:`, etc.)

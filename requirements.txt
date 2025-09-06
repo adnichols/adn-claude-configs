@@ -1,0 +1,13 @@
+# Python dependencies for complexity inheritance system
+# Core validation and configuration
+pydantic>=2.0.0
+PyYAML>=6.0
+jinja2>=3.1.0
+
+# Testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Development tools
+black>=23.0.0
+mypy>=1.0.0

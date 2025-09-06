@@ -1,29 +1,56 @@
 ---
-description: Create a code simplification plan using the simplify-planner agent
+description: Create a complexity-aware code simplification plan with router-driven analysis and agent selection
 argument-hint: [Target directory/files to analyze]
 ---
 
-# Rule: Generating a Code Simplification Plan
+# Rule: Generating a Complexity-Aware Code Simplification Plan
 
 ## Goal
 
-To guide an AI assistant in creating a detailed Code Simplification Plan using the @simplify-planner agent. The plan should identify complexity accumulation, provide evidence-based cleanup recommendations, and ensure absolute preservation of core functionality. Think harder.
+To guide an AI assistant in creating a detailed Code Simplification Plan with router-driven complexity detection, appropriate agent selection, and cleanup aggressiveness scaled to project complexity. The system automatically detects project complexity from existing files, selects appropriate agents, and scales cleanup recommendations while ensuring absolute preservation of core functionality. Think harder.
+
+## Router Integration for Complexity Detection
+
+This command integrates with the complexity router to:
+
+1. **Detect Project Complexity:** Analyze existing project files to determine overall complexity level
+2. **Scale Cleanup Aggressiveness:** Adjust simplification approach based on complexity:
+   - **Minimum:** Very aggressive cleanup allowed (prototype-level)
+   - **Basic:** Moderate cleanup with standard precautions
+   - **Moderate:** Conservative cleanup with comprehensive testing
+   - **Complex:** Very conservative cleanup with enterprise-grade validation
+3. **Auto-select Quality Reviewer:** Use router-selected quality reviewer agent appropriate to complexity
+4. **Apply Complexity-Appropriate Safeguards:** Include validation requirements matching the project complexity level
 
 ## Process
 
 1. **Receive Target Scope:** The user provides a directory path, file pattern, or specific files to analyze for simplification opportunities. If not provided, review entire current directory.
-2. **Assure working branch:** Assure we are operating on a feature branch and if we aren't, create an appropriate branch for these changes
-3. **Review Recent Changes:** Leverage git history to identify recent changes to the current repository
-4. **Test Coverage Assessment:** Verify existing test coverage for the target area before any simplification planning.
-5. **Generate Simplification Plan:** Use the @simplify-planner agent to analyze the codebase and create a detailed plan.
-6. **Quality Review:** Have the @quality-reviewer agent review the plan for safety and completeness.
-7. **Save Plan:** Save the generated plan as `simplify-plan-[area-name].md` inside the `/tasks` directory.
+2. **Detect Project Complexity:** Call router to analyze existing project files and determine complexity:
+   - Scan for PRDs, specs, and task files with metadata
+   - Execute `python3 scripts/route_complexity.py [discovered-files]` to get project complexity
+   - If no metadata found, analyze codebase characteristics to estimate complexity level
+3. **Complexity-Aware Planning:** Scale simplification approach based on router-determined complexity:
+   - **Minimum:** Allow aggressive refactoring, minimal validation requirements
+   - **Basic:** Standard refactoring with unit test validation
+   - **Moderate:** Conservative refactoring with integration test requirements
+   - **Complex:** Very conservative approach with full regression testing
+4. **Check Backward Compatibility Requirements:** Block aggressive cleanup if router detects `backward_compat_required: true`
+5. **Assure working branch:** Assure we are operating on a feature branch and if we aren't, create an appropriate branch for these changes
+6. **Review Recent Changes:** Leverage git history to identify recent changes to the current repository
+7. **Test Coverage Assessment:** Verify existing test coverage scaled to complexity level
+8. **Generate Simplification Plan:** Use the @simplify-planner agent to analyze the codebase and create a detailed plan scaled to complexity
+9. **Quality Review:** Use router-selected quality reviewer agent for plan review appropriate to complexity level
+10. **Save Plan:** Save the generated plan as `simplify-plan-[area-name].md` inside the `/tasks` directory with router metadata
 
 ## Pre-Simplification Requirements
 
-Before generating any simplification plan:
+Before generating any simplification plan, apply complexity-appropriate requirements:
 
-1. **Test Coverage Verification:**
+1. **Complexity-Appropriate Test Coverage Verification:**
+   - **Minimum:** Basic test coverage for core functionality only
+   - **Basic:** Standard unit test coverage for main paths
+   - **Moderate:** Comprehensive test coverage including integration tests
+   - **Complex:** Full test coverage including e2e and regression tests
    - Analyze existing test coverage for the target area
    - Identify gaps in test coverage for core functionality
    - Document current test structure and quality
@@ -62,10 +89,11 @@ The generated plan should include the following sections as a checklist:
   - [ ] Map preservation requirements
 
 ### Phase 2: Plan Review and Validation
-- [ ] **P2.1: Quality Review**
-  - [ ] Submit plan to @quality-reviewer agent
+- [ ] **P2.1: Complexity-Appropriate Quality Review**
+  - [ ] Submit plan to router-selected quality reviewer agent (e.g., @quality-reviewer-moderate)
+  - [ ] Apply complexity-appropriate review depth and safety checks
   - [ ] Update plan to address safety concerns or gaps as appropriate
-  - [ ] Confirm preservation guarantees
+  - [ ] Confirm preservation guarantees scaled to project complexity level
 
 - [ ] **P2.2: Risk Assessment**
   - [ ] Document all identified risks

@@ -13,7 +13,19 @@ A comprehensive Claude Code configuration system that provides specialized agent
    cd adn-claude-configs
    ```
 
-2. **Run the installer**:
+2. **Install Python dependencies**:
+
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+
+3. **Generate complexity-aware agents**:
+
+   ```bash
+   python3 scripts/gen_agents.py --validate
+   ```
+
+4. **Run the installer** (if available):
 
    ```bash
    ./install.sh
@@ -21,33 +33,100 @@ A comprehensive Claude Code configuration system that provides specialized agent
 
    The installer will automatically set up symlinks from `~/.claude/` to this repository, backing up any existing configuration.
 
+## 🧠 Complexity Inheritance System
+
+This repository features an advanced **Complexity Inheritance System** that automatically:
+
+- **Detects complexity levels** based on objective scoring criteria
+- **Selects appropriate agents** for each complexity level
+- **Applies validation requirements** matching the complexity level
+- **Inherits metadata** through PRD → spec → tasks → implementation pipeline
+
+### Complexity Levels
+
+| Level | Score | Agent Type | Validation Requirements |
+|-------|-------|------------|------------------------|
+| **Minimum** | 0-2 | `developer-minimum` | Lint + Build + Secrets |
+| **Basic** | 3-4 | `developer-basic` | + Unit Tests + Audit |
+| **Moderate** | 5-7 | `developer-moderate` | + Integration + SAST |
+| **Complex** | 8+ | `developer-complex` | + E2E + Advanced Security |
+
+See [Complexity Inheritance Documentation](docs/complexity-inheritance.md) for complete details.
+
 ## 📁 Repository Structure
 
 ```
 adn-claude-configs/
-├── agents/                   # Specialized AI agents for different development phases
-├── commands/                 # Custom slash commands for task automation
-├── tasks/                    # Generated PRDs, execution plans, and task lists
-├── reports/                  # Generated Reports from quality review
-├── .claude/                  # Local Claude Code settings (symlink to agents/)
-├── settings.template.json    # Example full autonomy Claude Config
-└── CLAUDE.md                 # Repository-specific guidance for Claude
+├── agents/                   # Generated complexity-aware AI agents
+│   ├── templates/           # Jinja2 templates for agent generation
+│   ├── developer-*.md       # Generated developer agents by complexity
+│   └── quality-reviewer-*.md # Generated reviewer agents by complexity
+├── commands/                 # Router-integrated slash commands
+│   ├── p:create-prd.md      # PRD creation with complexity detection
+│   ├── p:gen-tasks.md       # Task generation with metadata inheritance
+│   └── b:process-tasks.md   # Implementation with auto agent selection
+├── config/                   # Complexity inheritance configuration
+│   └── complexity-map.yaml  # Central complexity scoring and mapping
+├── scripts/                  # Core system scripts
+│   ├── route_complexity.py  # Central complexity router
+│   ├── gen_agents.py       # Agent generation from templates
+│   └── schemas.py          # Pydantic models for validation
+├── test/                     # Test fixtures and validation
+│   └── fixtures/           # Sample PRDs for testing
+├── docs/                     # System documentation
+│   └── complexity-inheritance.md # Complete system documentation
+├── .logs/                    # Telemetry and audit logs
+├── tasks/                    # Generated PRDs, specs, and task lists
+├── .claude/                  # Local Claude Code settings (symlink)
+└── CLAUDE.md                 # Repository-specific guidance
 ```
 
 ## 🤖 Available Agents
 
-### Core Development Agents
+The system automatically generates complexity-aware agents from templates. All agents are generated via `python3 scripts/gen_agents.py` to prevent maintenance drift.
 
-**`@developer`** - Production-ready implementation
+### Developer Agents (Auto-Selected by Complexity)
 
-- Implements specifications with comprehensive tests
-- Enforces zero linting violations
-- Follows project-specific standards from CLAUDE.md
-- Handles error cases and edge conditions
+**`@developer-minimum`** - Prototype implementation
+- Basic functionality focus
+- Simple unit tests
+- Prototype-level quality acceptable
 
-**`@quality-reviewer`** - Pre-production validation
+**`@developer-basic`** - Production-ready implementation  
+- Comprehensive unit and integration tests
+- Follows project standards from CLAUDE.md
+- Zero linting violations enforced
 
-- Reviews code for security, performance, and data integrity issues
+**`@developer-moderate`** - Enterprise-grade implementation
+- Advanced testing including performance tests
+- Security validation and monitoring
+- Full error handling and edge cases
+
+**`@developer-complex`** - Mission-critical implementation
+- Comprehensive test coverage (>90%)
+- Advanced security and compliance validation
+- Performance benchmarking and scalability
+
+### Quality Reviewer Agents (Auto-Selected by Complexity)
+
+**`@quality-reviewer-minimum`** - Basic validation
+- Code correctness and simple security checks
+- Basic error handling review
+
+**`@quality-reviewer-basic`** - Production validation
+- Security vulnerabilities (OWASP Top 10)
+- Performance anti-patterns
+- Test coverage adequacy
+
+**`@quality-reviewer-moderate`** - Comprehensive validation
+- Advanced security analysis
+- Performance bottlenecks and scalability
+- Integration testing adequacy
+
+**`@quality-reviewer-complex`** - Enterprise validation
+- Full security audit and compliance
+- Advanced performance analysis
+- Disaster recovery and business continuity
 - Identifies potential production failures
 - Validates test coverage and error handling
 - Provides structured quality reports
