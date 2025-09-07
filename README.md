@@ -22,7 +22,7 @@ A comprehensive Claude Code configuration system that provides specialized agent
 3. **Generate complexity-aware agents**:
 
    ```bash
-   python3 scripts/gen_agents.py --validate
+   python3 tools/gen_agents.py --validate
    ```
 
 4. **Run the installer** (if available):
@@ -51,7 +51,7 @@ This repository features an advanced **Complexity Inheritance System** that auto
 | **Moderate** | 5-7 | `developer-moderate` | + Integration + SAST |
 | **Complex** | 8+ | `developer-complex` | + E2E + Advanced Security |
 
-See [Complexity Inheritance Documentation](docs/complexity-inheritance.md) for complete details.
+The system uses a lightweight bash-based complexity detector with static mappings for maximum portability.
 
 ## 📁 Repository Structure
 
@@ -65,16 +65,11 @@ adn-claude-configs/
 │   ├── p:create-prd.md      # PRD creation with complexity detection
 │   ├── p:gen-tasks.md       # Task generation with metadata inheritance
 │   └── b:process-tasks.md   # Implementation with auto agent selection
-├── config/                   # Complexity inheritance configuration
-│   └── complexity-map.yaml  # Central complexity scoring and mapping
-├── scripts/                  # Core system scripts
-│   ├── route_complexity.py  # Central complexity router
-│   ├── gen_agents.py       # Agent generation from templates
-│   └── schemas.py          # Pydantic models for validation
+├── tools/                    # Repository maintenance tools
+│   └── gen_agents.py        # Agent generation from templates
 ├── test/                     # Test fixtures and validation
 │   └── fixtures/           # Sample PRDs for testing
 ├── docs/                     # System documentation
-│   └── complexity-inheritance.md # Complete system documentation
 ├── .logs/                    # Telemetry and audit logs
 ├── tasks/                    # Generated PRDs, specs, and task lists
 ├── .claude/                  # Local Claude Code settings (symlink)
@@ -83,7 +78,7 @@ adn-claude-configs/
 
 ## 🤖 Available Agents
 
-The system automatically generates complexity-aware agents from templates. All agents are generated via `python3 scripts/gen_agents.py` to prevent maintenance drift.
+The system automatically generates complexity-aware agents from templates. All agents are generated via `python3 tools/gen_agents.py` to prevent maintenance drift.
 
 ### Developer Agents (Auto-Selected by Complexity)
 

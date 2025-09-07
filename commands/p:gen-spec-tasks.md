@@ -41,7 +41,7 @@ The AI will need to read and analyze the referenced source document file to crea
    - Selected agents (developer and reviewer)
    - Risk and nonfunctional requirements
    - Validation requirements
-3. **Call Router for Execution Context:** Execute `python3 scripts/route_complexity.py [source-spec-file]` to get:
+3. **Call Router for Execution Context:** Execute `bash .claude/commands/_lib/complexity/get-complexity.sh [source-spec-file]` to get:
    - Inherited complexity level
    - Validation requirements for the complexity level
    - Selected agents for implementation

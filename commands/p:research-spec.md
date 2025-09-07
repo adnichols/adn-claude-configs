@@ -11,7 +11,7 @@ To guide an AI assistant in researching a user's idea and creating a focused, pr
 
 ## Router Integration
 
-This command integrates with the central complexity router (`scripts/route_complexity.py`) to:
+This command integrates with the central complexity router (`.claude/commands/_lib/complexity/get-complexity.sh`) to:
 
 1. **Auto-detect complexity** based on research findings and feature characteristics
 2. **Select appropriate research depth** matching the complexity level
