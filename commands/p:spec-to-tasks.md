@@ -18,6 +18,10 @@ To guide an AI assistant in converting a detailed specification document (create
 - Creates tasks that implement EXACTLY what's written
 - Uses fidelity-preserving agents that cannot modify scope
 
+## MANDATORY: Complete Review Output Display
+
+**CRITICAL REQUIREMENT:** When running fidelity review, you MUST display the complete fidelity-reviewer output to the user. Never summarize or hide the review findings - the user needs to see all numbered issues with their lettered options to make informed decisions.
+
 ## Input
 
 The user will provide:
@@ -41,20 +45,82 @@ The user will provide:
    - Maintain specification's timeline and dependencies
    - Preserve specification's success criteria for each phase
 
-3. **Create Task List with Zero Additions:** Generate tasks that implement:
+3. **Create and Save Draft Task List:** Generate and save initial tasks that implement:
    - ONLY what's explicitly stated in the specification
    - Testing ONLY as specified (not more, not less)
    - Security ONLY as specified (not more, not less)  
    - Performance measures ONLY as specified
    - Documentation ONLY as specified
+   - Save draft to `/tasks/tasks-fidelity-[spec-name]-DRAFT.md` with clear draft marking
+   - Inform user of draft location for review
 
-4. **Preserve Context:** Include relevant specification sections to ensure implementer has complete context without needing to reference external documents
+4. **Automatic Fidelity Review:** Use fidelity-reviewer agent to:
+   - Compare original specification file against saved draft task file
+   - Identify missing requirements, scope additions, and ambiguities
+   - **CRITICAL: Display the COMPLETE fidelity-reviewer output to the user**
+   - **DO NOT summarize or hide the review findings**
+   - **Show ALL issues with their numbered format and lettered options**
+   - Present structured decisions with references to both files for user review
+   - Wait for user response to the displayed questions
 
-5. **Generate Fidelity Metadata:** Create task file with strict fidelity preservation settings
+5. **Apply User Decisions:** If issues were found and user provided decisions:
+   - Parse decision responses (e.g., "1a, 2c, 3b")
+   - Apply chosen resolutions to update task list
+   - Re-run fidelity review to validate changes
+   - Continue until task list achieves perfect fidelity
 
-6. **Save Task File:** Output to `/tasks/` directory as `tasks-fidelity-[spec-name].md`
+6. **Preserve Context:** Include relevant specification sections to ensure implementer has complete context without needing to reference external documents
 
-## Task Output Format
+7. **Generate Fidelity Metadata:** Create task file with strict fidelity preservation settings and review audit trail
+
+8. **Save Final Validated Task File:** 
+   - Save validated version to `/tasks/tasks-fidelity-[spec-name].md` with complete review metadata
+   - Archive or remove draft file (user preference)
+   - Confirm final task list location to user
+
+## Draft Task File Format
+
+The initial draft task file saved to `/tasks/tasks-fidelity-[spec-name]-DRAFT.md`:
+
+```markdown
+---
+version: 1
+status: DRAFT
+fidelity_mode: strict
+source_spec: [path to original specification file]
+agents:
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
+scope_preservation: true
+additions_allowed: none
+complexity_override: disabled
+specification_metadata:
+  source_file: [specification file path]
+  conversion_date: [timestamp]
+  fidelity_level: absolute
+  scope_changes: none
+fidelity_review:
+  reviewed: false
+  pending_review: true
+  draft_created: [timestamp]
+---
+
+# ⚠️ DRAFT - Pending Fidelity Review
+
+# [Specification Title] - Fidelity Implementation Tasks (DRAFT)
+
+**⚠️ This is a DRAFT task list awaiting fidelity review against the original specification.**
+
+**Specification Source:** [path to spec file]
+**Review Status:** Pending
+**Next Step:** Fidelity review will compare this draft against the specification
+
+[Rest of task content...]
+```
+
+## Final Task File Format
+
+After fidelity review and validation, the final file at `/tasks/tasks-fidelity-[spec-name].md`:
 
 ```markdown
 ---
@@ -72,6 +138,17 @@ specification_metadata:
   conversion_date: [timestamp]
   fidelity_level: absolute
   scope_changes: none
+fidelity_review:
+  reviewed: true
+  reviewer_agent: fidelity-reviewer
+  issues_found: [number of issues identified]
+  decisions_made:
+    - issue: "[brief description of issue]"
+      decision: "[user decision - e.g., '1a']"
+      resolution: "[how decision was applied]"
+  review_iterations: [number of review cycles]
+  final_validation: passed
+  review_date: [timestamp]
 ---
 
 # [Specification Title] - Fidelity Implementation Tasks
@@ -169,14 +246,110 @@ specification_metadata:
 
 ```
 
+## CRITICAL: Review Output Display Requirements
+
+### Mandatory Display Protocol
+
+When the fidelity-reviewer agent completes its analysis, you MUST:
+
+1. **Display the COMPLETE fidelity-reviewer output** to the user, including:
+   - "Files Reviewed" section with both file paths
+   - "Validated Elements" section listing what's correct
+   - **ALL issues** in their full numbered format with lettered options
+   - The complete request for user input
+
+2. **NEVER summarize, condense, or hide** the review findings
+
+3. **CORRECT Display Example:**
+   ```
+   ## ⚠️ Fidelity Review: ISSUES FOUND
+
+   **Files Reviewed:**
+   - **Specification:** /path/to/spec.md
+   - **Draft Task List:** /path/to/draft.md
+
+   ### ❌ Issues Requiring Decisions
+
+   **1. Missing Requirement: Response Format**
+   **Specification** (line 15): "All responses use JSON format"
+   **Draft Task List** (Task 4.1-4.3): Error handling tasks don't specify JSON
+   **Issue:** No explicit task ensures JSON response format
+
+   Options:
+   a) Add task: "4.4 Set JSON content-type headers"
+   b) This is implicitly covered by Express defaults
+   c) Add minimal task: "4.4 Ensure JSON format"
+   d) This level of detail not needed
+
+   **Please respond with your decisions: "1a, 2c, 3b"**
+   ```
+
+4. **INCORRECT Display (DO NOT DO THIS):**
+   ```
+   The review found 6 issues requiring decisions. Please respond with choices.
+   ```
+
+### Automatic Review Workflow
+
+1. **Initial Task Generation:** Create task list based on specification analysis
+2. **Fidelity Review:** fidelity-reviewer agent compares specification vs tasks
+3. **Complete Output Display:** Show ALL review findings to user with full details
+4. **User Decision Collection:** Wait for structured decisions based on displayed issues
+5. **Resolution Application:** Apply user choices and regenerate tasks
+6. **Validation Loop:** Repeat until perfect fidelity achieved
+7. **Final Output:** Save validated task list with complete audit trail
+
+### File-Based Review Workflow
+
+The enhanced workflow provides full file visibility:
+
+1. **Draft Creation**: `tasks-fidelity-[spec-name]-DRAFT.md` is saved immediately after generation
+2. **User Notification**: "✅ Draft task list saved to: [path]. Running fidelity review..."
+3. **File References**: Review output includes paths to both specification and draft files
+4. **Side-by-Side Review**: You can open both files to examine the comparison context
+5. **Final Replacement**: After validation, draft is replaced with final version
+
+### Decision Format
+
+When issues are found, they are presented with file references:
+```
+**Files Reviewed:**
+- **Specification:** [path to original spec file]
+- **Draft Task List:** [path to draft task file]
+
+**1. [Issue Type]: [Brief Description]**
+**Specification** (section/line): "[exact quote]"
+**Draft Task List** (Task X.Y): "[relevant task or 'missing']"
+**Issue:** [explanation of discrepancy]
+
+Options:
+a) [Option 1 description]
+b) [Option 2 description]  
+c) [Option 3 description]
+d) [Other/specify]
+
+**2. [Next Issue]...**
+```
+
+**User Response Format:** "1a, 2c, 3b" (issue number + letter choice)
+
+### Issue Types
+
+- **Missing Requirement:** Specification element not represented in tasks
+- **Scope Addition:** Task goes beyond specification requirements  
+- **Ambiguous Requirement:** Multiple valid interpretations possible
+- **Implementation Mismatch:** Task doesn't accurately represent spec intent
+
 ## Key Principles
 
 1. **Absolute Fidelity:** The specification is the complete and sole authority
 2. **Zero Additions:** No requirements, tests, or features beyond specification
 3. **Preserve Constraints:** Maintain all limitations and boundaries from specification
-4. **Question Ambiguity:** Ask for clarification rather than making assumptions
-5. **Context Preservation:** Include necessary specification context in task file
-6. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity
+4. **Validated Conversion:** Automatic review ensures perfect specification representation
+5. **User-Controlled Decisions:** All ambiguities resolved through explicit user choices
+6. **Context Preservation:** Include necessary specification context in task file
+7. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity
+8. **Audit Trail:** Document all review decisions for transparency
 
 ## Success Indicators
 
