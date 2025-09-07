@@ -13,7 +13,7 @@ $ARGUMENTS. Think harder.
 Before starting task implementation:
 
 1. **Parse Task File Metadata:** Extract complexity information from task file YAML front-matter
-2. **Call Complexity Router:** Execute `python3 scripts/route_complexity.py [task-file]` to get:
+2. **Call Complexity Router:** Execute `python3 ~/.claude/scripts/route_complexity.py [task-file]` to get:
    - Computed complexity level
    - Selected developer and quality-reviewer agents  
    - Required validation checks for the complexity level
