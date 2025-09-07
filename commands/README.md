@@ -5,16 +5,17 @@
 This directory contains a comprehensive set of commands that support a complete development workflow from requirements to implementation and quality assurance:
 
 ### Core Build Commands
-1. **`plan:create-prd.md`** - Creates Product Requirements Documents
-2. **`plan:generate-tasks-from-spec.md`** - Converts source documents into execution plans  
-3. **`plan:generate-tasks.md`** - Generates task lists from specifications
-4. **`build:process-tasks.md`** - Processes and executes task lists
-5. **`plan:review.md`** - Pre-PR quality reviews and validation
-6. **`docs:update.md`** - Post-implementation documentation generation
+1. **`plan:create-prd.md`** - Creates Product Requirements Documents from scratch
+2. **`plan:spec-to-tasks.md`** - Converts specifications directly to executable tasks (full fidelity)
+3. **`plan:generate-tasks-from-spec.md`** - Converts source documents into execution plans  
+4. **`plan:generate-tasks.md`** - Generates task lists from specifications
+5. **`build:process-tasks.md`** - Processes and executes task lists
+6. **`plan:review.md`** - Pre-PR quality reviews and validation
+7. **`docs:update.md`** - Post-implementation documentation generation
 
 ### Simplification Commands
-7. **`simplify:create-plan.md`** - Analyzes code for simplification opportunities
-8. **`simplify:process-plan.md`** - Executes approved simplification plans
+8. **`simplify:create-plan.md`** - Analyzes code for simplification opportunities
+9. **`simplify:process-plan.md`** - Executes approved simplification plans
 
 ## Command Relationships
 
@@ -22,10 +23,19 @@ This directory contains a comprehensive set of commands that support a complete 
 ```
 plan:create-prd → build:process-tasks → plan:review → docs:update
 ```
-- Create a PRD for a feature
+- Create a PRD for a feature from scratch
 - Process the PRD tasks directly using `build:process-tasks`
 - Review code quality before PR using `plan:review`
 - Generate documentation after implementation using `docs:update`
+
+### Workflow 1a: Full-Fidelity Specification Development
+```
+[Collaborative Spec] → plan:spec-to-tasks → build:process-tasks → plan:review → docs:update
+```
+- Start with detailed specification created through collaborative planning (Claude/Gemini/ChatGPT)
+- Convert specification directly to executable tasks using `plan:spec-to-tasks` (preserves 100% fidelity)
+- Process tasks using `build:process-tasks` with fidelity-preserving agents
+- Review and document the completed implementation
 
 ### Workflow 2: Research-Driven Development
 ```
@@ -69,9 +79,16 @@ All commands use consistent:
 ### When to Use Each Command
 
 **`plan:create-prd`**: 
-- New feature development
+- New feature development from scratch
 - Clear, scoped requirements
 - Junior developer implementation
+- Need to ask clarifying questions about requirements
+
+**`plan:spec-to-tasks`**:
+- Detailed specifications from collaborative planning (Claude/Gemini/ChatGPT)
+- Direct conversion to executable tasks (no PRD intermediate step)
+- Absolute fidelity preservation - no scope changes or additions
+- Uses fidelity-preserving agents (developer-fidelity, quality-reviewer-fidelity)
 
 **`plan:generate-tasks-from-spec`**:
 - Complex technical implementations
@@ -107,6 +124,20 @@ All commands use consistent:
 - Technical debt management
 - Refactoring legacy systems
 - Performance optimization through simplification
+
+## Fidelity-Preserving Agents
+
+### developer-fidelity
+- Implements EXACTLY what's specified in source documents
+- Adds NO tests, security, or features beyond specification requirements
+- Questions ambiguity rather than making assumptions
+- Used by `plan:spec-to-tasks` workflow
+
+### quality-reviewer-fidelity  
+- Reviews implementation against specification requirements ONLY
+- Does NOT require additional security, testing, or compliance beyond specification
+- Validates fidelity preservation and prevents scope creep
+- Used by `plan:spec-to-tasks` workflow
 
 ### Best Practices
 
