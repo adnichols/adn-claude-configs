@@ -28,7 +28,7 @@ This command integrates with the central complexity router to:
     - Selected agents (developer and reviewer)
     - Risk and nonfunctional requirements
     - Validation requirements
-3.  **Call Router for Task Context:** Execute `python3 ~/.claude/scripts/route_complexity.py [prd-file]` to get:
+3.  **Call Router for Task Context:** Execute `python3 scripts/route_complexity.py [prd-file]` to get:
     - Inherited complexity level
     - Validation requirements for the complexity level
     - Selected agents for implementation

@@ -52,7 +52,7 @@ The user will provide:
 1. **Gather Initial Requirements:** Ask clarifying questions to understand feature scope and characteristics
 2. **Determine Complexity Using Router:** 
    - Analyze feature characteristics to score complexity factors
-   - Call `python3 ~/.claude/scripts/route_complexity.py` with initial assessment
+   - Call `python3 scripts/route_complexity.py` with initial assessment
    - Use router output to determine final complexity level and selected agents
    - Apply manual override if specified (with required justification)
 3. **Ask Complexity-Appropriate Questions:** Based on router-determined complexity level, ask additional questions for that level
@@ -602,7 +602,7 @@ routing:
    ---
    ```
 
-3. **Call Router:** Execute `python3 ~/.claude/scripts/route_complexity.py temp_assessment.md`
+3. **Call Router:** Execute `python3 scripts/route_complexity.py temp_assessment.md`
 
 4. **Use Router Output:** Parse the JSON response to get:
    - `computed_complexity.computed_level` (final complexity)

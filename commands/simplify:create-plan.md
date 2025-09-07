@@ -27,7 +27,7 @@ This command integrates with the complexity router to:
 1. **Receive Target Scope:** The user provides a directory path, file pattern, or specific files to analyze for simplification opportunities. If not provided, review entire current directory.
 2. **Detect Project Complexity:** Call router to analyze existing project files and determine complexity:
    - Scan for PRDs, specs, and task files with metadata
-   - Execute `python3 ~/.claude/scripts/route_complexity.py [discovered-files]` to get project complexity
+   - Execute `python3 scripts/route_complexity.py [discovered-files]` to get project complexity
    - If no metadata found, analyze codebase characteristics to estimate complexity level
 3. **Complexity-Aware Planning:** Scale simplification approach based on router-determined complexity:
    - **Minimum:** Allow aggressive refactoring, minimal validation requirements
