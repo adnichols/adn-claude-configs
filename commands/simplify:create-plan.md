@@ -1,60 +1,51 @@
 ---
-description: Create a complexity-aware code simplification plan with router-driven analysis and agent selection
+description: Create a code simplification plan with analysis and agent selection
 argument-hint: [Target directory/files to analyze]
 ---
 
-# Rule: Generating a Complexity-Aware Code Simplification Plan
+# Rule: Generating a Code Simplification Plan
 
 ## Goal
 
-To guide an AI assistant in creating a detailed Code Simplification Plan with router-driven complexity detection, appropriate agent selection, and cleanup aggressiveness scaled to project complexity. The system automatically detects project complexity from existing files, selects appropriate agents, and scales cleanup recommendations while ensuring absolute preservation of core functionality. Think harder.
+To guide an AI assistant in creating a detailed Code Simplification Plan with appropriate agent selection and careful cleanup recommendations while ensuring absolute preservation of core functionality. Think harder.
 
-## Router Integration for Complexity Detection
+## Simplification Approach
 
-This command integrates with the complexity router to:
+This command uses a comprehensive approach to code simplification that:
 
-1. **Detect Project Complexity:** Analyze existing project files to determine overall complexity level
-2. **Scale Cleanup Aggressiveness:** Adjust simplification approach based on complexity:
-   - **Minimum:** Very aggressive cleanup allowed (prototype-level)
-   - **Basic:** Moderate cleanup with standard precautions
-   - **Moderate:** Conservative cleanup with comprehensive testing
-   - **Complex:** Very conservative cleanup with enterprise-grade validation
-3. **Auto-select Quality Reviewer:** Use router-selected quality reviewer agent appropriate to complexity
-4. **Apply Complexity-Appropriate Safeguards:** Include validation requirements matching the project complexity level
+1. **Analyze Project Structure:** Examine existing project files to understand architecture and patterns
+2. **Conservative Cleanup Approach:** Use careful, evidence-based simplification with comprehensive testing
+3. **Quality Review Integration:** Use appropriate quality reviewer agents for validation
+4. **Apply Safety Safeguards:** Include comprehensive validation requirements to ensure functionality preservation
 
 ## Process
 
 1. **Receive Target Scope:** The user provides a directory path, file pattern, or specific files to analyze for simplification opportunities. If not provided, review entire current directory.
-2. **Detect Project Complexity:** Call router to analyze existing project files and determine complexity:
-   - Scan for PRDs, specs, and task files with metadata
-   - Execute `bash .claude/commands/_lib/complexity/get-complexity.sh [discovered-files]` to get project complexity
-   - If no metadata found, analyze codebase characteristics to estimate complexity level
-3. **Complexity-Aware Planning:** Scale simplification approach based on router-determined complexity:
-   - **Minimum:** Allow aggressive refactoring, minimal validation requirements
-   - **Basic:** Standard refactoring with unit test validation
-   - **Moderate:** Conservative refactoring with integration test requirements
-   - **Complex:** Very conservative approach with full regression testing
-4. **Check Backward Compatibility Requirements:** Block aggressive cleanup if router detects `backward_compat_required: true`
-5. **Assure working branch:** Assure we are operating on a feature branch and if we aren't, create an appropriate branch for these changes
+2. **Analyze Project Structure:** Examine existing project files and architecture:
+   - Review codebase characteristics and patterns
+   - Identify key components and dependencies
+   - Understand existing testing and quality measures
+3. **Conservative Planning Approach:** Use careful, evidence-based simplification strategy:
+   - Prioritize safety and functionality preservation
+   - Require comprehensive validation for all changes
+   - Focus on clear evidence-based cleanup opportunities
+4. **Check Backward Compatibility:** Review for any backward compatibility requirements
+5. **Ensure Working Branch:** Operate on a feature branch, create one if needed for these changes
 6. **Review Recent Changes:** Leverage git history to identify recent changes to the current repository
-7. **Test Coverage Assessment:** Verify existing test coverage scaled to complexity level
-8. **Generate Simplification Plan:** Use the @simplify-planner agent to analyze the codebase and create a detailed plan scaled to complexity
-9. **Quality Review:** Use router-selected quality reviewer agent for plan review appropriate to complexity level
-10. **Save Plan:** Save the generated plan as `simplify-plan-[area-name].md` inside the `/tasks` directory with router metadata
+7. **Test Coverage Assessment:** Verify existing test coverage is adequate for safe simplification
+8. **Generate Simplification Plan:** Use the @simplify-planner agent to analyze the codebase and create a detailed plan
+9. **Quality Review:** Use quality reviewer agent for comprehensive plan review and safety validation
+10. **Save Plan:** Save the generated plan as `simplify-plan-[area-name].md` inside the `/tasks` directory
 
 ## Pre-Simplification Requirements
 
-Before generating any simplification plan, apply complexity-appropriate requirements:
+Before generating any simplification plan, ensure comprehensive safety requirements:
 
-1. **Complexity-Appropriate Test Coverage Verification:**
-   - **Minimum:** Basic test coverage for core functionality only
-   - **Basic:** Standard unit test coverage for main paths
-   - **Moderate:** Comprehensive test coverage including integration tests
-   - **Complex:** Full test coverage including e2e and regression tests
-   - Analyze existing test coverage for the target area
+1. **Test Coverage Verification:**
+   - Analyze existing test coverage for the target area (aim for comprehensive coverage)
    - Identify gaps in test coverage for core functionality
    - Document current test structure and quality
-   - Favor fewer end to end tests over detailed unit tests
+   - Favor integration tests and end-to-end scenarios where possible
    - Minimize mocks and stubs where possible, use real scenarios
 
 2. **Recent Change Analysis:**
@@ -89,11 +80,11 @@ The generated plan should include the following sections as a checklist:
   - [ ] Map preservation requirements
 
 ### Phase 2: Plan Review and Validation
-- [ ] **P2.1: Complexity-Appropriate Quality Review**
-  - [ ] Submit plan to router-selected quality reviewer agent (e.g., @quality-reviewer-moderate)
-  - [ ] Apply complexity-appropriate review depth and safety checks
-  - [ ] Update plan to address safety concerns or gaps as appropriate
-  - [ ] Confirm preservation guarantees scaled to project complexity level
+- [ ] **P2.1: Comprehensive Quality Review**
+  - [ ] Submit plan to quality reviewer agent (e.g., @quality-reviewer)
+  - [ ] Apply thorough review depth and comprehensive safety checks
+  - [ ] Update plan to address all safety concerns or gaps identified
+  - [ ] Confirm strong preservation guarantees for all functionality
 
 - [ ] **P2.2: Risk Assessment**
   - [ ] Document all identified risks

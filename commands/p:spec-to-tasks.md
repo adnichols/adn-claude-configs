@@ -7,11 +7,12 @@ argument-hint: [Specification File Path]
 
 ## Goal
 
-To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while preserving 100% fidelity to the original specification. This command bypasses complexity systems and PRD conversion to maintain exact scope boundaries and requirements as specified.
+To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while preserving 100% fidelity to the original specification. This command bypasses complexity systems and PRD conversion to maintain exact scope boundaries and requirements as specified. Think harder.
 
 ## Core Principle: Specification Fidelity
 
 **The specification is the absolute authority.** This command:
+
 - Adds ZERO requirements beyond the specification
 - Makes NO scope expansions or "improvements"
 - Preserves ALL original decisions and constraints
@@ -25,11 +26,13 @@ To guide an AI assistant in converting a detailed specification document (create
 ## Input
 
 The user will provide:
+
 1. **Specification File Path:** Path to the detailed specification document
 
 ## Process
 
 1. **Read Specification Completely:** Parse the entire specification document to understand:
+
    - All functional requirements
    - All technical constraints and decisions
    - Stated testing requirements (if any)
@@ -40,21 +43,24 @@ The user will provide:
    - Explicit scope boundaries (what's included/excluded)
 
 2. **Extract Task Structure:** Identify natural implementation phases from the specification:
+
    - Use specification's own phase structure if provided
    - Create logical groupings based on specification content
    - Maintain specification's timeline and dependencies
    - Preserve specification's success criteria for each phase
 
 3. **Create and Save Draft Task List:** Generate and save initial tasks that implement:
+
    - ONLY what's explicitly stated in the specification
    - Testing ONLY as specified (not more, not less)
-   - Security ONLY as specified (not more, not less)  
+   - Security ONLY as specified (not more, not less)
    - Performance measures ONLY as specified
    - Documentation ONLY as specified
    - Save draft to `/tasks/tasks-fidelity-[spec-name]-DRAFT.md` with clear draft marking
    - Inform user of draft location for review
 
 4. **Automatic Fidelity Review:** Use fidelity-reviewer agent to:
+
    - Compare original specification file against saved draft task file
    - Identify missing requirements, scope additions, and ambiguities
    - **CRITICAL: Display the COMPLETE fidelity-reviewer output to the user**
@@ -64,6 +70,7 @@ The user will provide:
    - Wait for user response to the displayed questions
 
 5. **Apply User Decisions:** If issues were found and user provided decisions:
+
    - Parse decision responses (e.g., "1a, 2c, 3b")
    - Apply chosen resolutions to update task list
    - Re-run fidelity review to validate changes
@@ -73,7 +80,7 @@ The user will provide:
 
 7. **Generate Fidelity Metadata:** Create task file with strict fidelity preservation settings and review audit trail
 
-8. **Save Final Validated Task File:** 
+8. **Save Final Validated Task File:**
    - Save validated version to `/tasks/tasks-fidelity-[spec-name].md` with complete review metadata
    - Archive or remove draft file (user preference)
    - Confirm final task list location to user
@@ -93,7 +100,7 @@ agents:
   reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
-complexity_override: disabled
+fidelity_mode: strict
 specification_metadata:
   source_file: [specification file path]
   conversion_date: [timestamp]
@@ -132,7 +139,7 @@ agents:
   reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
-complexity_override: disabled
+fidelity_mode: strict
 specification_metadata:
   source_file: [specification file path]
   conversion_date: [timestamp]
@@ -160,9 +167,11 @@ fidelity_review:
 **Implementation Scope:** Exactly as specified, no additions or modifications
 
 ### Specification Summary
+
 [Brief summary of what's being implemented - extracted from spec]
 
-### Implementation Boundaries  
+### Implementation Boundaries
+
 **Included:** [What specification explicitly includes]
 **Excluded:** [What specification explicitly excludes]  
 **Testing Level:** [As specified in original document]
@@ -174,6 +183,7 @@ fidelity_review:
 [List of files that will need creation/modification based on specification analysis]
 
 ### Development Notes
+
 - Follow specification requirements exactly as written
 - Do not add testing beyond what's specified
 - Do not add security measures beyond what's specified
@@ -185,6 +195,7 @@ fidelity_review:
 [Extract phases directly from specification structure]
 
 ### Phase 1: [Phase Name from Specification]
+
 **Objective:** [Exact objective from specification]
 **Timeline:** [As specified in original document]
 
@@ -192,15 +203,18 @@ fidelity_review:
 [List requirements exactly as written in specification]
 
 **Tasks:**
+
 - [ ] 1.0 [High-level task matching specification]
   - [ ] 1.1 [Specific implementation task from spec]
   - [ ] 1.2 [Another specific task from spec]
   - [ ] 1.3 [Validation task as specified]
 
 ### Phase N: Final Phase
+
 **Objective:** Complete implementation as specified
 
 **Tasks:**
+
 - [ ] N.0 Finalize Implementation
   - [ ] N.1 Complete all specified deliverables
   - [ ] N.2 Validate against specification success criteria
@@ -209,26 +223,32 @@ fidelity_review:
 ## 📋 Specification Context
 
 ### [Technical Section 1 from Spec]
+
 [Preserve relevant technical details from specification]
 
-### [Technical Section 2 from Spec]  
+### [Technical Section 2 from Spec]
+
 [Preserve architectural decisions from specification]
 
 ## 🚨 Implementation Requirements
 
 ### Fidelity Requirements (MANDATORY)
+
 - Implement ONLY what's explicitly specified
 - Do not add features, tests, or security beyond specification
 - Question ambiguities rather than making assumptions
 - Preserve all specification constraints and limitations
 
 ### Success Criteria
+
 [Extract success criteria exactly from specification]
 
 ### Testing Requirements
+
 [Extract testing requirements exactly as specified - do not add more]
 
 ### Security Requirements
+
 [Extract security requirements exactly as specified - do not add more]
 
 ## ✅ Validation Checklist
@@ -243,7 +263,6 @@ fidelity_review:
 ## 📊 Completion Criteria
 
 [Extract completion criteria exactly from specification]
-
 ```
 
 ## CRITICAL: Review Output Display Requirements
@@ -253,6 +272,7 @@ fidelity_review:
 When the fidelity-reviewer agent completes its analysis, you MUST:
 
 1. **Display the COMPLETE fidelity-reviewer output** to the user, including:
+
    - "Files Reviewed" section with both file paths
    - "Validated Elements" section listing what's correct
    - **ALL issues** in their full numbered format with lettered options
@@ -261,6 +281,7 @@ When the fidelity-reviewer agent completes its analysis, you MUST:
 2. **NEVER summarize, condense, or hide** the review findings
 
 3. **CORRECT Display Example:**
+
    ```
    ## ⚠️ Fidelity Review: ISSUES FOUND
 
@@ -312,6 +333,7 @@ The enhanced workflow provides full file visibility:
 ### Decision Format
 
 When issues are found, they are presented with file references:
+
 ```
 **Files Reviewed:**
 - **Specification:** [path to original spec file]
@@ -324,7 +346,7 @@ When issues are found, they are presented with file references:
 
 Options:
 a) [Option 1 description]
-b) [Option 2 description]  
+b) [Option 2 description]
 c) [Option 3 description]
 d) [Other/specify]
 
@@ -336,7 +358,7 @@ d) [Other/specify]
 ### Issue Types
 
 - **Missing Requirement:** Specification element not represented in tasks
-- **Scope Addition:** Task goes beyond specification requirements  
+- **Scope Addition:** Task goes beyond specification requirements
 - **Ambiguous Requirement:** Multiple valid interpretations possible
 - **Implementation Mismatch:** Task doesn't accurately represent spec intent
 
@@ -354,6 +376,7 @@ d) [Other/specify]
 ## Success Indicators
 
 A well-converted task list should:
+
 - **100% Specification Match:** Every task maps directly to specification requirements
 - **Zero Scope Creep:** No additions, improvements, or expansions beyond spec
 - **Complete Context:** Implementer has all necessary information from specification
@@ -364,6 +387,7 @@ A well-converted task list should:
 ## Target Audience
 
 This command serves teams that have:
+
 - Detailed specifications from collaborative planning
 - Need exact scope preservation
 - Want direct specification-to-implementation workflow

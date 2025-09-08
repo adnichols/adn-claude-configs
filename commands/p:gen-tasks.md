@@ -1,18 +1,18 @@
-# Rule: Generating a Task List from a PRD with Router Integration
+# Rule: Generating a Task List from a PRD with Fidelity Preservation
 
 ## Goal
 
-To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format with YAML front-matter based on an existing Product Requirements Document (PRD). The complexity router will determine appropriate task detail level, agent selection, and validation requirements based on the PRD's complexity metadata. Think harder.
+To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format with YAML front-matter based on an existing Product Requirements Document (PRD). The system uses fidelity-preserving agents to ensure exact scope implementation. Think harder.
 
-## Router Integration
+## Fidelity Preservation
 
-This command integrates with the central complexity router to:
+This command follows the fidelity-preserving approach to:
 
-1. **Parse PRD Metadata:** Extract complexity information from PRD YAML front-matter
-2. **Inherit Complexity Level:** Use PRD's router-determined complexity for task planning
-3. **Select Appropriate Agents:** Use PRD's selected agents for task implementation
-4. **Scale Task Detail:** Adjust task granularity based on complexity level
-5. **Apply Validation Requirements:** Include complexity-appropriate testing and validation tasks
+1. **Parse PRD Content:** Extract all requirements exactly as specified in the PRD
+2. **Preserve Scope Boundaries:** Maintain exact scope without additions or expansions
+3. **Use Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity agents
+4. **Minimal Task Detail:** Create only tasks necessary to implement specified requirements
+5. **Apply Only Specified Validation:** Include testing and validation only as specified in PRD
 
 ## Output
 
@@ -23,33 +23,31 @@ This command integrates with the central complexity router to:
 ## Process
 
 1.  **Receive PRD Reference:** The user points the AI to a specific PRD file
-2.  **Parse PRD Metadata:** Extract complexity information from PRD YAML front-matter:
-    - Router-determined complexity level
-    - Selected agents (developer and reviewer)
-    - Risk and nonfunctional requirements
-    - Validation requirements
-3.  **Call Router for Task Context:** Execute `bash .claude/commands/_lib/complexity/get-complexity.sh [prd-file]` to get:
-    - Inherited complexity level
-    - Validation requirements for the complexity level
-    - Selected agents for implementation
-4.  **Analyze PRD Content:** Read and analyze functional requirements, user stories, and other sections
-5.  **Assess Current State:** Review existing codebase with complexity-appropriate depth:
-    - **Minimum:** Basic pattern identification
-    - **Basic:** Standard architecture analysis
-    - **Moderate:** Comprehensive integration analysis
-    - **Complex:** Enterprise architecture and compliance review
-6.  **Phase 1: Generate Complexity-Appropriate Parent Tasks:** Create high-level tasks scaled to complexity:
-    - **Minimum:** 3-5 essential tasks
-    - **Basic:** 5-7 standard tasks
-    - **Moderate:** 7-10 comprehensive tasks
-    - **Complex:** 10-15 enterprise-grade tasks
-7.  **Wait for Confirmation:** Pause and wait for user to respond with "Go"
-8.  **Phase 2: Generate Sub-Tasks with Validation:** Break down tasks including complexity-appropriate validation:
-    - Include testing tasks matching router validation requirements
-    - Add security tasks based on complexity level
-    - Include documentation tasks appropriate to complexity
-9.  **Generate Task List with Metadata:** Create file with YAML front-matter containing router metadata
-10. **Save Task List:** Save as `tasks-[prd-file-name].md` with complete metadata inheritance
+2.  **Parse PRD Content:** Read and analyze the PRD completely:
+    - All functional requirements exactly as specified
+    - User stories and acceptance criteria
+    - Explicit scope boundaries (included/excluded)
+    - Testing requirements (only if specified)
+    - Security requirements (only if specified)
+3.  **Analyze PRD Fidelity Metadata:** Extract fidelity information from PRD YAML front-matter:
+    - Scope boundaries and exclusions
+    - Fidelity preservation settings
+    - Explicit requirements vs assumptions
+4.  **Assess Current State:** Review existing codebase for implementation context:
+    - Identify relevant existing files and patterns
+    - Understand current architecture for integration
+    - Note files that will need modification
+5.  **Phase 1: Generate Essential Parent Tasks:** Create high-level tasks that implement only specified requirements:
+    - Focus on core functionality from PRD
+    - Include only testing/security as specified in PRD
+    - 3-7 essential tasks covering all explicit requirements
+6.  **Wait for Confirmation:** Pause and wait for user to respond with "Go"
+7.  **Phase 2: Generate Implementation Sub-Tasks:** Break down tasks with fidelity preservation:
+    - Include testing tasks only if specified in PRD
+    - Add security tasks only if specified in PRD  
+    - Include documentation only if specified in PRD
+8.  **Generate Task List with Fidelity Metadata:** Create file with YAML front-matter preserving PRD fidelity
+9.  **Save Task List:** Save as `tasks-[prd-file-name].md` with fidelity preservation metadata
 
 ## Output Format
 
@@ -58,18 +56,18 @@ The generated task list _must_ follow this structure with YAML front-matter:
 ```markdown
 ---
 version: 1
-complexity: [inherited from PRD]
+fidelity_mode: strict
 source_prd: [path to source PRD file]
 agents:
-  developer: [router-selected developer agent]
-  reviewer: [router-selected reviewer agent]
-risk: [inherited from PRD]
-nonfunctional: [inherited from PRD]
-routing:
-  inherited_from: [source PRD file]
-  computed_score: [router score]
-  validation_requirements: [router validation requirements]
-  audit_trail: [router audit information]
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
+scope_preservation: true
+additions_allowed: none
+specification_metadata:
+  source_file: [PRD file path]
+  conversion_date: [timestamp]
+  fidelity_level: absolute
+  scope_changes: none
 ---
 
 # [Feature Name] - Implementation Tasks

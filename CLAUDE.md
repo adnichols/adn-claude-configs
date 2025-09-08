@@ -32,7 +32,9 @@ The .claude directory in this repository is, in fact, a bind mounted example of 
 Key specialized agents available:
 
 - `developer`: Implements specs with tests - enforces zero linting violations
+- `developer-fidelity`: Implements ONLY what's specified - no scope additions
 - `quality-reviewer`: Reviews code for production failures (security, data loss, performance)
+- `quality-reviewer-fidelity`: Reviews against specification requirements ONLY - prevents scope creep
 - `simplify-planner`: Code cleanup specialist for complexity reduction
 - `debugger`: Systematic bug analysis through evidence gathering
 - `technical-writer`: Creates documentation after feature completion
@@ -41,10 +43,13 @@ Key specialized agents available:
 
 Important slash commands:
 
-- `/user:add-command`: Create new personal slash commands in ~/.claude/commands
-- `/build:process-tasks`: Process task lists with git branch management and test requirements
+- `/p:create-prd`: Create Product Requirements Documents with strict scope preservation
+- `/p:gen-tasks`: Convert PRDs to task lists using fidelity-preserving approach
+- `/p:spec-to-tasks`: Convert specifications directly to tasks with 100% fidelity
+- `/b:process-tasks`: Process task lists with fidelity agents and git branch management
 - `/simplify:create-plan`: Generate code simplification plans using simplify-planner agent
 - `/simplify:process-plan`: Execute existing simplification plans
+- `/user:add-command`: Create new personal slash commands in ~/.claude/commands
 
 ## Configuration Notes
 
@@ -67,12 +72,24 @@ Fetched documentation available for enhanced Claude Code assistance:
 
 ### Task Processing Requirements
 
-When using `/build:process-tasks`:
+When using `/b:process-tasks`:
 
 - Must be on a git branch other than main
+- Uses fidelity-preserving agents (developer-fidelity, quality-reviewer-fidelity)
 - One sub-task at a time (requires user confirmation unless NOSUBCONF specified)
-- Test suite must pass before committing
+- Test suite must pass before committing (only if tests were specified in source)
 - Follow conventional commit format with descriptive messages
+- Implement ONLY what's explicitly specified in source documents
+
+### Fidelity-Preserving Workflow
+
+All commands now follow the fidelity-preserving approach:
+
+- **Exact Implementation**: Build only features explicitly specified in source documents
+- **No Scope Expansion**: Zero additions beyond explicit requirements
+- **Question Ambiguities**: Ask for clarification rather than making assumptions
+- **Preserve Constraints**: Maintain all limitations from source specifications
+- **Fidelity Agents**: Always use developer-fidelity and quality-reviewer-fidelity for implementation
 
 ### Code Simplification Workflow
 

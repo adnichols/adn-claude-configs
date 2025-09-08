@@ -1,31 +1,25 @@
 ---
-description: Process tasks in a task list with router-driven complexity detection and agent selection
+description: Process tasks in a task list with fidelity-preserving agent selection
 argument-hint: [Files]
 ---
 
 # Instructions
 
-Process the task list using the complexity inheritance router to automatically detect complexity level, select appropriate developer and quality agents, and apply complexity-appropriate validation requirements. This command handles both simple task lists and complex execution plans with rich context from source documents (PRDs, research plans, etc.).
+Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses developer-fidelity and quality-reviewer-fidelity agents to implement only what's explicitly specified, without additions or scope expansions.
 $ARGUMENTS. Think harder.
 
-## Router Integration Process
+## Fidelity Preservation Process
 
 Before starting task implementation:
 
-1. **Parse Task File Metadata:** Extract complexity information from task file YAML front-matter
-2. **Call Complexity Router:** Execute `bash .claude/commands/_lib/complexity/get-complexity.sh [task-file]` to get:
-   - Computed complexity level
-   - Selected developer and quality-reviewer agents  
-   - Required validation checks for the complexity level
-   - Performance and security requirements
-3. **Auto-select Agents:** Use router-selected agents for implementation:
-   - Developer agent: `@[router-selected-developer]`
-   - Quality reviewer: `@[router-selected-quality-reviewer]`
-4. **Apply Validation Requirements:** Include complexity-appropriate checks:
-   - **Minimum:** lint + build + secrets scan
-   - **Basic:** + unit-core + dependency audit
-   - **Moderate:** + integration tests + performance smoke + basic SAST
-   - **Complex:** + e2e + performance benchmark + SAST+DAST + SBOM
+1. **Parse Task File Metadata:** Extract fidelity information from task file YAML front-matter
+2. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
+   - Developer agent: `@developer-fidelity`
+   - Quality reviewer: `@quality-reviewer-fidelity`
+3. **Apply Only Specified Validation:** Include only the testing and validation explicitly specified in the source document:
+   - Review source document for testing requirements
+   - Implement only specified security measures
+   - Do not add tests or validation beyond what's explicitly required
 
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
@@ -46,6 +40,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
    🔄 UPDATING MARKDOWN FILE NOW..."
 
 2. **Immediately perform the markdown update:**
+
 - Use Edit tool to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
 - Show the actual edit operation in the response
 
@@ -57,6 +52,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
    "Ready to proceed to next subtask. May I continue? (y/n)"
 
 **FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If Claude completes a subtask without immediately updating the markdown file, it MUST:
+
 - Stop all work immediately
 - State: "❌ CRITICAL ERROR: I failed to update the task list. Stopping work."
 - Wait for user intervention before proceeding
@@ -68,18 +64,20 @@ Guidelines for managing task lists in markdown files to track progress on comple
   - Parent agent (you) are responsible for git branch creation, not subagents
 - **One sub-task at a time:** Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
 - **Completion protocol:**
+
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
+
   - **MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful
+
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
-  - **First**: Run complexity-appropriate validation checks (from router requirements):
-    - Always: lint, build, secrets scan
-    - Basic+: unit tests, dependency audit  
-    - Moderate+: integration tests, performance smoke tests, basic SAST
-    - Complex: e2e tests, performance benchmarks, advanced security scans
+
+  - **First**: Run standard validation checks:
+    - Always: lint, build, secrets scan, unit tests
   - **Only if all validations pass**: Stage changes (`git add .`)
-  - **Quality Review**: Use router-selected quality reviewer agent for final approval
+  - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
   - **Clean up**: Remove any temporary files and temporary code before committing
   - **Commit**: Use a descriptive commit message that:
+
     - Uses conventional commit format (`feat:`, `fix:`, `refactor:`, etc.)
     - Summarizes what was accomplished in the parent task
     - Lists key changes and additions
@@ -89,6 +87,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
       ```
       git commit -m "feat: add payment validation logic" -m "- Validates card type and expiry" -m "- Adds unit tests for edge cases" -m "Related to Phase 2.1"
       ```
+
   3. Once all the subtasks are marked completed and changes have been committed, mark the **parent task** as completed.
 
 - Stop after each sub‑task and wait for the user's go‑ahead UNLESS NOSUBCONF is specified by the user
@@ -98,10 +97,12 @@ Guidelines for managing task lists in markdown files to track progress on comple
 ## Task List Maintenance
 
 1. **Update the task list as you work:**
+
    - Mark tasks and subtasks as completed (`[x]`) per the protocol above.
    - Add new tasks as they emerge.
 
 2. **Maintain the "Relevant Files" section:**
+
    - List every file created or modified during implementation.
    - Update descriptions as implementation progresses.
    - Add new files discovered during implementation.

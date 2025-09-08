@@ -19,11 +19,11 @@ A comprehensive Claude Code configuration system that provides specialized agent
    pip3 install -r requirements.txt
    ```
 
-3. **Generate complexity-aware agents**:
+3. **Verify agent configurations** (if needed):
 
    ```bash
-   python3 tools/gen_agents.py --validate
-   ```
+   # Agents are already configured and ready to use
+   ls agents/
 
 4. **Run the installer** (if available):
 
@@ -33,38 +33,38 @@ A comprehensive Claude Code configuration system that provides specialized agent
 
    The installer will automatically set up symlinks from `~/.claude/` to this repository, backing up any existing configuration.
 
-## 🧠 Complexity Inheritance System
+## 🧠 Fidelity-Preserving System
 
-This repository features an advanced **Complexity Inheritance System** that automatically:
+This repository features a **Fidelity-Preserving System** that automatically:
 
-- **Detects complexity levels** based on objective scoring criteria
-- **Selects appropriate agents** for each complexity level
-- **Applies validation requirements** matching the complexity level
-- **Inherits metadata** through PRD → spec → tasks → implementation pipeline
+- **Preserves exact scope** from requirements through implementation
+- **Uses fidelity-preserving agents** for implementation and quality review
+- **Prevents scope creep** by maintaining strict adherence to specifications
+- **Ensures quality** through comprehensive validation while staying within scope
 
-### Complexity Levels
+### Agent Types
 
-| Level | Score | Agent Type | Validation Requirements |
-|-------|-------|------------|------------------------|
-| **Minimum** | 0-2 | `developer-minimum` | Lint + Build + Secrets |
-| **Basic** | 3-4 | `developer-basic` | + Unit Tests + Audit |
-| **Moderate** | 5-7 | `developer-moderate` | + Integration + SAST |
-| **Complex** | 8+ | `developer-complex` | + E2E + Advanced Security |
+| Purpose | Agent Type | Validation Requirements |
+|---------|------------|------------------------|
+| **Implementation** | `developer-fidelity` | Lint + Build + Secrets + Unit Tests |
+| **Quality Review** | `quality-reviewer-fidelity` | Production readiness validation |
+| **Fidelity Check** | `fidelity-reviewer` | Specification compliance validation |
 
-The system uses a lightweight bash-based complexity detector with static mappings for maximum portability.
+The system emphasizes scope preservation and exact requirement implementation over complexity-based branching.
 
 ## 📁 Repository Structure
 
 ```
 adn-claude-configs/
-├── agents/                   # Generated complexity-aware AI agents
-│   ├── templates/           # Jinja2 templates for agent generation
-│   ├── developer-*.md       # Generated developer agents by complexity
-│   └── quality-reviewer-*.md # Generated reviewer agents by complexity
-├── commands/                 # Router-integrated slash commands
-│   ├── p:create-prd.md      # PRD creation with complexity detection
-│   ├── p:gen-tasks.md       # Task generation with metadata inheritance
-│   └── b:process-tasks.md   # Implementation with auto agent selection
+├── agents/                   # Fidelity-preserving AI agents
+│   ├── developer-fidelity.md      # Exact scope implementation
+│   ├── quality-reviewer-fidelity.md # Fidelity-preserving quality review
+│   ├── fidelity-reviewer.md       # Specification compliance validation
+│   └── [other specialized agents] # Additional agents for specific tasks
+├── commands/                 # Fidelity-preserving slash commands
+│   ├── p:create-prd.md      # PRD creation with scope preservation
+│   ├── p:gen-tasks.md       # Task generation with fidelity preservation
+│   └── b:process-tasks.md   # Implementation with fidelity agents
 ├── tools/                    # Repository maintenance tools
 │   └── gen_agents.py        # Agent generation from templates
 ├── test/                     # Test fixtures and validation
@@ -78,53 +78,30 @@ adn-claude-configs/
 
 ## 🤖 Available Agents
 
-The system automatically generates complexity-aware agents from templates. All agents are generated via `python3 tools/gen_agents.py` to prevent maintenance drift.
+The system uses carefully configured agents that focus on exact scope implementation and quality validation.
 
-### Developer Agents (Auto-Selected by Complexity)
+### Core Implementation Agents
 
-**`@developer-minimum`** - Prototype implementation
-- Basic functionality focus
-- Simple unit tests
-- Prototype-level quality acceptable
-
-**`@developer-basic`** - Production-ready implementation  
-- Comprehensive unit and integration tests
+**`@developer-fidelity`** - Fidelity-preserving implementation
+- Implements only what's explicitly specified in source documents
+- Comprehensive unit and integration tests as required
 - Follows project standards from CLAUDE.md
 - Zero linting violations enforced
+- Questions ambiguities rather than making assumptions
 
-**`@developer-moderate`** - Enterprise-grade implementation
-- Advanced testing including performance tests
-- Security validation and monitoring
-- Full error handling and edge cases
+**`@quality-reviewer-fidelity`** - Fidelity-preserving quality review
+- Reviews against source specifications for exact compliance
+- Security vulnerabilities and production readiness
+- Performance analysis within specified scope
+- Test coverage validation for specified requirements
+- Prevents scope creep during review process
 
-**`@developer-complex`** - Mission-critical implementation
-- Comprehensive test coverage (>90%)
-- Advanced security and compliance validation
-- Performance benchmarking and scalability
-
-### Quality Reviewer Agents (Auto-Selected by Complexity)
-
-**`@quality-reviewer-minimum`** - Basic validation
-- Code correctness and simple security checks
-- Basic error handling review
-
-**`@quality-reviewer-basic`** - Production validation
-- Security vulnerabilities (OWASP Top 10)
-- Performance anti-patterns
-- Test coverage adequacy
-
-**`@quality-reviewer-moderate`** - Comprehensive validation
-- Advanced security analysis
-- Performance bottlenecks and scalability
-- Integration testing adequacy
-
-**`@quality-reviewer-complex`** - Enterprise validation
-- Full security audit and compliance
-- Advanced performance analysis
-- Disaster recovery and business continuity
-- Identifies potential production failures
-- Validates test coverage and error handling
-- Provides structured quality reports
+**`@fidelity-reviewer`** - Specification compliance validation  
+- Compares implementations against original specifications
+- Identifies missing requirements and scope additions
+- Provides structured decision options for ambiguities
+- Ensures 100% fidelity to source documents
+- Used in spec-to-tasks conversion process
 
 **`@technical-writer`** - Post-implementation documentation
 
@@ -173,16 +150,22 @@ The system automatically generates complexity-aware agents from templates. All a
 
 ### 2. Feature Development Workflow
 
-**PRD-Based Development** (Simple features):
+**PRD-Based Development** (Standard workflow):
 
 ```
-/plan:create-prd → /plan:generate-tasks.md -> /build:process-tasks → /plan:review
+/p:create-prd → /p:gen-tasks → /b:process-tasks → /p:review
 ```
 
-**Research-Driven Development** (Complex features):
+**Specification-Based Development** (Direct from specs):
 
 ```
-[Research Doc] → /plan:generate-tasks-from-spec → /build:process-tasks → /plan:review
+[Detailed Spec] → /p:spec-to-tasks → /b:process-tasks → /p:review
+```
+
+**Research-Based Development** (From research documents):
+
+```
+[Research Doc] → /p:research-spec → /p:spec-to-tasks → /b:process-tasks → /p:review
 ```
 
 ### 3. Code Quality Workflows
@@ -196,7 +179,7 @@ The system automatically generates complexity-aware agents from templates. All a
 **Quality Assurance**:
 
 ```
-/plan:review → [Fix Issues] → [Re-review] → [Approve for PR]
+/p:review → [Fix Issues] → [Re-review] → [Approve for PR]
 ```
 
 ## 🔄 Usage Patterns
@@ -253,37 +236,37 @@ The `/docs:fetch` command transforms scattered online documentation into locally
 1. **Start with requirements gathering**:
 
    ```bash
-   /plan:create-prd
+   /p:create-prd
    # Follow interactive prompts to create detailed PRD
    ```
 
-2. Build out the task lists
+2. **Build out the task lists**:
   
-  ```bash
-   git checkout -b feature/new-feature # optional, claude should do this
-  /plan:generate-tasks @path-to-prd.md
-  # Generate parent tasks, review, and then say "Go" to build sub-tasks.
-  # Should detect if you are on a branch and create one if not
-  ```
-
-2. **Process the implementation**:
-
    ```bash
-   /build:process-tasks @path-to-task-list.md
-   # Processes PRD tasks one at a time
-
-   # Or, if you want no configuration
-   /build:process-tasks @path-to-task-list.md NOSUBCONF
+   git checkout -b feature/new-feature # optional, claude should do this
+   /p:gen-tasks @path-to-prd.md
+   # Generate parent tasks, review, and then say "Go" to build sub-tasks.
+   # Should detect if you are on a branch and create one if not
    ```
 
-3. **Quality review**:
+3. **Process the implementation**:
 
    ```bash
-   /plan:review
+   /b:process-tasks @path-to-task-list.md
+   # Processes PRD tasks one at a time with fidelity preservation
+
+   # Or, if you want no confirmation prompts
+   /b:process-tasks @path-to-task-list.md NOSUBCONF
+   ```
+
+4. **Quality review**:
+
+   ```bash
+   /p:review
    # Comprehensive pre-PR quality check
    ```
 
-4. **Generate documentation**:
+5. **Generate documentation**:
 
    ```bash
    /docs:update
@@ -292,18 +275,25 @@ The `/docs:fetch` command transforms scattered online documentation into locally
 
 ### Working with Research
 
-1. **Convert research to execution plan**:
+1. **Convert research to specification**:
 
    ```bash
-   /plan:generate-tasks-from-spec @research-markdown-file.md
-   # Converts strategy/research documents to detailed task lists
+   /p:research-spec @research-idea-description.md
+   # Converts research ideas into comprehensive specification documents
    ```
 
-2. **Execute with full context**:
+2. **Convert specification to tasks**:
 
    ```bash
-   /build:process-tasks @research-task-list.md
-   # Preserves all research context during implementation
+   /p:spec-to-tasks @research-spec-file.md
+   # Converts specifications to detailed task lists with fidelity preservation
+   ```
+
+3. **Execute with full context**:
+
+   ```bash
+   /b:process-tasks @fidelity-task-list.md
+   # Preserves all specification context during implementation
    ```
 
 ### Code Simplification

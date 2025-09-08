@@ -1,763 +1,220 @@
 ---
-description: Generate a Product Requirements Document (PRD) based on user input with router-driven complexity determination
-argument-hint: [Feature Description] [manual-complexity: minimum|basic|moderate|complex] (optional - router auto-detects)
+description: Generate a Product Requirements Document (PRD) with strict scope preservation and fidelity focus
+argument-hint: [Feature Description]
 ---
 
-# Rule: Generating a Product Requirements Document (PRD)
+# Rule: Generating a Product Requirements Document (PRD) with Fidelity Preservation
 
 ## Goal
 
-To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using the complexity inheritance router for automatic complexity determination. The document creation is the sole purpose of this command - implementation is handled by separate commands. Think harder.
+To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands. Think harder.
 
-## Router Integration
+## Core Principle: Specification Fidelity
 
-This command integrates with the central complexity router (`.claude/commands/_lib/complexity/get-complexity.sh`) to:
+**The user's requirements are the absolute authority.** This command:
 
-1. **Auto-detect complexity** based on feature characteristics
-2. **Select appropriate agents** for downstream tasks
-3. **Apply validation requirements** matching the complexity level
-4. **Create audit trail** for complexity determination decisions
-
-## Complexity Level Definitions (Router-Driven)
-
-The PRD scope is determined automatically by the router's scoring algorithm:
-
-### Minimum Level (Score: 0-2)
-
-**Auto-detected when:** Simple feature, file-level impact, no sensitive data, basic requirements
-**Include:** Basic problem statement, core functionality, simple success criteria
-**Exclude:** User stories, testing details, technical considerations, edge cases
-
-### Basic Level (Score: 3-4)
-
-**Auto-detected when:** Standard feature, package-level impact, basic user requirements
-**Include:** Problem statement, user stories, functional requirements, non-goals, basic success metrics
-**Exclude:** Performance requirements, detailed technical specs, risk analysis, dependencies
-
-### Moderate Level (Score: 5-7)
-
-**Auto-detected when:** Production feature, service-level impact, performance/security concerns
-**Include:** All basic elements plus technical/design considerations, edge cases, dependencies, detailed testing approach
-**Exclude:** Enterprise compliance, migration planning, scalability analysis
-
-### Complex Level (Score: 8+)
-
-**Auto-detected when:** Enterprise feature, org-wide impact, regulated data, compliance requirements
-**Include:** All sections including risk analysis, compliance requirements, scalability planning, migration strategies
+- Adds ZERO requirements beyond user specifications
+- Makes NO scope expansions or "improvements"
+- Preserves ALL original decisions and constraints
+- Creates PRDs that document EXACTLY what's requested
+- Uses fidelity-preserving agents that cannot modify scope
 
 ## Input
 
 The user will provide:
 
 1. **Feature Description:** Brief description or request for new functionality
-2. **Manual Complexity Override (Optional):** One of minimum|basic|moderate|complex (overrides router auto-detection)
 
 ## Process
 
-1. **Gather Initial Requirements:** Ask clarifying questions to understand feature scope and characteristics
-2. **Determine Complexity Using Router:**
-   - Analyze feature characteristics to score complexity factors
-   - Call `bash .claude/commands/_lib/complexity/get-complexity.sh` with initial assessment
-   - Use router output to determine final complexity level and selected agents
-   - Apply manual override if specified (with required justification)
-3. **Ask Complexity-Appropriate Questions:** Based on router-determined complexity level, ask additional questions for that level
-4. **Generate PRD with Front-Matter:** Create PRD with YAML front-matter containing routing metadata
-5. **Save PRD:** Save as `prd-[feature-name].md` in `/tasks` directory with full complexity metadata
-6. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
+1. **Gather Precise Requirements:** Ask focused questions to understand exact scope and boundaries
+2. **Define Clear Boundaries:** Explicitly capture what's included and what's excluded
+3. **Generate PRD with Fidelity Metadata:** Create PRD with YAML front-matter containing fidelity settings
+4. **Save PRD:** Save as `prd-[feature-name].md` in `/tasks` directory with fidelity preservation settings
+5. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
 
-## Clarifying Questions by Complexity Level
+## Clarifying Questions for Scope Definition
 
-Questions should scale with complexity level:
+Ask targeted questions to define precise boundaries:
 
-### Core Questions (All Levels)
+### Core Scope Questions
 
-**If problem is unclear:**
-"What problem does this feature solve?
+**For problem clarity:**
+"What specific problem does this feature solve?
 A) [Suggested interpretation 1]
 B) [Suggested interpretation 2]
 C) [Suggested interpretation 3]
 D) Other (please describe)"
 
-**If target user is ambiguous:**
+**For user identification:**
 "Who is the primary user of this feature?
 A) End users (customers/clients)
 B) Internal team members
-C) Developers/technical users
+C) Developers/technical users  
 D) System administrators"
 
-### Basic Level Questions (Basic/Moderate/Complex)
+### Boundary Definition Questions
 
-**For user stories:**
-"Which user stories best describe this feature? (Select all that apply)
-A) As a [user type], I want to [action] so that [benefit]
-B) As a [user type], I want to [action] so that [benefit]
-C) As a [user type], I want to [action] so that [benefit]
-D) Other (please describe)"
+**For explicit inclusions:**
+"What specific functionality should this feature include?
+A) [Core functionality option 1]
+B) [Core functionality option 2]
+C) [Core functionality option 3]
+D) Other (please specify)"
 
-**For scope boundaries:**
+**For explicit exclusions:**
 "Are there specific things this feature should NOT do?
-A) No restrictions - implement fully
-B) Limit to basic functionality
-C) Exclude certain capabilities (please specify)
-D) Keep minimal for now"
+A) No restrictions - implement all related functionality
+B) Keep minimal - exclude complex features
+C) Exclude certain capabilities (please specify which)
+D) Exclude integration with other systems"
 
-### Moderate Level Questions (Moderate/Complex Only)
+**For testing scope:**
+"What level of testing is expected?
+A) Basic functionality validation only
+B) Comprehensive testing including edge cases
+C) No specific testing requirements mentioned
+D) Testing scope to be determined later"
 
-**For technical approach:**
-"What technical constraints should we consider?
-A) Must integrate with existing systems
-B) Performance is critical
-C) Security is a primary concern
-D) All of the above"
+**For security scope:**
+"Are there specific security requirements?
+A) Standard security practices
+B) Enhanced security measures needed
+C) No specific security requirements mentioned  
+D) Security scope to be determined later"
 
-**For edge cases:**
-"Which edge cases are most important to handle?
-A) Error conditions and failures
-B) High load/scale scenarios
-C) Data validation and boundaries
-D) All edge cases must be covered"
+## PRD Template Structure
 
-### Complex Level Questions (Complex Only)
-
-**For compliance:**
-"Are there compliance or regulatory requirements?
-A) Industry standards (specify which)
-B) Security compliance (SOC2, etc.)
-C) Data privacy (GDPR, CCPA)
-D) None/Not applicable"
-
-**For migration:**
-"Is backward compatibility required?
-A) Full compatibility required
-B) Migration path needed
-C) Breaking changes acceptable
-D) Not applicable"
-
-## PRD Structure by Complexity Level
-
-### Minimum Level Template
+### Unified Fidelity-Preserving Template
 
 ```markdown
 ---
 version: 1
-complexity: minimum # or auto for router determination
+fidelity_mode: strict
 agents:
-  developer: auto
-  reviewer: auto
-risk:
-  blast_radius: file
-  external_api_change: false
-  migration: false
-nonfunctional:
-  perf_budget_ms_p95: null
-  data_sensitivity: none
-  backward_compat_required: false
-routing:
-  allow_override: true
-  override_reason: ""
-  computed_score: [router-filled]
-  selected_agents: [router-filled]
-  audit_trail: [router-filled]
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
+scope_preservation: true
+additions_allowed: none
+document_metadata:
+  source_type: user_requirements
+  creation_date: [timestamp]
+  fidelity_level: absolute
+  scope_changes: none
 ---
 
 # [Feature Name] - Product Requirements Document
-
-## Overview
-
-[Brief description of the feature and the problem it solves]
-
-## Goals
-
-- [Primary objective]
-- [Secondary objectives if any]
-
-## Core Requirements
-
-1. [Essential requirement 1]
-2. [Essential requirement 2]
-3. [Essential requirement 3]
-
-## Success Criteria
-
-- [How we know it works]
-- [Key success indicator]
-
-## Document Complete
-
-[This PRD is ready for review and task generation]
-```
-
-### Basic Level Template (DEFAULT)
-
-```markdown
----
-version: 1
-complexity: auto # router will determine
-agents:
-  developer: auto
-  reviewer: auto
-risk:
-  blast_radius: package
-  external_api_change: false
-  migration: false
-nonfunctional:
-  perf_budget_ms_p95: null
-  data_sensitivity: none
-  backward_compat_required: false
-routing:
-  allow_override: true
-  override_reason: ""
-  computed_score: [router-filled]
-  selected_agents: [router-filled]
-  audit_trail: [router-filled]
----
-
-# [Feature Name] - Product Requirements Document
-
-## Introduction/Overview
-
-[Briefly describe the feature and the problem it solves. State the goal.]
-
-## Goals
-
-- [Specific, measurable objective 1]
-- [Specific, measurable objective 2]
-- [Specific, measurable objective 3]
-
-## User Stories
-
-- As a [type of user], I want to [perform an action] so that [benefit]
-- As a [type of user], I want to [perform an action] so that [benefit]
-- As a [type of user], I want to [perform an action] so that [benefit]
-
-## Functional Requirements
-
-1. The system must [specific functionality]
-2. The system must [specific functionality]
-3. The system must [specific functionality]
-4. The system must [specific functionality]
-
-## Non-Goals (Out of Scope)
-
-- [What this feature will NOT include]
-- [What this feature will NOT include]
-
-## Success Metrics
-
-- [How success will be measured]
-- [Key performance indicator]
-
-## Open Questions
-
-- [Remaining questions needing clarification]
-- [Areas needing further discussion]
-
-## Document Complete
-
-[This PRD is ready for review and task generation]
-```
-
-### Moderate Level Template
-
-```markdown
-# [Feature Name] - Product Requirements Document (Complexity: Moderate)
-
-## Introduction/Overview
-
-[Comprehensive description of the feature, problem it solves, and strategic value]
-
-## Goals
-
-- [Primary strategic objective]
-- [Measurable business outcome]
-- [Technical objective]
-- [User experience objective]
-
-## User Stories
-
-### Primary User Stories
-
-- As a [type of user], I want to [perform an action] so that [benefit]
-- As a [type of user], I want to [perform an action] so that [benefit]
-
-### Secondary User Stories
-
-- As a [type of user], I want to [perform an action] so that [benefit]
-- As a [type of user], I want to [perform an action] so that [benefit]
-
-## Functional Requirements
-
-### Core Requirements
-
-1. The system must [specific functionality with acceptance criteria]
-2. The system must [specific functionality with acceptance criteria]
-
-### Extended Requirements
-
-3. The system should [additional functionality]
-4. The system should [additional functionality]
-
-## Non-Goals (Out of Scope)
-
-- [Explicitly excluded functionality]
-- [Features for future phases]
-
-## Design Considerations
-
-### User Interface
-
-- [UI/UX requirements or mockup references]
-- [Interaction patterns]
-
-### User Experience
-
-- [Key user flows]
-- [Accessibility requirements]
-
-## Technical Considerations
-
-### Architecture
-
-- [High-level technical approach]
-- [Integration points]
-
-### Security
-
-- [Security requirements]
-- [Data protection needs]
-
-### Performance
-
-- [Performance targets]
-- [Scalability considerations]
-
-## Edge Cases & Error Handling
-
-- [Important edge case 1]
-- [Important edge case 2]
-- [Error handling approach]
-
-## Dependencies
-
-### Technical Dependencies
-
-- [Required systems or services]
-- [External APIs or libraries]
-
-### Team Dependencies
-
-- [Other teams involved]
-- [External stakeholders]
-
-## Success Metrics
-
-### Quantitative Metrics
-
-- [Measurable KPI with target]
-- [Performance metric with threshold]
-
-### Qualitative Metrics
-
-- [User satisfaction indicator]
-- [Quality measure]
-
-## Testing Approach
-
-- [Testing strategy]
-- [Test coverage requirements]
-
-## Open Questions
-
-- [Technical questions needing resolution]
-- [Business questions needing clarification]
-
-## Document Complete
-
-[This PRD is ready for review and task generation]
-```
-
-### Complex Level Template
-
-```markdown
-# [Feature Name] - Product Requirements Document (Complexity: Complex)
-
-## Executive Summary
-
-[Strategic overview including business impact, ROI, and alignment with company objectives]
 
 ## Problem Statement
 
-### Current State
+[Clear description of the specific problem being solved - exactly as understood from user input]
 
-[Detailed analysis of current situation]
+## Explicit Requirements
 
-### Desired State
+### Core Functionality
 
-[Vision for future state]
+1. [Requirement 1 - exactly as specified by user]
+2. [Requirement 2 - exactly as specified by user]
+3. [Requirement 3 - exactly as specified by user]
 
-### Gap Analysis
+### User Stories (if provided)
 
-[What needs to change]
+- As a [user type], I want to [action] so that [benefit]
+- As a [user type], I want to [action] so that [benefit]
 
-## Goals & Objectives
+## Scope Boundaries
 
-### Strategic Goals
+### Explicitly Included
 
-- [Long-term strategic objective]
-- [Business transformation goal]
+- [Functionality that is clearly part of this PRD]
+- [Features mentioned by user or clarified as included]
 
-### Tactical Objectives
+### Explicitly Excluded
 
-- [Measurable objective with timeline]
-- [Specific deliverable with success criteria]
+- [Functionality that is clearly NOT part of this PRD]
+- [Features explicitly ruled out during clarification]
+- [Future considerations not in current scope]
 
-## Stakeholders
+### Assumptions & Clarifications
 
-### Primary Stakeholders
+- [Any assumptions made during requirement gathering]
+- [Areas where user provided specific clarification]
 
-- [Stakeholder group]: [Their needs and concerns]
-- [Stakeholder group]: [Their needs and concerns]
+## Success Criteria
 
-### Secondary Stakeholders
+- [Measurable criteria tied directly to explicit requirements]
+- [Success indicators that match specified functionality only]
 
-- [Stakeholder group]: [Impact on them]
+## Testing Requirements
 
-## User Stories & Personas
+[Include only if user explicitly mentioned testing needs, otherwise use:]
+Testing scope: To be determined during implementation phase
 
-### User Personas
+## Security Requirements
 
-#### Persona 1: [Name]
+[Include only if user explicitly mentioned security needs, otherwise use:]
+Security scope: To be determined during implementation phase
 
-- Background: [Context]
-- Needs: [What they need]
-- Pain Points: [Current problems]
+## Technical Considerations
 
-### Epic User Stories
+[Include only technical aspects explicitly mentioned by user, otherwise use:]
+Technical approach: To be determined during implementation phase
 
-- Epic: [High-level story]
-  - Story 1: As a [user], I want [action] so that [benefit]
-  - Story 2: As a [user], I want [action] so that [benefit]
+## Implementation Notes
 
-## Functional Requirements
+### Fidelity Requirements (MANDATORY)
 
-### Critical Requirements (P0)
+- Implement ONLY what's explicitly specified in this PRD
+- Do not add features, tests, or security beyond requirements
+- Question ambiguities rather than making assumptions
+- Preserve all requirement constraints and limitations
 
-1. The system MUST [requirement with detailed acceptance criteria]
-2. The system MUST [requirement with detailed acceptance criteria]
+### Next Steps
 
-### High Priority Requirements (P1)
+- Use developer-fidelity agent for implementation planning
+- Use quality-reviewer-fidelity agent for validation
+- Follow strict scope preservation throughout implementation
 
-3. The system SHOULD [requirement with acceptance criteria]
-4. The system SHOULD [requirement with acceptance criteria]
+## Open Questions
 
-### Medium Priority Requirements (P2)
+- [Any remaining questions needing clarification before implementation]
+- [Areas where user input was ambiguous and needs resolution]
 
-5. The system COULD [nice-to-have requirement]
+## Document Status
 
-## Non-Functional Requirements
-
-### Performance Requirements
-
-- Response time: [Specific targets]
-- Throughput: [Transactions per second]
-- Availability: [Uptime requirements]
-
-### Security Requirements
-
-- Authentication: [Requirements]
-- Authorization: [Access control needs]
-- Data Protection: [Encryption, compliance]
-
-### Scalability Requirements
-
-- User Scale: [Expected growth]
-- Data Scale: [Volume projections]
-- Geographic Scale: [Regional considerations]
-
-## Design Specifications
-
-### User Interface Design
-
-- [Detailed UI requirements]
-- [Design system compliance]
-- [Accessibility standards (WCAG)]
-
-### System Architecture
-
-- [Architectural decisions]
-- [Technology stack]
-- [Integration architecture]
-
-## Technical Specifications
-
-### Data Model
-
-- [Key entities and relationships]
-- [Data governance requirements]
-
-### API Specifications
-
-- [API contracts]
-- [Versioning strategy]
-
-### Infrastructure Requirements
-
-- [Compute resources]
-- [Storage requirements]
-- [Network considerations]
-
-## Compliance & Regulatory
-
-### Regulatory Requirements
-
-- [Specific regulations (GDPR, HIPAA, etc.)]
-- [Compliance checkpoints]
-
-### Industry Standards
-
-- [Relevant standards to follow]
-- [Certification requirements]
-
-## Risk Analysis
-
-### Technical Risks
-
-| Risk     | Probability  | Impact       | Mitigation            |
-| -------- | ------------ | ------------ | --------------------- |
-| [Risk 1] | High/Med/Low | High/Med/Low | [Mitigation strategy] |
-
-### Business Risks
-
-| Risk     | Probability  | Impact       | Mitigation            |
-| -------- | ------------ | ------------ | --------------------- |
-| [Risk 1] | High/Med/Low | High/Med/Low | [Mitigation strategy] |
-
-## Dependencies & Constraints
-
-### Hard Dependencies
-
-- [Blocking dependency with timeline]
-- [Critical path items]
-
-### Soft Dependencies
-
-- [Preferred sequencing]
-- [Optimization opportunities]
-
-### Constraints
-
-- Budget: [Financial constraints]
-- Timeline: [Key deadlines]
-- Resources: [Team/skill constraints]
-
-## Migration & Rollout Strategy
-
-### Migration Plan
-
-- Phase 1: [Initial rollout]
-- Phase 2: [Expansion]
-- Phase 3: [Full deployment]
-
-### Rollback Plan
-
-- [Rollback triggers]
-- [Rollback procedure]
-
-## Success Metrics & KPIs
-
-### Business Metrics
-
-- [Revenue impact with target]
-- [Cost savings with target]
-- [User adoption with target]
-
-### Technical Metrics
-
-- [System performance with SLA]
-- [Error rate thresholds]
-- [Operational efficiency measures]
-
-### Leading Indicators
-
-- [Early success signals]
-- [Progress tracking metrics]
-
-## Testing & Quality Assurance
-
-### Test Strategy
-
-- Unit Testing: [Coverage requirements]
-- Integration Testing: [Scope]
-- Performance Testing: [Load profiles]
-- Security Testing: [Penetration testing needs]
-- UAT: [User acceptance criteria]
-
-### Quality Gates
-
-- [Release criteria]
-- [Go/No-go decision points]
-
-## Documentation Requirements
-
-- [User documentation needs]
-- [Technical documentation]
-- [Training materials]
-
-## Support & Maintenance
-
-### Support Model
-
-- [Support tier requirements]
-- [SLA definitions]
-
-### Maintenance Plan
-
-- [Ongoing maintenance needs]
-- [Update/patch strategy]
-
-## Timeline & Milestones
-
-### Key Milestones
-
-| Milestone     | Date   | Deliverables   |
-| ------------- | ------ | -------------- |
-| [Milestone 1] | [Date] | [Deliverables] |
-
-### Critical Path
-
-[Gantt chart or timeline visualization reference]
-
-## Budget & Resources
-
-### Budget Allocation
-
-- Development: [Amount/percentage]
-- Infrastructure: [Amount/percentage]
-- Operations: [Amount/percentage]
-
-### Resource Requirements
-
-- Engineering: [FTE needs]
-- Design: [FTE needs]
-- QA: [FTE needs]
-
-## Open Questions & Decisions Needed
-
-### Immediate Decisions Required
-
-- [Decision 1 with options and recommendation]
-- [Decision 2 with options and recommendation]
-
-### Future Considerations
-
-- [Long-term questions]
-- [Strategic decisions for later phases]
-
-## Appendices
-
-### A. Glossary
-
-[Key terms and definitions]
-
-### B. References
-
-[Related documents and resources]
-
-### C. Revision History
-
-| Version | Date   | Author   | Changes       |
-| ------- | ------ | -------- | ------------- |
-| 1.0     | [Date] | [Author] | Initial draft |
-
-## Document Complete
-
-[This PRD is ready for review and task generation]
+✅ **PRD Complete:** This document captures the exact requirements as specified. Ready for fidelity-preserving implementation.
 ```
 
-## Target Audience by Complexity Level
+## Key Principles
 
-**Minimum:** Junior developers needing basic direction for simple features
-**Basic (Default):** Development teams implementing standard features
-**Moderate:** Cross-functional teams building production features
-**Complex:** Enterprise teams with multiple stakeholders and governance requirements
+1. **Absolute Fidelity:** User requirements are the complete and sole authority
+2. **Zero Additions:** No requirements, features, or scope beyond user specifications
+3. **Clear Boundaries:** Explicit documentation of what's included and excluded
+4. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity for implementation
+5. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
 
-## Output
+## Output Format
 
 - **Format:** Markdown (`.md`)
 - **Location:** `/tasks/`
-- **Filename:** `prd-[complexity]-[feature-name].md`
-
-## Router Integration Instructions
-
-### Step-by-Step Router Usage
-
-1. **Gather Requirements:** Ask initial clarifying questions to understand:
-
-   - Feature scope and impact
-   - Performance requirements
-   - Data sensitivity level
-   - Integration complexity
-   - Security considerations
-
-2. **Create Temporary Assessment File:** Create a temp file with initial metadata:
-
-   ```yaml
-   ---
-   version: 1
-   complexity: auto
-   risk:
-     blast_radius: [file|package|service|org]
-     external_api_change: [true|false]
-     migration: [true|false]
-   nonfunctional:
-     perf_budget_ms_p95: [number or null]
-     data_sensitivity: [none|pii|regulated]
-     backward_compat_required: [true|false]
-   ---
-   ```
-
-3. **Call Router:** Execute `bash .claude/commands/_lib/complexity/get-complexity.sh temp_assessment.md`
-
-4. **Use Router Output:** Parse the JSON response to get:
-
-   - `computed_complexity.computed_level` (final complexity)
-   - `selected_agents.developer` and `selected_agents.quality_reviewer`
-   - `validation_requirements` (what validations to apply)
-
-5. **Generate PRD:** Use the router-determined complexity level to create the appropriate PRD structure
-
-6. **Include Router Metadata:** Add the router output to the YAML front-matter:
-   ```yaml
-   routing:
-     computed_score: [router total score]
-     selected_agents:
-       developer: [router-selected agent]
-       reviewer: [router-selected agent]
-     audit_trail: [router audit information]
-   ```
-
-### Override Handling
-
-If user specifies manual complexity override:
-
-- Require justification in `override_reason` field
-- Use `--strict` flag when calling router to validate override
-- Document override rationale in the PRD
-
-## Final Instructions
-
-1. **Use Router First:** Always determine complexity using the router before generating content
-2. **Respect Router Output:** Use the router-determined complexity level and agents
-3. **Include Full Metadata:** Embed complete routing metadata in YAML front-matter
-4. **Document Decisions:** Include audit trail showing how complexity was determined
-5. **Validate Overrides:** Require justification for any manual complexity overrides
+- **Filename:** `prd-[feature-name].md`
+- **Metadata:** Fidelity-preserving YAML front-matter
 
 ## Success Indicators
 
 A well-crafted PRD should:
 
-- **Router Integration:** Include complete YAML front-matter with router metadata
-- **Appropriate Complexity:** Match the router-determined complexity level exactly
-- **Agent Selection:** Reference the router-selected agents for next steps
-- **Clear Audit Trail:** Show how complexity determination was made
-- **Override Documentation:** If overridden, clearly document the reasoning
+- **Fidelity Metadata:** Include complete YAML front-matter with fidelity settings
+- **Clear Scope Boundaries:** Explicit documentation of included and excluded functionality
+- **Agent Specification:** Reference fidelity-preserving agents for implementation
+- **Zero Scope Creep:** No additions, improvements, or expansions beyond user requirements
+- **Complete Context:** All necessary information captured without external dependencies
+
+## Target Audience
+
+This command serves teams that need:
+
+- Exact requirement preservation without scope creep
+- Clear boundaries between what's included and excluded
+- Fidelity guarantees throughout the development process
+- Simple, predictable PRD creation without complexity overhead

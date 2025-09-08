@@ -1,4 +1,0 @@
-minimum:developer-minimum:quality-reviewer-minimum
-basic:developer-basic:quality-reviewer-basic
-moderate:developer-moderate:quality-reviewer-moderate
-complex:developer-complex:quality-reviewer-complex

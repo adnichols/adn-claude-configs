@@ -19,12 +19,13 @@ This directory contains a comprehensive set of commands that support a complete 
 
 ## Command Relationships
 
-### Workflow 1: PRD-Based Development
+### Workflow 1: PRD-Based Development (Fidelity-Preserving)
 ```
-plan:create-prd → build:process-tasks → plan:review → docs:update
+plan:create-prd → plan:gen-tasks → build:process-tasks → plan:review → docs:update
 ```
-- Create a PRD for a feature from scratch
-- Process the PRD tasks directly using `build:process-tasks`
+- Create a PRD for a feature with exact scope preservation
+- Generate task list using `plan:gen-tasks` with fidelity-preserving approach
+- Process tasks using `build:process-tasks` with fidelity agents
 - Review code quality before PR using `plan:review`
 - Generate documentation after implementation using `docs:update`
 
@@ -56,22 +57,24 @@ simplify:create-plan → [Review/Approval] → simplify:process-plan
 
 ## Key Features
 
+### Fidelity-Preserving Approach
+All commands now follow strict fidelity preservation:
+- **Exact Scope Implementation**: Build only what's specified in source documents
+- **No Scope Creep**: Zero additions beyond explicit requirements
+- **Fidelity Agents**: Always use developer-fidelity and quality-reviewer-fidelity
+- **Question Ambiguity**: Ask for clarification rather than making assumptions
+
 ### Standardized Format
 All commands use consistent:
 - **Phase Structure**: `Phase N: [Name] (Timeframe)`
 - **Task Format**: `N.0 [Parent]` → `N.1, N.2, N.3 [Sub-tasks]`
 - **Commit Messages**: `git commit -m "feat: [summary]" -m "Related to Phase X.Y"`
 
-### Context Handling
-- **Simple Tasks**: Basic task lists from PRDs
-- **Rich Context**: Full context preservation from research documents
-- **Unified Processing**: Single `process-tasks` command handles both
-
 ### Enhanced Capabilities
 - Git branch management
-- Test suite integration
+- Test suite integration (only as specified)
 - Context-aware implementation
-- Security and performance consideration
+- Scope boundary enforcement
 - Progress tracking and validation
 
 ## Usage Guidelines
@@ -96,16 +99,18 @@ All commands use consistent:
 - Need for context preservation
 - Multi-phase development
 
-**`plan:generate-tasks`**:
-- Breaking down large specifications
-- Creating structured task lists from complex requirements
-- Converting PRDs to actionable development tasks
+**`plan:gen-tasks`**:
+- Converting PRDs to actionable development tasks with fidelity preservation
+- Creating task lists that implement only specified requirements
+- Using developer-fidelity and quality-reviewer-fidelity agents
+- No scope expansion or assumptions beyond PRD content
 
 **`build:process-tasks`**:
-- Any task list execution
-- Both simple and complex plans
+- Any task list execution with fidelity preservation
+- Uses fidelity-preserving agents for implementation
 - Requires git branch (not main)
 - Supports `NOSUBCONF` for batch processing
+- Implements only what's specified in source documents
 
 **`plan:review`**:
 - Pre-PR quality validation

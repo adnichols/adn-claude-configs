@@ -7,7 +7,7 @@ argument-hint: [@feature-files]
 
 ## Goal
 
-To update existing core documentation files (README.md, TESTING.md, CLAUDE.md) and any pre-existing documentation for completed features using the technical-writer agent.
+To update existing core documentation files (README.md, TESTING.md, CLAUDE.md) and any pre-existing documentation for completed features using the technical-writer agent. Think harder. 
 
 ## Usage
 

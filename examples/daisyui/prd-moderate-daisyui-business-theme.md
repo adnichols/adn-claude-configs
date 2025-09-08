@@ -1,9 +1,9 @@
 ---
 version: 1
-complexity: moderate
+fidelity_mode: strict
 agents:
-  developer: developer-moderate
-  reviewer: quality-reviewer-moderate
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
 risk:
   blast_radius: package
   external_api_change: false
@@ -17,12 +17,12 @@ routing:
   override_reason: "Manual assessment - router system unavailable"
   computed_score: 6
   selected_agents:
-    developer: developer-moderate
-    reviewer: quality-reviewer-moderate
+    developer: developer-fidelity
+    reviewer: quality-reviewer-fidelity
   audit_trail: "Manual complexity determination based on package-level impact, migration requirements, and production UI enhancement scope"
 ---
 
-# DaisyUI Business Theme Implementation - Product Requirements Document (Complexity: Moderate)
+# DaisyUI Business Theme Implementation - Product Requirements Document
 
 ## Introduction/Overview
 Implement DaisyUI component library with the "business" theme to provide consistent, professional styling across all screens of the MCP Proxy Desktop application. This will replace the current custom Tailwind CSS implementation with a standardized component library while maintaining the existing dark/light theme functionality.

@@ -1,148 +1,88 @@
 ---
-description: Research an idea and produce a specification document with router-driven complexity determination
-argument-hint: [Idea/Feature Description] [manual-complexity: minimum|basic|moderate|complex] (optional - router auto-detects)
+description: Research an idea and produce a specification document
+argument-hint: [Idea/Feature Description]
 ---
 
 # Rule: Research and Generate Specification Document
 
 ## Goal
 
-To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter, using the complexity inheritance router for automatic complexity determination. This document will serve as input to downstream task generation commands with appropriate complexity-specific research depth. Think harder.
+To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter. This document will serve as input to downstream task generation commands. Think harder.
 
-## Router Integration
+## Research Approach
 
-This command integrates with the central complexity router (`.claude/commands/_lib/complexity/get-complexity.sh`) to:
+This command uses a standard research depth approach to create comprehensive specification documents that include:
 
-1. **Auto-detect complexity** based on research findings and feature characteristics
-2. **Select appropriate research depth** matching the complexity level
-3. **Choose downstream agents** for task generation and implementation
-4. **Apply validation requirements** for the specification quality
-
-## Complexity Level Definitions
-
-The specification scope is determined by the complexity level parameter:
-
-### Minimum Level
-**Scope:** Only functional requirements needed to solve the core problem
-**Include:** Basic problem statement, simple technical approach, essential user interface
-**Exclude:** Testing beyond validation, security beyond input handling, performance considerations, risk analysis
-
-### Basic Level (DEFAULT)
-**Scope:** Core functionality with essential quality measures
-**Include:** Functional requirements, basic testing approach, essential security, simple error handling
-**Exclude:** Performance optimization, backward compatibility, enterprise features, industry analysis
-
-### Moderate Level  
-**Scope:** Production-ready feature with appropriate quality measures
-**Include:** Comprehensive design, testing strategy, security best practices, performance considerations, reliability features
-**Exclude:** Enterprise compliance, complex backward compatibility, advanced deployment strategies
-
-### Complex Level
-**Scope:** Enterprise-grade implementation with full robustness
-**Include:** All sections including backward compatibility, enterprise security, scalability planning, industry standards, comprehensive risk analysis
-
-<simplicity_protocol>
-MANDATORY PROTOCOL for complexity-appropriate scoping:
-
-- Default to "basic" level unless complexity level is explicitly specified
-- Never exceed the requested complexity level 
-- Ask permission before researching areas beyond the specified complexity level
-- Match research depth and specification detail to the complexity level
-
-**This protocol applies throughout the research and specification process.**
-  </simplicity_protocol>
+1. **Core functionality analysis** based on research findings and feature characteristics
+2. **Appropriate technical depth** matching the requirements
+3. **Integration considerations** for existing codebase patterns
+4. **Standard quality requirements** for production-ready features
 
 ## Input
 
 The user will provide:
+
 1. **Idea/Feature Description:** Initial concept or problem statement that needs research
-2. **Complexity Level (Optional):** One of minimum|basic|moderate|complex (defaults to "basic")
 
 ## Instructions
 
 The AI will need to:
 
-1. Determine the complexity level (default to "basic" if not specified)
-2. Analyze the user's idea for completeness within the complexity scope
-3. Conduct research appropriate to the complexity level
-4. Ask clarifying questions ONLY if critical information is missing for the specified complexity
-5. Generate a specification document scoped to the complexity level
+1. Analyze the user's idea for completeness and scope
+2. Conduct comprehensive research on the feature
+3. Ask clarifying questions if critical information is missing
+4. Generate a complete specification document
 
 ## Process
 
 1. **Initial Research:** Conduct preliminary research to understand the idea's scope and characteristics
-2. **Complexity Assessment:** Based on research findings, create initial complexity assessment:
-   - Analyze impact scope (file/package/service/org level)
-   - Identify performance requirements
-   - Assess data sensitivity and security needs
+2. **Requirements Analysis:** Based on research findings:
+   - Analyze impact scope and integration needs
+   - Identify functional requirements
+   - Assess technical constraints and decisions
    - Evaluate integration complexity
-3. **Router Determination:** 
-   - Call complexity router with assessment metadata
-   - Get computed complexity level and agent selections
-   - Apply manual override if specified (with justification)
-4. **Deep Research Phase:** Conduct research appropriate to router-determined complexity:
-   - **Minimum:** Core functionality and basic integration
-   - **Basic:** Add testing approaches and essential security
-   - **Moderate:** Add performance considerations and reliability features  
-   - **Complex:** Add enterprise requirements and comprehensive analysis
-5. **Generate Specification:** Create document with YAML front-matter containing router metadata
-6. **Save Specification:** Save as `research-spec-[idea-name].md` in `/tasks/` directory
-7. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
+3. **Deep Research Phase:** Conduct comprehensive research covering:
+   - Core functionality and integration patterns
+   - Testing approaches and security considerations
+   - Performance considerations and reliability features
+   - Implementation planning and dependencies
+4. **Generate Specification:** Create complete document with all necessary sections
+5. **Save Specification:** Save as `research-spec-[idea-name].md` in `/tasks/` directory
+6. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
-## Research Areas by Complexity Level
+## Research Areas
 
-Research depth and breadth varies by complexity level:
+The research should comprehensively cover:
 
-### Core Research (All Complexity Levels)
+### Core Research (Always Include)
 
-**Always Include:**
-- Existing implementations and design patterns  
+- Existing implementations and design patterns
 - Framework and library recommendations (from current codebase)
-- Basic integration with existing systems
-- Core user journey and interface patterns
+- Integration with existing systems
+- User journey and interface patterns
 - Existing code patterns and conventions
 - Available utilities and shared components
 
-### Basic Level Research (Basic/Moderate/Complex)
+### Technical Research
 
-**Add for Basic+ complexity:**
-- Simple data modeling requirements
-- Basic security considerations (input validation, authentication)
-- Basic testing approaches (unit/integration tests)
-- Essential error handling patterns
-- Simple configuration patterns
+- Data modeling requirements
+- Security considerations (input validation, authentication, authorization)
+- Testing approaches (unit, integration, e2e tests)
+- Error handling patterns and edge cases
+- Configuration and environment requirements
 
-### Moderate Level Research (Moderate/Complex Only)
+### Production Readiness Research
 
-**Add for Moderate+ complexity:**
 - Performance considerations and optimization opportunities
-- Comprehensive security best practices
+- Security best practices and compliance needs
 - Reliability and resilience features
-- Advanced testing strategies (E2E, load testing)
-- Monitoring and observability basics
-- Deployment considerations
-
-### Complex Level Research (Complex Only)
-
-**Add for Complex complexity:**
-- Enterprise architecture considerations
-- Industry standards and compliance requirements  
-- Scalability and enterprise features
-- Advanced deployment and monitoring strategies
-- Backward compatibility analysis
-- Comprehensive risk assessment
-- Competitive and industry analysis
+- Monitoring and observability requirements
+- Deployment considerations and CI/CD integration
+- Backward compatibility requirements (if applicable)
 
 ## Clarifying Questions (Only When Needed)
 
 Ask questions using letter/number lists for easy selection. Examples:
-
-**If complexity level needs clarification:**
-"What complexity level should I target for this specification?
-A) Minimum - Just core functionality, no testing/security considerations
-B) Basic - Core functionality with basic testing and security (DEFAULT)
-C) Moderate - Production-ready with performance and reliability features
-D) Complex - Enterprise-grade with full robustness and compliance"
 
 **If problem scope is unclear:**
 "To better research this idea, I need to understand the scope. Which best describes your vision?
@@ -158,302 +98,178 @@ B) Internal team members
 C) Developers/technical users
 D) System administrators"
 
-**If backward compatibility is relevant (Moderate/Complex levels only):**
+**If backward compatibility might be relevant:**
 "Are there backward compatibility requirements?
 A) No - can break existing interfaces
 B) Yes - must maintain existing API compatibility
 C) Partial - some breaking changes acceptable
 D) Not applicable"
 
-## Output Format by Complexity Level
+## Specification Template
 
-The specification document structure varies by complexity level:
-
-### Minimum Level Template
+The specification document uses this comprehensive structure:
 
 ```markdown
-# [Idea Name] - Research Specification (Complexity: Minimum)
+# [Idea Name] - Research Specification
 
 ## 🎯 Executive Summary
-[Basic problem and solution overview]
 
-## 📊 Problem & Solution
-### Core Problem
-[Clear problem statement]
-
-### Target Users  
-[Primary users]
-
-### Success Criteria
-[What must work]
-
-## 🏗️ Technical Design
-### Implementation Strategy
-[Simple technical approach]
-
-### Data Requirements
-[Basic data needs]
-
-## 🎨 User Interface
-### User Flow
-[Core user steps]
-
-### Interface Needs
-[Essential UI elements]
-
-## 📋 Specification Complete
-[This specification is ready for task generation]
-```
-
-### Basic Level Template (DEFAULT)
-
-```markdown
-# [Idea Name] - Research Specification (Complexity: Basic)
-
-## 🎯 Executive Summary
-[Problem, solution, and core value]
-
-## 🔍 Core Research Findings
-### Technical Approach
-[Implementation patterns from codebase]
-
-### Integration Points
-[Existing code pattern integration]
-
-## 📊 Problem & Solution
-### Core Problem
-[Clear problem statement]
-
-### Target Users
-[Primary users and use cases]
-
-### Success Criteria
-[Success measurement]
-
-## 🏗️ Technical Design
-### Implementation Strategy
-[Technical approach based on codebase]
-
-### Data Requirements
-[Data modeling needs]
-
-### Basic Security
-[Essential security considerations]
-
-## 🎨 User Interface
-### User Flow
-[User interaction steps]
-
-### Interface Needs
-[UI requirements]
-
-## 🧪 Testing Approach
-### Test Strategy
-[Basic testing approach]
-
-## 📈 Implementation Plan
-### Development Phases
-[Simple phased approach]
-
-### Key Dependencies
-[Critical requirements]
-
-## 📋 Specification Complete
-[This specification is ready for task generation]
-```
-
-### Moderate Level Template
-
-```markdown
-# [Idea Name] - Research Specification (Complexity: Moderate)
-
-## 🎯 Executive Summary
 [Comprehensive problem, solution, value, and success criteria]
 
 ## 🔍 Core Research Findings
+
 ### Technical Approach
-[Production-ready implementation patterns]
+
+[Implementation patterns and architecture decisions from codebase research]
 
 ### Integration Points
-[System integration considerations]
+
+[System integration considerations and existing code patterns]
 
 ### Performance Considerations
-[Performance requirements and approach]
+
+[Performance requirements, scalability needs, and optimization approach]
 
 ## 📊 Problem & Solution
+
 ### Core Problem
-[Detailed problem analysis]
+
+[Detailed problem analysis with context and background]
 
 ### Target Users
+
 [User personas and detailed use cases]
 
 ### Success Criteria
-[Measurable success indicators]
+
+[Measurable success indicators and acceptance criteria]
 
 ## 🏗️ Technical Design
+
 ### Implementation Strategy
-[Comprehensive technical architecture]
+
+[Comprehensive technical architecture and approach]
 
 ### Data Requirements
-[Detailed data modeling and storage]
+
+[Detailed data modeling, storage, and management considerations]
 
 ### Security & Reliability
-[Security best practices and reliability features]
+
+[Security best practices, reliability features, and compliance requirements]
 
 ## 🎨 User Interface
+
 ### User Flow
-[Detailed user journeys]
+
+[Detailed user journeys and interaction patterns]
 
 ### Interface Needs
-[Comprehensive UI/UX requirements]
+
+[Comprehensive UI/UX requirements and design considerations]
 
 ## 🧪 Testing Approach
+
 ### Test Strategy
-[Comprehensive testing including automation]
+
+[Comprehensive testing including unit, integration, e2e, and performance tests]
+
+### Quality Assurance
+
+[Quality gates, validation processes, and acceptance testing]
 
 ## ⚡ Performance & Reliability
+
 ### Performance Requirements
-[Performance targets and monitoring]
+
+[Performance targets, monitoring, and optimization strategies]
 
 ### Error Handling
-[Comprehensive error handling strategy]
 
-## 📈 Implementation Plan
-### Development Phases
-[Phased approach with quality gates]
-
-### Key Dependencies
-[Technical and external dependencies]
-
-### Risk Analysis
-[Key risks and mitigation strategies]
-
-## 📚 Research References
-[Technical documentation and references]
-
-## 📋 Specification Complete
-[This specification is ready for task generation]
-```
-
-### Complex Level Template
-
-```markdown
-# [Idea Name] - Research Specification (Complexity: Complex)
-
-## 🎯 Executive Summary
-[Strategic overview including business impact]
-
-## 🔍 Core Research Findings
-### Technical Approach
-[Enterprise-grade implementation architecture]
-
-### Integration Points
-[Comprehensive system integration strategy]
-
-### Industry Analysis
-[Competitive landscape and standards]
-
-## 📊 Problem & Solution
-### Core Problem
-[Comprehensive problem analysis with context]
-
-### Target Users
-[Detailed user personas and enterprise use cases]
-
-### Success Criteria
-[Strategic and operational success metrics]
-
-## 🏗️ Technical Design
-### Implementation Strategy
-[Enterprise architecture with scalability]
-
-### Data Requirements
-[Enterprise data modeling with governance]
-
-### Security & Compliance
-[Enterprise security and regulatory compliance]
-
-## 🎨 User Interface
-### User Flow
-[Comprehensive user experience design]
-
-### Interface Needs
-[Enterprise UI/UX with accessibility]
-
-## 🧪 Testing Approach
-### Test Strategy
-[Full testing pyramid including performance/security]
-
-## ⚡ Performance & Scalability
-### Performance Requirements
-[Enterprise performance and scalability planning]
+[Comprehensive error handling strategy and resilience patterns]
 
 ### Monitoring & Observability
-[Comprehensive monitoring strategy]
 
-## 🔒 Advanced Security & Compliance
+[Logging, monitoring, metrics, and debugging considerations]
+
+## 🔒 Security & Compliance
+
 ### Security Architecture
-[Enterprise security framework]
+
+[Security framework, authentication, authorization, and data protection]
 
 ### Compliance Requirements
-[Regulatory and industry compliance]
 
-## 🔄 Backward Compatibility
-### Compatibility Analysis
-[Breaking changes and migration strategy]
+[Regulatory compliance, industry standards, and security policies]
 
-### Migration Planning
-[Enterprise migration approach]
+## 🔄 Compatibility & Migration
+
+### Backward Compatibility
+
+[Breaking changes analysis and migration strategy (if applicable)]
+
+### Integration Requirements
+
+[API compatibility, data migration, and system integration needs]
 
 ## 📈 Implementation Plan
+
 ### Development Phases
-[Enterprise project plan with risk management]
+
+[Phased approach with clear milestones and quality gates]
 
 ### Key Dependencies
-[Comprehensive dependency analysis]
+
+[Technical dependencies, external systems, and critical requirements]
 
 ### Risk Analysis
-[Enterprise risk assessment and mitigation]
+
+[Risk assessment, mitigation strategies, and contingency planning]
 
 ## 📚 Research References
-### Technical References
-[Comprehensive technical documentation]
 
-### Industry Standards
-[Relevant standards and best practices]
+### Technical References
+
+[Documentation, frameworks, libraries, and technical resources]
+
+### Standards & Best Practices
+
+[Industry standards, patterns, and recommended practices]
 
 ## 📋 Specification Complete
-[This specification is ready for task generation]
+
+[This specification contains all necessary information for task generation and implementation]
 ```
 
 ## Output
 
 - **Format:** Markdown (`.md`)
 - **Location:** `/tasks/`
-- **Filename:** `research-spec-[complexity]-[idea-name].md`
+- **Filename:** `research-spec-[idea-name].md`
 
 ## Key Principles
 
-1. **Complexity Alignment:** Match specification depth exactly to requested complexity level
-2. **Default to Basic:** Use "basic" complexity when level is not specified
-3. **No Complexity Creep:** Never exceed the requested complexity level without permission
-4. **Evidence-Based:** Ground recommendations in research appropriate to complexity level  
-5. **Well-Defined:** Provide detail sufficient for downstream task generation at the target complexity
-6. **Codebase Integration:** Prioritize existing patterns and conventions at all complexity levels
+1. **Comprehensive Coverage:** Include all necessary sections for production-ready implementation
+2. **Evidence-Based:** Ground recommendations in thorough research and analysis
+3. **Well-Defined:** Provide sufficient detail for downstream task generation and implementation
+4. **Codebase Integration:** Prioritize existing patterns and conventions in implementation recommendations
+5. **Production-Ready:** Focus on creating specifications suitable for reliable production systems
 
-## Target Audience by Complexity Level
+## Target Audience
 
-**Minimum:** Quick prototyping, proof-of-concept work
-**Basic (Default):** Standard feature development with essential quality measures
-**Moderate:** Production systems requiring reliability and performance
-**Complex:** Enterprise systems with comprehensive requirements
+This command is designed for standard feature development requiring:
+
+- Production-ready quality with reliability and performance considerations
+- Comprehensive technical planning and risk assessment
+- Integration with existing systems and codebases
+- Full testing, security, and monitoring coverage
 
 ## Success Indicators
 
 A well-researched specification should:
 
-- **Match Complexity Level:** Contain exactly the sections and detail appropriate to the specified complexity
-- **Solve Core Problem:** Address the user's stated problem at the appropriate depth
-- **Enable Execution:** Provide sufficient context for the `plan:generate-tasks-from-spec.md` command
-- **Respect Constraints:** Stay within complexity boundaries and ask permission to exceed them
-- **Follow Templates:** Use the complexity-appropriate template structure
+- **Comprehensive Coverage:** Contain all sections needed for production implementation
+- **Solve Core Problem:** Address the user's stated problem with thorough analysis
+- **Enable Execution:** Provide sufficient context for downstream task generation commands
+- **Technical Depth:** Include all necessary technical, security, and performance considerations
+- **Follow Template:** Use the standardized comprehensive template structure

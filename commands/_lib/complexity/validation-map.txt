@@ -1,4 +1,0 @@
-minimum:lint,build,secrets_scan
-basic:lint,build,secrets_scan,unit_core,dependency_audit
-moderate:lint,build,secrets_scan,unit_core,integration,perf_smoke,sast_basic
-complex:lint,build,secrets_scan,unit_full,integration,e2e,perf_benchmark,sast,dast,sbom
