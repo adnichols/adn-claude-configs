@@ -49,6 +49,8 @@ Important slash commands:
 - `/b:process-tasks`: Process task lists with fidelity agents and git branch management
 - `/simplify:create-plan`: Generate code simplification plans using simplify-planner agent
 - `/simplify:process-plan`: Execute existing simplification plans
+- `/docs:fetch`: Fetch documentation for a single library/framework
+- `/docs:fetch-batch`: Batch fetch documentation from markdown lists containing multiple libraries
 - `/user:add-command`: Create new personal slash commands in ~/.claude/commands
 
 ## Configuration Notes
@@ -97,6 +99,22 @@ All commands now follow the fidelity-preserving approach:
 2. Quality review with @quality-reviewer agent
 3. User approval required before implementation
 4. Use `/simplify:process-plan` for execution
+
+### Batch Documentation Workflow
+
+Use `/docs:fetch-batch` to process multiple libraries from README sections:
+
+1. **Markdown Parsing**: Extracts `[Library Name](URL)` patterns from bullet points
+2. **Intelligent Mapping**: Maps display names to fetchable identifiers (e.g., "Next.js 15" → `nextjs --version 15`)
+3. **Batch Processing**: Calls `/docs:fetch` for each library with appropriate parameters
+4. **Progress Tracking**: Reports success/failure for each library in the batch
+5. **CLAUDE.md Integration**: Automatically updates documentation references
+
+Options:
+- `--dry-run`: Preview what would be fetched
+- `--parallel`: Process libraries concurrently (faster)
+- `--skip-existing`: Skip libraries with existing documentation
+- `--file README.md --section "Dependencies"`: Extract from file section
 
 ### Quality Standards
 
