@@ -22,7 +22,7 @@ This command follows the fidelity-preserving approach to:
 
 ## Process
 
-1.  **Receive PRD Reference:** The user points the AI to a specific PRD file
+1.  **Receive PRD Reference:** The user points the AI to a specific PRD file via $ARGUMENTS
 2.  **Parse PRD Content:** Read and analyze the PRD completely:
     - All functional requirements exactly as specified
     - User stories and acceptance criteria

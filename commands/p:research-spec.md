@@ -20,6 +20,8 @@ This command uses a standard research depth approach to create comprehensive spe
 
 ## Input
 
+Consider any input from $ARGUMENTS
+
 The user will provide:
 
 1. **Idea/Feature Description:** Initial concept or problem statement that needs research

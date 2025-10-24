@@ -21,6 +21,8 @@ To guide an AI assistant in creating a Product Requirements Document (PRD) in Ma
 
 ## Input
 
+Some input may be provided via $ARGUMENTS
+
 The user will provide:
 
 1. **Feature Description:** Brief description or request for new functionality

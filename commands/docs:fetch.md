@@ -7,6 +7,8 @@ argument-hint: "[library_name] [--version VERSION] [--sections SECTIONS] [--upda
 
 Fetch and curate documentation for programming libraries, frameworks, coding languages, and toolsets. This command transforms scattered online documentation into locally stored, AI-friendly Markdown files within the `/workspace/docs/` directory. Think harder.
 
+The package we are refering to will be provided via $ARGUMENTS
+
 ## Usage
 
 ```bash

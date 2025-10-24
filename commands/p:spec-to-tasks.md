@@ -23,7 +23,7 @@ To guide an AI assistant in converting a detailed specification document (create
 
 The user will provide:
 
-1. **Specification File Path:** Path to the detailed specification document
+1. **Specification File Path:** Path to the detailed specification document. This may be provided in $ARGUMENTS
 
 ## Process
 
