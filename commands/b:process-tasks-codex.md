@@ -6,7 +6,8 @@ argument-hint: [Files]
 # Instructions
 
 Process the task list end-to-end with fidelity-preserving agents, maintaining exact scope as specified in the source document. This automation uses `@developer-fidelity` for implementation and `@quality-reviewer-fidelity` for validation. Work continuously unless you need clarification or you cannot satisfy required quality gates after multiple recovery attempts.
-$ARGUMENTS. Think harder.
+
+Use input: $ARGUMENTS
 
 ## Autonomous Execution Flow
 
