@@ -1,0 +1,10 @@
+# Codex Configuration Template
+# This file will be merged with your existing ~/.codex/config.toml
+
+model = "gpt-5"
+model_reasoning_effort = "high"
+
+# MCP Servers - see mcp-servers.toml for additional server definitions
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]
