@@ -16,13 +16,13 @@ This directory contains installable Claude Code configurations including agents,
 
 ```bash
 cd /path/to/your/project
-bash /path/to/adn-claude-configs/scripts/install.sh --claude
+bash /path/to/adn-claude-configs/install.sh --claude
 ```
 
 ### To Your Home Directory
 
 ```bash
-bash /path/to/adn-claude-configs/scripts/install.sh --claude ~
+bash /path/to/adn-claude-configs/install.sh --claude ~
 ```
 
 This will copy all configurations to `~/.claude/` for global access.
@@ -70,7 +70,7 @@ To sync the latest agents, commands, and scripts from the adn-claude-configs rep
 
 ```bash
 cd /path/to/your/project
-bash /path/to/adn-claude-configs/scripts/update.sh
+bash /path/to/adn-claude-configs/update.sh
 ```
 
 This preserves your local `settings.local.json` while updating everything else.

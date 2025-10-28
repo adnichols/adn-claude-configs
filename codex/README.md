@@ -15,13 +15,13 @@ This directory contains installable Codex configurations including prompts, scri
 
 ```bash
 cd /path/to/your/project
-bash /path/to/adn-claude-configs/scripts/install.sh --codex
+bash /path/to/adn-claude-configs/install.sh --codex
 ```
 
 ### To Your Home Directory
 
 ```bash
-bash /path/to/adn-claude-configs/scripts/install.sh --codex ~
+bash /path/to/adn-claude-configs/install.sh --codex ~
 ```
 
 This will copy all configurations to `~/.codex/` for global access.
@@ -78,7 +78,7 @@ To sync the latest prompts and scripts from the adn-claude-configs repository:
 
 ```bash
 cd /path/to/your/project
-bash /path/to/adn-claude-configs/scripts/update.sh
+bash /path/to/adn-claude-configs/update.sh
 ```
 
 This preserves your local `config.toml` while updating prompts and scripts.

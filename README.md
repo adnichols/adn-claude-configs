@@ -22,20 +22,20 @@ pip3 install -r requirements.txt
 cd /path/to/your/project
 
 # Install Claude Code only
-bash /path/to/adn-claude-configs/scripts/install.sh --claude
+bash /path/to/adn-claude-configs/install.sh --claude
 
 # Install Codex only
-bash /path/to/adn-claude-configs/scripts/install.sh --codex
+bash /path/to/adn-claude-configs/install.sh --codex
 
 # Install both
-bash /path/to/adn-claude-configs/scripts/install.sh --all
+bash /path/to/adn-claude-configs/install.sh --all
 ```
 
 #### Option 2: Install Globally (to Home Directory)
 
 ```bash
 # Install to ~/.claude and ~/.codex for global access
-bash /path/to/adn-claude-configs/scripts/install.sh --all ~
+bash /path/to/adn-claude-configs/install.sh --all ~
 ```
 
 This creates `.claude/` and `.codex/` directories with all agents, commands/prompts, and configurations.
@@ -46,7 +46,7 @@ To sync the latest changes from this repository to your installed configurations
 
 ```bash
 cd /path/to/your/project
-bash /path/to/adn-claude-configs/scripts/update.sh
+bash /path/to/adn-claude-configs/update.sh
 ```
 
 The update script:

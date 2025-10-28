@@ -22,8 +22,8 @@ This is a Claude Code and Codex configuration repository containing:
   - `mcp-servers.toml` - MCP server definitions
 
 ### Installation Scripts
-- **scripts/install.sh**: Install configurations to projects
-- **scripts/update.sh**: Sync updates to installed projects
+- **install.sh**: Install configurations to projects
+- **update.sh**: Sync updates to installed projects
 
 ## Installation
 
@@ -31,13 +31,13 @@ Install configurations to any project using:
 
 ```bash
 # Install Claude Code
-bash /path/to/adn-claude-configs/scripts/install.sh --claude
+bash /path/to/adn-claude-configs/install.sh --claude
 
 # Install Codex
-bash /path/to/adn-claude-configs/scripts/install.sh --codex
+bash /path/to/adn-claude-configs/install.sh --codex
 
 # Install both
-bash /path/to/adn-claude-configs/scripts/install.sh --all
+bash /path/to/adn-claude-configs/install.sh --all
 ```
 
 This copies the appropriate configuration to `.claude/` and/or `.codex/` directories.
@@ -48,7 +48,7 @@ Sync the latest changes from this repository to installed projects:
 
 ```bash
 cd /path/to/your/project
-bash /path/to/adn-claude-configs/scripts/update.sh
+bash /path/to/adn-claude-configs/update.sh
 ```
 
 The update script:
@@ -173,7 +173,7 @@ After installation, merge MCP server configurations:
 To keep installed configurations up-to-date:
 
 1. **Update source** (agents/, commands/): Edit files in this repository
-2. **Sync to projects**: Run `bash scripts/update.sh` in target projects
+2. **Sync to projects**: Run `bash update.sh` in target projects
 3. **Preserve settings**: Local settings files are never overwritten
 
 The `agents/` and `commands/` directories are the source of truth. Changes here are distributed via the update script.
