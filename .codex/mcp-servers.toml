@@ -1,0 +1,6 @@
+# MCP Server Configurations for Codex
+# Add these sections to your ~/.codex/config.toml file
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]

@@ -30,6 +30,108 @@ print_usage() {
     echo "  $0 --all                 # Install both to current directory"
 }
 
+ensure_codex_cli_flags() {
+    local target_dir="$1"
+    local config_path="$target_dir/config.toml"
+
+    if [ ! -f "$config_path" ]; then
+        return
+    fi
+
+    local status
+    status=$(CONFIG_PATH="$config_path" python3 <<'PY'
+import ast
+import os
+import re
+from pathlib import Path
+
+config_file = Path(os.environ["CONFIG_PATH"])
+text = config_file.read_text()
+required_flags = [
+    "--dangerously-bypass-approvals-and-sandbox",
+    "--enable-web-search",
+]
+
+pattern = re.compile(r"default_cli_flags\s*=\s*\[(.*?)\]", re.DOTALL)
+match = pattern.search(text)
+changed = False
+
+
+def format_block(flags):
+    inner = ",\n".join(f'  "{flag}"' for flag in flags)
+    return f"default_cli_flags = [\n{inner}\n]"
+
+
+if match:
+    content = match.group(1)
+    try:
+        existing = ast.literal_eval("[" + content + "]")
+    except Exception:
+        existing = []
+
+    updated = existing[:]
+    for flag in required_flags:
+        if flag not in updated:
+            updated.append(flag)
+
+    if updated != existing:
+        block = format_block(updated)
+        text = text[:match.start()] + block + text[match.end():]
+        changed = True
+else:
+    cli_header = re.compile(r"^\[cli\]\s*$", re.MULTILINE)
+    cli_match = cli_header.search(text)
+    block = format_block(required_flags)
+    insertion = block + "\n"
+
+    if cli_match:
+        block_start = cli_match.end()
+        next_table = re.search(r"^\[.*?\]", text[block_start:], re.MULTILINE)
+        insert_pos = len(text) if not next_table else block_start + next_table.start()
+
+        if block_start < len(text) and text[block_start] != "\n":
+            text = text[:block_start] + "\n" + text[block_start:]
+            insert_pos += 1
+
+        prefix = text[:insert_pos]
+        suffix = text[insert_pos:]
+        if prefix and not prefix.endswith("\n"):
+            prefix += "\n"
+        text = prefix + insertion + suffix
+    else:
+        if text and not text.endswith("\n"):
+            text += "\n"
+        text = text.rstrip() + "\n\n[cli]\n" + block + "\n"
+
+    changed = True
+
+if changed:
+    config_file.write_text(text if text.endswith("\n") else text + "\n")
+    print("updated")
+else:
+    print("unchanged")
+PY
+)
+    local cli_update_status=$?
+
+    if [ $cli_update_status -ne 0 ]; then
+        echo "  - Unable to ensure Codex CLI flags (manual config update required)"
+        return
+    fi
+
+    case "$status" in
+        updated)
+            echo "  - Ensured Codex CLI runs with --dangerously-bypass-approvals-and-sandbox and web search"
+            ;;
+        unchanged)
+            echo "  - Codex CLI flags already configured for dangerous bypass and web search"
+            ;;
+        *)
+            echo "  - Unable to validate Codex CLI flags (manual config update required)"
+            ;;
+    esac
+}
+
 install_claude() {
     local target="$1/.claude"
 
@@ -100,6 +202,8 @@ install_codex() {
         echo "  - Installing config.toml..."
         cp "$REPO_ROOT/codex/config.toml" "$target/"
     fi
+
+    ensure_codex_cli_flags "$target"
 
     # Copy MCP servers configuration
     echo "  - Installing mcp-servers.toml..."
