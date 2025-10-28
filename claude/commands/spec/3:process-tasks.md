@@ -6,13 +6,68 @@ argument-hint: [Files]
 # Instructions
 
 Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses developer-fidelity and quality-reviewer-fidelity agents to implement only what's explicitly specified, without additions or scope expansions.
-$ARGUMENTS. Think harder.
+$ARGUMENTS.
+
+## Task File Validation
+
+Before processing tasks, validate the task file is ready:
+
+1. **Validate Task File Exists:**
+   - Check task file exists at provided path
+   - Confirm file is readable markdown format
+   - If file not found, report clear error message and halt
+
+2. **Validate YAML Front-matter:**
+   - Parse YAML front-matter for required fields:
+     - `source_specification`: Path to source spec (verify file exists)
+     - `fidelity_mode`: Should be "strict"
+     - `agents`: Extract developer and reviewer agent names
+     - `complexity_level`: Note the depth level
+     - `validated`: Should be `true` (indicates task coverage was validated)
+   - If YAML is missing or incomplete:
+     - Report specific missing fields
+     - Suggest running spec/2:gen-tasks again
+     - Halt processing
+
+3. **Validate Source Specification:**
+   - Check that source specification file exists (from `source_specification` field)
+   - If source spec missing:
+     - Report error: "Source specification not found at [path]"
+     - Cannot proceed without source document
+     - Halt processing
+   - If source spec exists, note its location for reference during implementation
+
+4. **Validate Task Structure:**
+   - Verify task file contains task lists (checkboxes)
+   - Check for phase structure and parent/child tasks
+   - Confirm Implementation Files section is present
+   - If structure is malformed:
+     - Report specific structural issues
+     - Suggest fixes or regeneration
+     - Halt processing
+
+5. **Validate Dependencies:**
+   - Check files mentioned in "Implementation Files" section:
+     - For existing files: Verify they exist
+     - For new files: Verify parent directories exist or can be created
+   - Check for external dependencies (libraries, APIs) mentioned in tasks
+   - If critical dependencies missing:
+     - Report missing dependencies
+     - Suggest installation steps if known
+     - Ask user if they want to proceed anyway
+   - If validation successful, proceed to fidelity preservation
+
+**Error Handling:** If any validation fails:
+- Provide clear, specific error message
+- Suggest remediation steps
+- Do NOT proceed with implementation
+- Allow graceful exit
 
 ## Fidelity Preservation Process
 
-Before starting task implementation:
+After successful validation, prepare for task implementation:
 
-1. **Parse Task File Metadata:** Extract fidelity information from task file YAML front-matter
+1. **Parse Task File Metadata:** Extract fidelity information from validated YAML front-matter
 2. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
    - Developer agent: `@developer-fidelity`
    - Quality reviewer: `@quality-reviewer-fidelity`
@@ -21,9 +76,35 @@ Before starting task implementation:
    - Implement only specified security measures
    - Do not add tests or validation beyond what's explicitly required
 
+4. **Initialize Progress Tracking:**
+   - Count total phases, parent tasks, and subtasks for progress reporting
+   - Note complexity level (simple/standard/comprehensive) for context
+   - Display initial progress: "📊 Starting implementation: X phases, Y parent tasks, Z subtasks total"
+
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
 </skip_subtask_confirmation>
+
+## Progress Indicators
+
+Throughout implementation, provide clear status updates:
+
+**Phase Progress:**
+- When starting a phase: "🔄 **Phase N/X**: [Phase Name] - Starting..."
+- When completing a phase: "✅ **Phase N/X Complete** - [Brief summary of accomplishments]"
+
+**Task Progress:**
+- When starting a parent task: "📝 **Task N.0**: [Task Name] - [M subtasks]"
+- When completing a subtask: "✅ **Subtask N.M** complete ([M/Total] subtasks in this phase)"
+- After validation: "🔍 Running validation: lint → build → secrets → tests..."
+- After quality review: "👁️ Quality review passed using @quality-reviewer-fidelity"
+
+**Error Reporting:**
+- If validation fails: "❌ **Validation Failed**: [specific issue] - Fixing before commit..."
+- If critical error: "🛑 **Critical Error**: [issue] - Stopping work for user intervention"
+
+**Overall Progress:**
+- Periodically (every 3-5 subtasks): "📊 **Progress**: N% complete (X/Y tasks done)"
 
 # Task List Management
 
@@ -71,8 +152,11 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
-  - **First**: Run standard validation checks:
-    - Always: lint, build, secrets scan, unit tests
+  - **First**: Run validation checks appropriate to complexity level:
+    - **Simple specs**: lint, build (if build script exists)
+    - **Standard specs**: lint, build, unit tests
+    - **Comprehensive specs**: lint, build, secrets scan, unit tests
+    - If source spec specifies additional validation, include that too
   - **Only if all validations pass**: Stage changes (`git add .`)
   - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
   - **Clean up**: Remove any temporary files and temporary code before committing
@@ -128,3 +212,13 @@ When working with task lists, the AI must:
 8. For rich execution plans: Ensure traceability between implementation and source document rationale.
 9. For rich execution plans: Validate against success criteria throughout implementation.
 10. **CRITICAL CHECKPOINT:** After each subtask completion, Claude MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.
+
+## Implementation Best Practices
+
+1. **Validation Levels:** Adapt validation rigor to complexity level (simple/standard/comprehensive)
+2. **Progress Transparency:** Provide regular status updates for long-running implementations
+3. **Error Recovery:** If validation fails, fix issues before proceeding to next task
+4. **Dependency Awareness:** Reference validated Implementation Files section for file operations
+5. **Fidelity Adherence:** Constantly reference source specification to prevent scope creep
+6. **Graceful Degradation:** If optional dependencies missing, ask user before proceeding
+7. **Clear Communication:** Use progress indicators to keep user informed of status
