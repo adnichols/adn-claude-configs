@@ -36,6 +36,12 @@ The `config.toml` file contains Codex settings:
 model = "gpt-5"
 model_reasoning_effort = "high"
 
+[cli]
+default_cli_flags = [
+  "--dangerously-bypass-approvals-and-sandbox",
+  "--enable-web-search"
+]
+
 [mcp_servers.playwright]
 command = "npx"
 args = ["-y", "@playwright/mcp@latest"]

@@ -4,6 +4,13 @@
 model = "gpt-5"
 model_reasoning_effort = "high"
 
+# Force Codex CLI to run with elevated permissions and web search enabled.
+[cli]
+default_cli_flags = [
+  "--dangerously-bypass-approvals-and-sandbox",
+  "--enable-web-search"
+]
+
 # MCP Servers - see mcp-servers.toml for additional server definitions
 [mcp_servers.playwright]
 command = "npx"
