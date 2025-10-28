@@ -122,6 +122,42 @@ PY
     esac
 }
 
+sync_codex_prompts() {
+    local destination="$1"
+    local label="$2"
+    local mode="${3:-merge}"
+
+    if [ "$mode" = "replace" ] && [ -d "$destination" ]; then
+        echo "  - Resetting $label at $destination"
+        rm -rf "$destination"
+    fi
+
+    mkdir -p "$destination"
+
+    echo "  - Syncing Codex prompts into $label ($destination)"
+
+    local legacy_dirs=(cmd doc prd spec simplify)
+    for legacy_dir in "${legacy_dirs[@]}"; do
+        if [ -d "$destination/$legacy_dir" ]; then
+            echo "    - Removing legacy subdirectory $legacy_dir/"
+            rm -rf "$destination/$legacy_dir"
+        fi
+    done
+
+    if [ -d "$destination/_lib" ]; then
+        rm -rf "$destination/_lib"
+    fi
+
+    if [ -d "$REPO_ROOT/codex/prompts/_lib" ]; then
+        cp -R "$REPO_ROOT/codex/prompts/_lib" "$destination/"
+    fi
+
+    for prompt in "$REPO_ROOT"/codex/prompts/*.md; do
+        [ -e "$prompt" ] || continue
+        cp "$prompt" "$destination/"
+    done
+}
+
 # Detect which tools are installed
 CLAUDE_INSTALLED=false
 CODEX_INSTALLED=false
@@ -189,15 +225,28 @@ update_codex() {
 
     echo -e "${BLUE}Updating Codex configuration...${NC}"
 
-    # Update prompts
-    echo "  - Updating prompts..."
-    rm -rf "$target/prompts"
-    cp -r "$REPO_ROOT/codex/prompts" "$target/"
+    local project_prompts_dir="${target}/prompts"
+    if [ -d "$project_prompts_dir" ]; then
+        echo "  - Removing project prompts (Codex prefers ~/.codex/prompts)..."
+        rm -rf "$project_prompts_dir"
+    fi
 
-    # Update scripts
-    echo "  - Updating scripts..."
-    rm -rf "$target/scripts"
-    cp -r "$REPO_ROOT/codex/scripts" "$target/"
+    local project_scripts_dir="${target}/scripts"
+    if [ -d "$project_scripts_dir" ]; then
+        echo "  - Removing project scripts (Codex prefers ~/.codex/scripts)..."
+        rm -rf "$project_scripts_dir"
+    fi
+
+    # Update prompts in global Codex directory for CLI discovery
+    local global_codex_dir="$HOME/.codex"
+    mkdir -p "$global_codex_dir"
+    local global_prompts_dir="${global_codex_dir}/prompts"
+    sync_codex_prompts "$global_prompts_dir" "global (~/.codex/prompts)" "replace"
+
+    # Update scripts globally
+    echo "  - Updating global Codex scripts..."
+    rm -rf "$global_codex_dir/scripts"
+    cp -r "$REPO_ROOT/codex/scripts" "$global_codex_dir/"
 
     # Preserve existing config.toml
     if [ -f "$target/config.toml" ]; then

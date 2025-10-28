@@ -4,7 +4,7 @@ This directory contains installable Codex configurations including prompts, scri
 
 ## Contents
 
-- **prompts/** - Custom prompt commands for workflows (equivalent to Claude Code commands)
+- **prompts/** - Custom prompt commands for workflows (equivalent to Claude Code commands). Filenames encode categories with colon-delimited segments (e.g. `spec:1:create-spec.md`) so Codex can discover them without subdirectories.
 - **scripts/** - Shared utility scripts used by prompts
 - **config.toml** - Codex configuration template
 - **mcp-servers.toml** - MCP (Model Context Protocol) server definitions
@@ -25,6 +25,8 @@ bash /path/to/adn-claude-configs/install.sh --codex ~
 ```
 
 This will copy all configurations to `~/.codex/` for global access.
+
+The installer also mirrors prompt files to `~/.codex/prompts` (and removes the project `.codex/prompts`/`scripts` copies) so the Codex CLI can discover them even when you're working inside other repositories.
 
 ## Configuration
 

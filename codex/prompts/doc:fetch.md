@@ -46,7 +46,7 @@ Let me start by parsing your arguments and executing the documentation fetch pro
 
 <function_calls>
 <invoke name="Bash">
-<parameter name="command">python .claude/commands/\_lib/scripts/docs-fetch.py $ARGUMENTS</parameter>
+<parameter name="command">python .codex/prompts/_lib/scripts/docs-fetch.py $ARGUMENTS</parameter>
 <parameter name="description">Execute documentation fetch script with user arguments</parameter>
 </invoke>
 
