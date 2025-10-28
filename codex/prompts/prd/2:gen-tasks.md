@@ -74,19 +74,16 @@ specification_metadata:
 
 ## Relevant Files
 
-- `path/to/potential/file1.ts` - Brief description of why this file is relevant (e.g., Contains the main component for this feature).
-- `path/to/file1.test.ts` - Unit tests for `file1.ts`.
-- `path/to/another/file.tsx` - Brief description (e.g., API route handler for data submission).
-- `path/to/another/file.test.tsx` - Unit tests for `another/file.tsx`.
-- `lib/utils/helpers.ts` - Brief description (e.g., Utility functions needed for calculations).
-- `lib/utils/helpers.test.ts` - Unit tests for `helpers.ts`.
-- `README.md` - Update main documentation with feature description and usage.
-- `docs/api/[feature].md` - API documentation for new endpoints/interfaces (if applicable).
-- `docs/guides/[feature]-usage.md` - User guide for the new feature (if complex).
+Document the surface area the implementation is likely to touch:
+
+- Highlight existing files that require updates and why they matter.
+- Call out new files or directories that need to be created.
+- Include documentation or test assets only when the PRD explicitly requires them.
 
 ### Notes
 
-- Use test commands defined in TESTING.md or CLAUDE.md.
+- Use test commands defined in TESTING.md (or the repository's documented process).
+- Reference AGENTS.md for available fidelity agents and support roles.
 - Use `/docs:update` command for comprehensive documentation updates.
 - Integrate technical-writer agent for complex documentation tasks.
 
@@ -125,7 +122,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
 - **Completion protocol:**
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
-  - **First**: Run the full test suite as defined in TESTING.md or CLAUDE.md
+  - **First**: Run the full test suite as defined in TESTING.md or the repository's documented process
   - **Only if all tests pass**: Stage changes (`git add .`)
   - **Clean up**: Remove any temporary files and temporary code before committing
   - **Commit**: Use a descriptive commit message that:

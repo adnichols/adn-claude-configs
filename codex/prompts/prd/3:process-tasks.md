@@ -25,6 +25,8 @@ Before starting task implementation:
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
 </skip_subtask_confirmation>
 
+By default the Codex executor pauses after every subtask for operator confirmation. Include the `NOSUBCONF` flag in $ARGUMENTS to allow autonomous progression while still following every fidelity safeguard.
+
 # Task List Management
 
 Guidelines for managing task lists in markdown files to track progress on completing source document implementations
@@ -33,7 +35,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
 ## Critical Task Update Protocol
 
-**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, Claude MUST follow this exact sequence:
+**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, the Codex agent MUST follow this exact sequence:
 
 1. **Declare completion with mandatory update statement:**
    "✅ Subtask [X.Y] [task name] completed.
@@ -41,7 +43,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
 2. **Immediately perform the markdown update:**
 
-- Use Edit tool to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
+- Update the task list file right away (for example, via the Codex file-edit command) to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
 - Show the actual edit operation in the response
 
 3. **Confirm update completion:**
@@ -51,13 +53,13 @@ Guidelines for managing task lists in markdown files to track progress on comple
 4. **Request permission to proceed (unless NOSUBCONF specified):**
    "Ready to proceed to next subtask. May I continue? (y/n)"
 
-**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If Claude completes a subtask without immediately updating the markdown file, it MUST:
+**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If the Codex agent completes a subtask without immediately updating the markdown file, it MUST:
 
 - Stop all work immediately
 - State: "❌ CRITICAL ERROR: I failed to update the task list. Stopping work."
 - Wait for user intervention before proceeding
 
-**VERIFICATION REQUIREMENT:** After each edit, Claude must show the updated section of the markdown file to confirm the change was made correctly.
+**VERIFICATION REQUIREMENT:** After each edit, the Codex agent must show the updated section of the markdown file to confirm the change was made correctly.
 
 - Do not proceed with tasks unless you are on a git branch other than main
 - If needed, create a branch for the phase of work you are implementing
@@ -71,8 +73,9 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
-  - **First**: Run standard validation checks:
-    - Always: lint, build, secrets scan, unit tests
+  - **First**: Run validation checks defined by the plan and repository guidance:
+    - Prioritize commands listed in the task file, TESTING.md, or AGENTS.md
+    - If nothing specific is provided, run the primary repository test suite and add lint, build, or secrets scans only when those commands exist and the scope requires them
   - **Only if all validations pass**: Stage changes (`git add .`)
   - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
   - **Clean up**: Remove any temporary files and temporary code before committing
@@ -127,4 +130,4 @@ When working with task lists, the AI must:
 7. For rich execution plans: Reference preserved context when making implementation decisions.
 8. For rich execution plans: Ensure traceability between implementation and source document rationale.
 9. For rich execution plans: Validate against success criteria throughout implementation.
-10. **CRITICAL CHECKPOINT:** After each subtask completion, Claude MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.
+10. **CRITICAL CHECKPOINT:** After each subtask completion, the Codex agent MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.

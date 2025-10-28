@@ -18,6 +18,8 @@ This command uses a standard research depth approach to create comprehensive spe
 3. **Integration considerations** for existing codebase patterns
 4. **Standard quality requirements** for production-ready features
 
+Codex does not assume unrestricted internet access. Ground findings in repository materials, AGENTS.md, existing documentation under `docs/`, or resources explicitly supplied by the user. Request additional references whenever critical information is missing.
+
 ## Input
 
 Consider any input from $ARGUMENTS

@@ -24,9 +24,9 @@ $ARGUMENTS. Think harder.
 
 ## Phase Quality Gates & Recovery
 
-1. When all subtasks within a phase are `[x]`, run the full validation stack:
-   - Always: lint, build, secrets scan, unit tests.
-   - Include any additional checks explicitly demanded by the source (e.g., integration tests, performance smoke tests).
+1. When all subtasks within a phase are `[x]`, run the validation stack defined by the source material:
+   - Prioritize commands listed in the task file, TESTING.md, or AGENTS.md.
+   - If nothing specific is provided, run the primary repository test suite; add lint, build, or secrets scans only when those commands exist and the scope requires them.
 2. If a validation fails:
    - Summarize the failure, remediate the issue, and rerun the gate.
    - Repeat up to three remediation cycles per phase. After three failures, halt and ask the operator how to proceed.
