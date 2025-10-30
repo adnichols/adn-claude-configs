@@ -5,7 +5,7 @@ argument-hint: ISSUE_KEY [BASE_BRANCH]
 
 Spin up a ready-to-code environment for a Linear issue. Accept the Linear issue key as the first argument (for example `NOD-123`). Optionally accept a second argument that overrides the default base branch (`origin/main`). Think harder. 
 
-Linear issue and (optional) branch name: $ARGUMENTS 
+Linear issue and optional base branch: $ARGUMENTS 
 
 ## Inputs & Preconditions
 - Require at least one argument; fail fast with guidance if missing.
@@ -14,10 +14,9 @@ Linear issue and (optional) branch name: $ARGUMENTS
 - Use the Linear MCP client to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
 
 ## Branch & Worktree Creation
-1. Generate a slug from the Linear issue title:
-   - Lowercase, keep alphanumerics, replace whitespace with hyphens, collapse repeats, trim to 6 words / 48 characters.
-2. Compose branch name: `issue/<issue-key-lower>/<slug>`.
-3. Compute the repo root (`git rev-parse --show-toplevel`) and its parent directory. Construct an absolute worktree path outside the repository: `<repo-parent>/<repo-name>-<issue-key-lower>-<slug>`. Never place worktrees inside the repo.
+1. The branch and worktree should simply be the Linear issue (e.g., nod-123).
+2. Compose branch name: `<issue-key-lower>`.
+3. Compute the repo root (`git rev-parse --show-toplevel`) and its parent directory. Construct an absolute worktree path outside the repository: `<repo-parent>/<repo-name>-<issue-key-lower>`. Never place worktrees inside the repo.
    - If a directory already exists at that path and is a worktree for the same branch, prune/reset it to the latest base via `git worktree remove --force` then recreate, or fast-forward within that directory.
    - If it exists but points elsewhere, halt and ask the operator how to proceed.
    - Validate the chosen path is not nested under any Git working tree by checking `git -C <path> rev-parse` (expect failure).
