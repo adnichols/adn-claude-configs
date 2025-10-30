@@ -1,30 +1,26 @@
-# Repository Guidelines
+# Agent Catalog
 
-## Project Structure & Module Organization
-- `agents/` holds the production agent briefs; reuse templates in `agents/templates/` when introducing new roles so naming stays consistent (`<role>-<modifier>.md`).
-- `commands/` defines the slash-command workflows consumed by Claude Code; mirror existing markdown structure when adding command docs.
-- `tools/gen_agents.py` contains the Jinja-driven generator for agent variants; keep supporting helpers alongside it in `tools/`.
-- Support docs, examples, and reports land in `docs/`, `examples/`, and `reports/` respectively; task outputs and specs belong in `tasks/`.
-- Tests, fixtures, and validation data live under `test/` (fixtures only today—add new suites beside them), while workspace-specific editor settings live in `vscode/`.
+Current roster of bespoke Claude and Codex agents defined in this repository. All briefs live under `agents/`, and templates for new roles live in `agents/templates/`.
 
-## Build, Test, and Development Commands
-- `pip install -r requirements.txt` — install dependencies for agent generation, linting, and validation.
-- `./install.sh` — symlink this repo into `~/.claude/` with backups; rerun after structural changes to propagate updates.
-- `pytest -q` — execute repository tests (add cases under `test/`); prefer `pytest --cov=tools --cov=agents` when validating coverage-sensitive work.
-- `black .` or `black --check .` — format or verify Python sources; run before committing generator changes.
-- `mypy tools/ agents/templates` — ensure type safety for generator scripts and any supporting utilities.
+## Implementation & Architecture
+- `developer` (sonnet; `agents/developer.md`) — Implements specs with tests and enforces zero linting violations.
+- `developer-fidelity` (sonnet; `agents/developer-fidelity.md`) — Implements specifications with absolute fidelity—no extra tests, features, or safeguards.
+- `architect` (opus; `agents/plan-architect.md`) — Senior architecture partner who analyses codebases and produces designs/ADRs without writing implementation code.
+- `simplify-planner` (opus; `agents/simplify-planner.md`) — Refactor planning specialist who produces cleanup plans that preserve existing behaviour.
 
-## Coding Style & Naming Conventions
-- Python code uses 4-space indentation, `black` formatting, and `mypy` typing; keep functions small and pure because generators run inside automation.
-- Favour `snake_case` for Python identifiers, kebab-case for agent and command filenames, and title-case headings inside markdown briefs.
-- Store reusable prose snippets in templates rather than hand-editing generated files; when manual edits are required, note deviations in the file header.
+## Review & Fidelity Safeguards
+- `quality-reviewer` (inherits workspace default model; `agents/quality-reviewer.md`) — Production safety review covering security, data loss, regressions, and performance.
+- `quality-reviewer-opus` (opus; `agents/quality-reviewer-opus.md`) — High-rigor variant of the quality reviewer for complex or high-risk diffs.
+- `quality-reviewer-fidelity` (sonnet; `agents/quality-reviewer-fidelity.md`) — Ensures code matches specification requirements exactly with no scope expansion.
+- `fidelity-reviewer` (opus; `agents/fidelity-reviewer.md`) — Compares generated task lists against source specifications and researches discrepancies.
 
-## Testing Guidelines
-- Organise new tests as `test_*.py` within `test/`; colocate reusable sample specs in `test/fixtures/`.
-- Target generator behaviour with focused unit tests and add regression cases whenever updating templates or validation logic.
-- Require a clean `pytest -q`, `black --check .`, and `mypy tools/` run before requesting review; include coverage output when it informs risk.
+## Debugging Support
+- `debugger` (sonnet; `agents/debugger.md`) — Evidence-driven debugger who gathers logs, forms hypotheses, and recommends fixes without modifying production code.
+- `debugger` (opus; `agents/debugger-hard.md`) — Manual “hard mode” debugger reserved for stubborn issues; enforces TodoWrite tracking and strict cleanup before reporting.
 
-## Commit & Pull Request Guidelines
-- Follow Conventional Commit prefixes observed in history (`feat:`, `fix:`, `docs:`, `chore:`); keep scope narrow and commits reviewable.
-- Pull requests should outline intent, impacted agents/commands, and validation evidence (commands run, configs synced). Link relevant issues or tasks and attach before/after snippets when editing agent briefs.
-- Double-check `sync-claude-config.sh --dry-run` when changes affect installation shape, and note any manual steps required for downstream consumers.
+## Documentation
+- `technical-writer` (sonnet; `agents/technical-writer.md`) — Produces concise post-implementation documentation with tight token limits.
+
+---
+
+When adding new agents, create the brief in `agents/` (using templates when possible) and update this catalog so downstream installations discover the new capability.

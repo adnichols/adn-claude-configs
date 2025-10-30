@@ -37,6 +37,8 @@ codex/prompts/
 ### Command Operations (`cmd:*`)
 - **`cmd:commit-push`** - Commit and push changes to repository
 - **`cmd:create-pr`** - Create pull request with changelog
+- **`cmd:start-linear-issue`** - Bootstrap a worktree/branch with local config for a Linear issue
+- **`cmd:auto-linear-issue`** - Setup worktree and autonomously implement, test, and ship the Linear issue
 
 ### Documentation (`doc:*`)
 - **`doc:fetch`** - Fetch documentation for a single library/framework
@@ -56,6 +58,9 @@ codex/prompts/
 ### Code Simplification (`simplify:*`)
 1. **`simplify:1:create-plan`** - Analyze code for simplification opportunities
 2. **`simplify:2:process-plan`** - Execute approved simplification plans
+
+### Quality Assurance (`qa:*`)
+- **`qa:bug-hunt-linear`** - Identify top-priority visual/UX bugs from recent changes and log them directly to Linear
 
 ## Command Relationships
 
