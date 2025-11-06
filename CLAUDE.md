@@ -73,14 +73,22 @@ Key specialized agents available:
 
 Important slash commands:
 
-- `/p:create-prd`: Create Product Requirements Documents with strict scope preservation
-- `/p:gen-tasks`: Convert PRDs to task lists using fidelity-preserving approach
-- `/p:spec-to-tasks`: Convert specifications directly to tasks with 100% fidelity
-- `/b:process-tasks`: Process task lists with fidelity agents and git branch management
-- `/simplify:create-plan`: Generate code simplification plans using simplify-planner agent
-- `/simplify:process-plan`: Execute existing simplification plans
+### Codex Commands
+- `codex 3:process-tasks`: Process task lists autonomously - executes entire phases with fidelity agents
+- `codex prd:1:create-prd`: Create Product Requirements Documents with strict scope preservation
+- `codex prd:2:gen-tasks`: Convert PRDs to task lists using fidelity-preserving approach
+- `codex spec:1:create-spec`: Research ideas and produce specification documents
+- `codex spec:2:gen-tasks`: Convert specifications directly to tasks with 100% fidelity
+
+### Documentation Commands
 - `/docs:fetch`: Fetch documentation for a single library/framework
 - `/docs:fetch-batch`: Batch fetch documentation from markdown lists containing multiple libraries
+
+### Code Quality Commands
+- `/simplify:create-plan`: Generate code simplification plans using simplify-planner agent
+- `/simplify:process-plan`: Execute existing simplification plans
+
+### Utility Commands
 - `/user:add-command`: Create new personal slash commands in ~/.claude/commands
 
 ## Configuration Notes
@@ -106,14 +114,16 @@ Fetched documentation available for enhanced Claude Code assistance:
 
 ### Task Processing Requirements
 
-When using `/b:process-tasks`:
+When using `codex 3:process-tasks`:
 
 - Must be on a git branch other than main
 - Uses fidelity-preserving agents (developer-fidelity, quality-reviewer-fidelity)
-- One sub-task at a time (requires user confirmation unless NOSUBCONF specified)
+- **Processes entire phases autonomously** - no confirmation required between subtasks
+- Updates task list markdown after each subtask completion
 - Test suite must pass before committing (only if tests were specified in source)
 - Follow conventional commit format with descriptive messages
 - Implement ONLY what's explicitly specified in source documents
+- Stops only when: phase complete, clarification needed, or validation fails 3+ times
 
 ### Fidelity-Preserving Workflow
 

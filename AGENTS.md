@@ -8,6 +8,23 @@ Current roster of bespoke Claude and Codex agents defined in this repository. Al
 - `architect` (opus; `agents/plan-architect.md`) — Senior architecture partner who analyses codebases and produces designs/ADRs without writing implementation code.
 - `simplify-planner` (opus; `agents/simplify-planner.md`) — Refactor planning specialist who produces cleanup plans that preserve existing behaviour.
 
+## Tool Selection Priority (Codex Environment)
+
+When agents run within Codex, they MUST prioritize native Codex tools over MCP server tools:
+
+**DO:**
+- Use native `Grep` tool (not `claude.Grep`)
+- Use native `Glob` tool (not `claude.Glob`)
+- Use native `Read` tool (not `claude.Read`)
+- Use direct bash commands (`rg`, `find`, etc.) when appropriate
+
+**DO NOT:**
+- Call MCP-prefixed tools for basic filesystem operations
+- Route through Claude Code MCP server for searches or file reads
+- Use `claude.*` tool variants when native equivalents exist
+
+**Rationale:** MCP tool wrapping introduces unnecessary latency and may produce inconsistent results. Native Codex tools are optimized for the local filesystem and provide superior performance.
+
 ## Review & Fidelity Safeguards
 - `quality-reviewer` (inherits workspace default model; `agents/quality-reviewer.md`) — Production safety review covering security, data loss, regressions, and performance.
 - `quality-reviewer-opus` (opus; `agents/quality-reviewer-opus.md`) — High-rigor variant of the quality reviewer for complex or high-risk diffs.

@@ -17,7 +17,6 @@ To guide an AI assistant in creating a Product Requirements Document (PRD) in Ma
 - Makes NO scope expansions or "improvements"
 - Preserves ALL original decisions and constraints
 - Creates PRDs that document EXACTLY what's requested
-- Uses fidelity-preserving agents that cannot modify scope
 
 ## Input
 
@@ -93,9 +92,6 @@ D) Security scope to be determined later"
 ---
 version: 1
 fidelity_mode: strict
-agents:
-  developer: developer-fidelity
-  reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
 document_metadata:
@@ -173,9 +169,8 @@ Technical approach: To be determined during implementation phase
 
 ### Next Steps
 
-- Use developer-fidelity agent for implementation planning
-- Use quality-reviewer-fidelity agent for validation
 - Follow strict scope preservation throughout implementation
+- Validate against requirements during implementation
 
 ## Open Questions
 
@@ -192,8 +187,7 @@ Technical approach: To be determined during implementation phase
 1. **Absolute Fidelity:** User requirements are the complete and sole authority
 2. **Zero Additions:** No requirements, features, or scope beyond user specifications
 3. **Clear Boundaries:** Explicit documentation of what's included and excluded
-4. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity for implementation
-5. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
+4. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
 
 ## Output Format
 
@@ -208,7 +202,6 @@ A well-crafted PRD should:
 
 - **Fidelity Metadata:** Include complete YAML front-matter with fidelity settings
 - **Clear Scope Boundaries:** Explicit documentation of included and excluded functionality
-- **Agent Specification:** Reference fidelity-preserving agents for implementation
 - **Zero Scope Creep:** No additions, improvements, or expansions beyond user requirements
 - **Complete Context:** All necessary information captured without external dependencies
 

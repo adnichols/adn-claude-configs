@@ -17,7 +17,6 @@ To guide an AI assistant in converting a detailed specification document (create
 - Makes NO scope expansions or "improvements"
 - Preserves ALL original decisions and constraints
 - Creates tasks that implement EXACTLY what's written
-- Uses fidelity-preserving agents that cannot modify scope
 
 ## Input
 

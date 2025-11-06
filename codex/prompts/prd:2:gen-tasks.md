@@ -10,9 +10,8 @@ This command follows the fidelity-preserving approach to:
 
 1. **Parse PRD Content:** Extract all requirements exactly as specified in the PRD
 2. **Preserve Scope Boundaries:** Maintain exact scope without additions or expansions
-3. **Use Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity agents
-4. **Minimal Task Detail:** Create only tasks necessary to implement specified requirements
-5. **Apply Only Specified Validation:** Include testing and validation only as specified in PRD
+3. **Minimal Task Detail:** Create only tasks necessary to implement specified requirements
+4. **Apply Only Specified Validation:** Include testing and validation only as specified in PRD
 
 ## Output
 
@@ -58,9 +57,6 @@ The generated task list _must_ follow this structure with YAML front-matter:
 version: 1
 fidelity_mode: strict
 source_prd: [path to source PRD file]
-agents:
-  developer: developer-fidelity
-  reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
 specification_metadata:

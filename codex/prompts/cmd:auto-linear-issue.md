@@ -49,7 +49,7 @@ Linear issue: $ARGUMENTS
    - Draft a short execution plan (tasks, validations) in the worktree note; keep it updated.
 2. **Implementation Loop**
    - Execute tasks sequentially using repo standards (consult `CLAUDE.md`, `TESTING.md`, `AGENTS.md`).
-   - Implement code changes directly in the worktree. Use `@developer` or `@developer-fidelity` agents as helpers when needed; do not pause for human approval unless blocked.
+   - Implement code changes directly in the worktree; do not pause for human approval unless blocked.
    - Maintain incremental commits logically grouped or a single commit at the end per repo conventions.
 3. **Validation**
    - Run required checks (tests, linters, builds). Prioritize commands specified in repo docs or the Linear issue.
