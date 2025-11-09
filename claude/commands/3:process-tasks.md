@@ -19,37 +19,39 @@ Before processing tasks, validate the task file is ready:
 
 2. **Validate YAML Front-matter:**
    - Parse YAML front-matter for required fields:
-     - `source_prd`: Path to source PRD (verify file exists)
+     - `source_prd` OR `source_specification`: Path to source document (verify file exists)
      - `fidelity_mode`: Should be "strict"
      - `agents`: Extract developer and reviewer agent names
+     - `complexity_level`: (optional, for specs) Note the depth level
      - `validated`: Should be `true` (indicates task coverage was validated)
    - If YAML is missing or incomplete:
      - Report specific missing fields
-     - Suggest running prd/2:gen-tasks again
+     - Suggest running appropriate gen-tasks command again
      - Halt processing
 
-3. **Validate Source PRD:**
-   - Check that source PRD file exists (from `source_prd` field)
-   - If source PRD missing:
-     - Report error: "Source PRD not found at [path]"
+3. **Validate Source Document:**
+   - Check that source document file exists (from `source_prd` or `source_specification` field)
+   - Detect source type: PRD if `source_prd` present, specification if `source_specification` present
+   - If source document missing:
+     - Report error: "Source [PRD/specification] not found at [path]"
      - Cannot proceed without source document
      - Halt processing
-   - If source PRD exists, note its location for reference
+   - If source document exists, note its location and type for reference during implementation
 
 4. **Validate Task Structure:**
    - Verify task file contains task lists (checkboxes)
-   - Check for parent/child task structure
-   - Confirm Relevant Files section is present
+   - Check for parent/child task structure (and phase structure if present)
+   - Confirm "Relevant Files" or "Implementation Files" section is present
    - If structure is malformed:
      - Report specific structural issues
      - Suggest fixes or regeneration
      - Halt processing
 
 5. **Validate Dependencies:**
-   - Check files mentioned in "Relevant Files" section:
+   - Check files mentioned in "Relevant Files" or "Implementation Files" section:
      - For existing files: Verify they exist
-     - For new files: Verify parent directories exist
-   - Check for external dependencies mentioned in tasks
+     - For new files: Verify parent directories exist or can be created
+   - Check for external dependencies (libraries, APIs) mentioned in tasks
    - If critical dependencies missing:
      - Report missing dependencies
      - Suggest installation steps if known
@@ -76,8 +78,9 @@ After successful validation, prepare for task implementation:
    - Do not add tests or validation beyond what's explicitly required
 
 4. **Initialize Progress Tracking:**
-   - Count total parent tasks and subtasks for progress reporting
-   - Display initial progress: "📊 Starting implementation: X parent tasks, Y subtasks total"
+   - Count total phases (if present), parent tasks, and subtasks for progress reporting
+   - Note complexity level if specified (simple/standard/comprehensive)
+   - Display initial progress: "📊 Starting implementation: [X phases,] Y parent tasks, Z subtasks total"
 
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
@@ -87,10 +90,14 @@ If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implem
 
 Throughout implementation, provide clear status updates:
 
+**Phase Progress (if applicable):**
+- When starting a phase: "🔄 **Phase N/X**: [Phase Name] - Starting..."
+- When completing a phase: "✅ **Phase N/X Complete** - [Brief summary of accomplishments]"
+
 **Task Progress:**
 - When starting a parent task: "📝 **Task N.0**: [Task Name] - [M subtasks]"
-- When completing a subtask: "✅ **Subtask N.M** complete ([M/Total] subtasks completed)"
-- After validation: "🔍 Running validation: lint → build → tests..."
+- When completing a subtask: "✅ **Subtask N.M** complete ([M/Total] subtasks [in this phase])"
+- After validation: "🔍 Running validation: lint → build → [secrets →] tests..."
 - After quality review: "👁️ Quality review passed using @quality-reviewer-fidelity"
 
 **Error Reporting:**
@@ -146,8 +153,11 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
-  - **First**: Run standard validation checks:
-    - Always: lint, build, secrets scan, unit tests
+  - **First**: Run validation checks appropriate to source document and complexity level:
+    - **For PRDs or simple specs**: lint, build (if build script exists)
+    - **For standard specs**: lint, build, unit tests
+    - **For comprehensive specs**: lint, build, secrets scan, unit tests
+    - If source document specifies additional validation, include that too
   - **Only if all validations pass**: Stage changes (`git add .`)
   - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
   - **Clean up**: Remove any temporary files and temporary code before committing
@@ -176,7 +186,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
    - Mark tasks and subtasks as completed (`[x]`) per the protocol above.
    - Add new tasks as they emerge.
 
-2. **Maintain the "Relevant Files" section:**
+2. **Maintain the "Relevant Files" or "Implementation Files" section:**
 
    - List every file created or modified during implementation.
    - Update descriptions as implementation progresses.
@@ -195,8 +205,8 @@ When working with task lists, the AI must:
 2. Follow the completion protocol:
    - Mark each finished **sub‑task** `[x]`.
    - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`.
-3. Add newly discovered tasks while maintaining phase structure.
-4. Keep "Relevant Files" accurate and up to date.
+3. Add newly discovered tasks while maintaining phase structure (if applicable).
+4. Keep "Relevant Files" or "Implementation Files" accurate and up to date.
 5. Before starting work, check which sub‑task is next and review context sections if present.
 6. After implementing a sub‑task, update the file and then pause for user approval.
 7. For rich execution plans: Reference preserved context when making implementation decisions.
@@ -206,9 +216,11 @@ When working with task lists, the AI must:
 
 ## Implementation Best Practices
 
-1. **Progress Transparency:** Provide regular status updates for long-running implementations
-2. **Error Recovery:** If validation fails, fix issues before proceeding to next task
-3. **Dependency Awareness:** Reference validated Relevant Files section for file operations
-4. **Fidelity Adherence:** Constantly reference source PRD to prevent scope creep
-5. **Graceful Degradation:** If optional dependencies missing, ask user before proceeding
-6. **Clear Communication:** Use progress indicators to keep user informed of status
+1. **Source Detection:** Auto-detect whether source is PRD or specification based on YAML front-matter
+2. **Validation Levels:** Adapt validation rigor to complexity level (simple/standard/comprehensive) if specified
+3. **Progress Transparency:** Provide regular status updates for long-running implementations
+4. **Error Recovery:** If validation fails, fix issues before proceeding to next task
+5. **Dependency Awareness:** Reference validated files section for file operations
+6. **Fidelity Adherence:** Constantly reference source document to prevent scope creep
+7. **Graceful Degradation:** If optional dependencies missing, ask user before proceeding
+8. **Clear Communication:** Use progress indicators to keep user informed of status

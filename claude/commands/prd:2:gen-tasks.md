@@ -1,3 +1,8 @@
+---
+description: Convert PRD to executable task list with full fidelity preservation
+argument-hint: [PRD File Path]
+---
+
 # Rule: Generating a Task List from a PRD with Fidelity Preservation
 
 ## Goal

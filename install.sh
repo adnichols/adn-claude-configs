@@ -170,57 +170,106 @@ sync_codex_prompts() {
 
 install_claude() {
     local target="$1/.claude"
+    local is_update=false
 
-    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}  Installing Claude Code Configuration${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "${GREEN}Installing Claude Code configuration to $target${NC}"
+    # Detect if this is an update
+    if [ -d "$target" ]; then
+        is_update=true
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Updating Claude Code Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Updating Claude Code configuration at $target${NC}"
+    else
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Installing Claude Code Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Installing Claude Code configuration to $target${NC}"
+        mkdir -p "$target"
+    fi
 
-    # Create .claude directory if it doesn't exist
-    mkdir -p "$target"
-
-    # Copy agents
-    echo "  - Copying agents..."
+    # Update agents (remove first to ensure clean state)
+    echo "  - Installing agents..."
+    if [ -d "$target/agents" ]; then
+        rm -rf "$target/agents"
+    fi
     cp -r "$REPO_ROOT/claude/agents" "$target/"
 
-    # Copy commands
-    echo "  - Copying commands..."
+    # Update commands (remove first to ensure clean state)
+    if [ -d "$target/commands" ]; then
+        # Check for legacy subdirectories
+        local has_legacy=false
+        local legacy_dirs=(cmd doc prd spec)
+        for legacy_dir in "${legacy_dirs[@]}"; do
+            if [ -d "$target/commands/$legacy_dir" ]; then
+                has_legacy=true
+                break
+            fi
+        done
+
+        if [ "$has_legacy" = true ]; then
+            echo "  - Cleaning up legacy command structure (subdirectories will be flattened)..."
+        fi
+    fi
+
+    echo "  - Installing commands..."
+    if [ -d "$target/commands" ]; then
+        rm -rf "$target/commands"
+    fi
     cp -r "$REPO_ROOT/claude/commands" "$target/"
 
-    # Copy scripts
-    echo "  - Copying scripts..."
+    # Update scripts (remove first to ensure clean state)
+    echo "  - Installing scripts..."
+    if [ -d "$target/scripts" ]; then
+        rm -rf "$target/scripts"
+    fi
     cp -r "$REPO_ROOT/claude/scripts" "$target/"
 
-    # Copy settings.local.json
+    # Handle settings.local.json (preserve if exists)
     if [ -f "$target/settings.local.json" ]; then
-        echo -e "  ${YELLOW}- settings.local.json already exists, skipping${NC}"
+        echo -e "  ${YELLOW}✓ Preserved existing settings.local.json${NC}"
     else
         echo "  - Installing settings.local.json..."
         cp "$REPO_ROOT/claude/settings.local.json" "$target/"
     fi
 
-    # Copy MCP servers configuration
+    # Update MCP servers configuration
     echo "  - Installing mcp-servers.json..."
     cp "$REPO_ROOT/claude/mcp-servers.json" "$target/"
 
-    echo -e "${GREEN}✓ Claude Code installation complete${NC}"
+    if [ "$is_update" = true ]; then
+        echo -e "${GREEN}✓ Claude Code update complete${NC}"
+    else
+        echo -e "${GREEN}✓ Claude Code installation complete${NC}"
+    fi
     echo ""
     echo "Note: CLAUDE.md is NOT installed - codex will generate this file."
-    echo "To merge MCP servers with Claude Desktop, see: $target/mcp-servers.json"
+    if [ "$is_update" = false ]; then
+        echo "To merge MCP servers with Claude Desktop, see: $target/mcp-servers.json"
+    fi
 }
 
 install_codex() {
     local target="$1/.codex"
+    local is_update=false
 
-    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}  Installing Codex Configuration${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "${GREEN}Installing Codex configuration to $target${NC}"
-
-    # Create .codex directory if it doesn't exist
-    mkdir -p "$target"
+    # Detect if this is an update
+    if [ -d "$target" ]; then
+        is_update=true
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Updating Codex Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Updating Codex configuration at $target${NC}"
+    else
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Installing Codex Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Installing Codex configuration to $target${NC}"
+        mkdir -p "$target"
+    fi
 
     local project_prompts_dir="${target}/prompts"
     if [ -d "$project_prompts_dir" ]; then
@@ -258,10 +307,16 @@ install_codex() {
     echo "  - Installing mcp-servers.toml..."
     cp "$REPO_ROOT/codex/mcp-servers.toml" "$target/"
 
-    echo -e "${GREEN}✓ Codex installation complete${NC}"
+    if [ "$is_update" = true ]; then
+        echo -e "${GREEN}✓ Codex update complete${NC}"
+    else
+        echo -e "${GREEN}✓ Codex installation complete${NC}"
+    fi
     echo ""
     echo "Note: AGENTS.md is NOT installed - codex will generate this file."
-    echo "To add MCP servers to Codex, merge mcp-servers.toml into ~/.codex/config.toml"
+    if [ "$is_update" = false ]; then
+        echo "To add MCP servers to Codex, merge mcp-servers.toml into ~/.codex/config.toml"
+    fi
 }
 
 # Main installation logic
@@ -295,4 +350,4 @@ echo ""
 echo "Next steps:"
 echo "  1. Review and customize settings as needed"
 echo "  2. Configure MCP servers (see mcp-servers.json/toml files)"
-echo "  3. Run 'bash $REPO_ROOT/update.sh' to sync future updates"
+echo "  3. Run this script again to sync future updates (it auto-detects existing installations)"
