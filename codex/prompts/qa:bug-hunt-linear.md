@@ -1,4 +1,4 @@
-Run a full visual QA sweep, focusing on bugs introduced or surfaced within the last 7 days, and log each validated issue directly to Linear without implementing fixes.
+Run a focused visual QA sweep, concentrating on bugs introduced or surfaced within the last 7 days, and log each validated issue directly to Linear without implementing fixes.
 
 ## Investigation Scope
 - Prioritize areas touched by recent commits (`git log --since=7.days`, `git diff --stat`) and any high-traffic UI flows.

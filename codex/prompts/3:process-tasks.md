@@ -6,7 +6,9 @@ argument-hint: [Files]
 # Instructions
 
 Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. Implement only what's explicitly specified, without additions or scope expansions.
-$ARGUMENTS. Think harder.
+$ARGUMENTS.
+
+Also follow this repository's `AGENTS.md` for project-specific branch, testing, and security rules.
 
 ## AUTONOMOUS PHASE PROCESSING
 
@@ -36,35 +38,19 @@ Before starting task implementation:
 
 ## Critical Task Update Protocol
 
-**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, the Codex agent MUST follow this exact sequence:
+After completing any subtask:
 
-1. **Declare completion with mandatory update statement:**
-   "✅ Subtask [X.Y] [task name] completed.
-   🔄 UPDATING MARKDOWN FILE NOW..."
+1. Immediately update the corresponding line in the task list file, changing `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`.
+2. Show the edit operation in the response and display the updated section of the markdown file to confirm the change.
+3. Continue directly to the next subtask without waiting for additional confirmation.
 
-2. **Immediately perform the markdown update:**
-   - Update the task list file right away (for example, via the Codex file-edit command) to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
-   - Show the actual edit operation in the response
-
-3. **Confirm update completion:**
-   "✅ Markdown file updated: [ ] → [x] for subtask X.Y
-   📋 Task list is now current."
-
-4. **Proceed to next subtask:**
-   State "▶️ Proceeding to next subtask..." and immediately continue to the next subtask without waiting for confirmation.
-
-**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If the Codex agent completes a subtask without immediately updating the markdown file, it MUST:
-- Stop all work immediately
-- State: "❌ CRITICAL ERROR: I failed to update the task list. Stopping work."
-- Wait for user intervention before proceeding
-
-**VERIFICATION REQUIREMENT:** After each edit, the Codex agent must show the updated section of the markdown file to confirm the change was made correctly.
+If a subtask is completed but the markdown file was not updated promptly:
+- Stop further work.
+- Clearly state that the task list is out of sync and await operator guidance before resuming.
 
 ## Completion Protocol
 
 When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
-
-**MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful.
 
 If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
@@ -95,13 +81,13 @@ If **all** subtasks underneath a parent task are now `[x]`, follow this sequence
 
 7. Once all the subtasks are marked completed and changes have been committed, mark the **parent task** as completed.
 
-**PHASE COMPLETION:** Stop after parent tasks complete (entire phase done), run test suite, and commit changes.
+**PHASE COMPLETION:** When all parent tasks in the current phase are complete and validated, ensure tests and commits are up to date, then stop and report completion.
 
 ## Task List Maintenance
 
 1. **Update the task list as you work:**
    - Mark tasks and subtasks as completed (`[x]`) per the protocol above
-   - Add new tasks as they emerge
+   - Add follow-up tasks only when they directly trace back to requirements or clarifications in the source document
 
 2. **Maintain the "Relevant Files" section:**
    - List every file created or modified during implementation

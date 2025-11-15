@@ -1,14 +1,15 @@
 #!/bin/bash
 
 # Installation script for Claude Code and Codex configurations
-# Usage: ./install.sh [--claude|--codex|--all] [target-directory]
+# Usage: ./install.sh [--claude|--codex|--all] [--append-agents] [target-directory]
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$SCRIPT_DIR"
-TARGET_DIR="${2:-.}"
-INSTALL_MODE="${1:---all}"
+TARGET_DIR="."
+INSTALL_MODE="--all"
+APPEND_AGENTS=false
 
 # Colors for output
 RED='\033[0;31m'
@@ -17,17 +18,22 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 print_usage() {
-    echo "Usage: $0 [--claude|--codex|--all] [target-directory]"
+    echo "Usage: $0 [--claude|--codex|--all] [--append-agents] [target-directory]"
     echo ""
     echo "Options:"
     echo "  --claude    Install Claude Code configuration only"
     echo "  --codex     Install Codex configuration only"
     echo "  --all       Install both (default)"
+    echo "  --append-agents"
+    echo "             Ensure a project-level AGENTS.md exists in the target directory."
+    echo "             If AGENTS.md exists and is missing the Fidelity & Execution rules,"
+    echo "             append that section from AGENTS.template.md."
     echo ""
     echo "Examples:"
-    echo "  $0 --claude              # Install Claude to current directory"
-    echo "  $0 --codex ~/my-project  # Install Codex to ~/my-project"
-    echo "  $0 --all                 # Install both to current directory"
+    echo "  $0 --claude                        # Install Claude to current directory"
+    echo "  $0 --codex ~/my-project            # Install Codex to ~/my-project"
+    echo "  $0 --codex --append-agents ~/proj  # Install Codex and ensure AGENTS.md in ~/proj"
+    echo "  $0 --all --append-agents           # Install both and ensure AGENTS.md in current dir"
 }
 
 ensure_codex_cli_flags() {
@@ -130,6 +136,56 @@ PY
             echo "  - Unable to validate Codex CLI flags (manual config update required)"
             ;;
     esac
+}
+
+ensure_project_agents() {
+    # Ensure a project-level AGENTS.md exists and, optionally, append the Fidelity & Execution rules.
+    local project_root="$1"
+    local template_path="$REPO_ROOT/AGENTS.template.md"
+    local agents_path="$project_root/AGENTS.md"
+
+    # Do not touch the config repo's own AGENTS.md via this path
+    if [ "$project_root" = "$REPO_ROOT" ]; then
+        return
+    fi
+
+    if [ ! -f "$template_path" ]; then
+        return
+    fi
+
+    if [ ! -f "$agents_path" ]; then
+        echo "  - No project AGENTS.md found; installing from template..."
+        cp "$template_path" "$agents_path"
+        return
+    fi
+
+    if grep -q "Fidelity & Execution Rules" "$agents_path"; then
+        return
+    fi
+
+    echo "  - Existing AGENTS.md found without Fidelity & Execution rules section."
+    if [ "$APPEND_AGENTS" = true ]; then
+        echo "  - Appending Fidelity & Execution rules block from template..."
+        awk 'BEGIN{flag=0} /^## Fidelity & Execution Rules/{flag=1} flag {print}' "$template_path" >> "$agents_path"
+        echo "" >> "$agents_path"
+    else
+        if [ -t 0 ]; then
+            printf "  - Add Fidelity & Execution rules section to AGENTS.md now? [Y/n] "
+            read -r reply
+            case "$reply" in
+                ""|"Y"|"y")
+                    echo "  - Appending Fidelity & Execution rules block from template..."
+                    awk 'BEGIN{flag=0} /^## Fidelity & Execution Rules/{flag=1} flag {print}' "$template_path" >> "$agents_path"
+                    echo "" >> "$agents_path"
+                    ;;
+                *)
+                    echo "  - Skipping append to AGENTS.md (you can re-run with --append-agents or edit manually)."
+                    ;;
+            esac
+        else
+            echo "  - Skipping automatic append to AGENTS.md (non-interactive; run with --append-agents or edit manually)."
+        fi
+    fi
 }
 
 sync_codex_prompts() {
@@ -254,6 +310,9 @@ install_codex() {
     local target="$1/.codex"
     local is_update=false
 
+    # Ensure project-level AGENTS.md / house rules if requested
+    ensure_project_agents "$1"
+
     # Detect if this is an update
     if [ -d "$target" ]; then
         is_update=true
@@ -313,11 +372,43 @@ install_codex() {
         echo -e "${GREEN}✓ Codex installation complete${NC}"
     fi
     echo ""
-    echo "Note: AGENTS.md is NOT installed - codex will generate this file."
+    if [ "$APPEND_AGENTS" = true ]; then
+        echo "Note: Project AGENTS.md was created or updated; review it to tailor project-specific rules."
+    else
+        echo "Note: To ensure a project-level AGENTS.md with Fidelity & Execution rules, re-run with --append-agents."
+    fi
     if [ "$is_update" = false ]; then
         echo "To add MCP servers to Codex, merge mcp-servers.toml into ~/.codex/config.toml"
     fi
 }
+
+# Argument parsing
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --claude|--codex|--all)
+            INSTALL_MODE="$1"
+            shift
+            ;;
+        --append-agents)
+            APPEND_AGENTS=true
+            shift
+            ;;
+        --help|-h)
+            print_usage
+            exit 0
+            ;;
+        *)
+            if [[ "$1" == -* ]]; then
+                echo -e "${RED}Error: Unknown option $1${NC}"
+                echo ""
+                print_usage
+                exit 1
+            fi
+            TARGET_DIR="$1"
+            shift
+            ;;
+    esac
+done
 
 # Main installation logic
 case "$INSTALL_MODE" in
@@ -331,10 +422,6 @@ case "$INSTALL_MODE" in
         install_claude "$TARGET_DIR"
         echo ""
         install_codex "$TARGET_DIR"
-        ;;
-    --help|-h)
-        print_usage
-        exit 0
         ;;
     *)
         echo -e "${RED}Error: Unknown option $INSTALL_MODE${NC}"

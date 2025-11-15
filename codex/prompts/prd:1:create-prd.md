@@ -7,16 +7,18 @@ argument-hint: [Feature Description]
 
 ## Goal
 
-To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands. Think harder.
+To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands.
+
+Also follow this repository's `AGENTS.md` for project-specific constraints, testing expectations, and security requirements.
 
 ## Core Principle: Specification Fidelity
 
 **The user's requirements are the absolute authority.** This command:
 
-- Adds ZERO requirements beyond user specifications
-- Makes NO scope expansions or "improvements"
-- Preserves ALL original decisions and constraints
-- Creates PRDs that document EXACTLY what's requested
+- Does not add requirements beyond user specifications.
+- Does not expand scope or "improve" requirements.
+- Preserves original decisions and constraints.
+- Creates PRDs that document exactly what's requested.
 
 ## Input
 
@@ -195,21 +197,3 @@ Technical approach: To be determined during implementation phase
 - **Location:** `/tasks/`
 - **Filename:** `prd-[feature-name].md`
 - **Metadata:** Fidelity-preserving YAML front-matter
-
-## Success Indicators
-
-A well-crafted PRD should:
-
-- **Fidelity Metadata:** Include complete YAML front-matter with fidelity settings
-- **Clear Scope Boundaries:** Explicit documentation of included and excluded functionality
-- **Zero Scope Creep:** No additions, improvements, or expansions beyond user requirements
-- **Complete Context:** All necessary information captured without external dependencies
-
-## Target Audience
-
-This command serves teams that need:
-
-- Exact requirement preservation without scope creep
-- Clear boundaries between what's included and excluded
-- Fidelity guarantees throughout the development process
-- Simple, predictable PRD creation without complexity overhead

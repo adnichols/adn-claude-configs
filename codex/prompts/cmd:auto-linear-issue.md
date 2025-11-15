@@ -3,16 +3,18 @@ description: Fully execute a Linear issue autonomously from worktree setup throu
 argument-hint: ISSUE_KEY [BASE_BRANCH]
 ---
 
-Stand up a dedicated worktree for the given Linear issue and carry the fix to completion without additional operator prompts. Accept the Linear issue key as the first argument (for example `NOD-123`). Optionally accept a second argument that overrides the default base branch (`origin/main`). Think harder.
+Stand up a dedicated worktree for the given Linear issue and carry the fix to completion with minimal operator interaction. Accept the Linear issue key as the first argument (for example `NOD-123`). Optionally accept a second argument that overrides the default base branch (`origin/main`).
+
+Also follow this repository's `AGENTS.md` for project-specific branching, testing, and deployment rules.
 
 Linear issue: $ARGUMENTS
 
 ## Inputs & Preconditions
 
-- Require at least one argument; fail fast with guidance if missing.
-- Verify the repository root (`git rev-parse --show-toplevel`) has no staged or unstaged changes; halt if dirty until the operator cleans up.
-- `git fetch --prune --tags` before branching to avoid stale bases.
-- Retrieve full Linear issue metadata via MCP (title, description, project, status, labels, attachments) and confirm it belongs to the "Doc Thingy" project. Abort with a warning if not.
+- Require at least one argument; fail fast with clear usage guidance if missing.
+- Verify the repository root (`git rev-parse --show-toplevel`) has no staged or unstaged changes; halt and ask the operator to clean up if dirty.
+- Run `git fetch --prune --tags` before branching to avoid stale bases.
+- Retrieve full Linear issue metadata via MCP (title, description, project, status, labels, attachments) and confirm it belongs to the "Doc Thingy" project; abort with a warning if not.
 - Record the Linear issue URL for later status updates and PR descriptions.
 
 ## Branch & Worktree Creation
@@ -53,7 +55,7 @@ Linear issue: $ARGUMENTS
    - Maintain incremental commits logically grouped or a single commit at the end per repo conventions.
 3. **Validation**
    - Run required checks (tests, linters, builds). Prioritize commands specified in repo docs or the Linear issue.
-   - If a check fails, remediate and rerun until clean or until three attempts fail; on repeated failure escalate to operator with diagnostics while leaving the workspace intact.
+   - If a check fails, remediate and rerun until clean or until three attempts fail; on repeated failure, pause and surface diagnostics to the operator while leaving the workspace intact.
 4. **Documentation & Status Updates**
    - Update the worktree note with implementation summary, commands run, and remaining risks.
    - Post a draft update to Linear via MCP (comment) summarizing progress when major milestones complete or a blocker arises.

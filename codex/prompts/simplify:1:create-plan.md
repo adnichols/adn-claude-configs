@@ -7,7 +7,9 @@ argument-hint: [Target directory/files to analyze]
 
 ## Goal
 
-To guide an AI assistant in creating a detailed Code Simplification Plan with careful cleanup recommendations while ensuring absolute preservation of core functionality. Think harder.
+To guide an AI assistant in creating a detailed Code Simplification Plan with careful cleanup recommendations while ensuring absolute preservation of core functionality.
+
+Also follow this repository's `AGENTS.md` for project-specific refactoring limits, testing expectations, and safety constraints.
 
 ## Simplification Approach
 
@@ -42,21 +44,14 @@ This command uses a comprehensive approach to code simplification that:
 Before generating any simplification plan, ensure comprehensive safety requirements:
 
 1. **Test Coverage Verification:**
-   - Analyze existing test coverage for the target area (aim for comprehensive coverage)
-   - Identify gaps in test coverage for core functionality
-   - Document current test structure and quality
-   - Favor integration tests and end-to-end scenarios where possible
-   - Minimize mocks and stubs where possible, use real scenarios
+   - Analyze existing test coverage for the target area and identify gaps for core functionality.
+   - Document current test structure and quality at a high level.
 
 2. **Recent Change Analysis:**
-   - Review git history for recent modifications
-   - Identify areas of frequent change or bug fixes
-   - Understand evolution patterns and complexity accumulation
+   - Review git history for recent modifications and areas of frequent change.
 
 3. **Dependency Mapping:**
-   - Identify all external dependencies on the target code
-   - Map integration points and API contracts
-   - Document concurrent behavior and thread safety requirements
+   - Identify external dependencies on the target code and key integration points.
 
 ## Simplification Plan Structure
 
@@ -131,16 +126,10 @@ The generated plan should include the following sections as a checklist:
 
 ## Responsibilities
 
-- Plan creation and coordination
-- Codebase complexity analysis
-- Evidence-based cleanup recommendations
-- Git branch management
-- Progress tracking and checklist updates
-- Quality gates and safety verification
-- Preservation strategy design
-- Risk identification and mitigation planning
-- Plan safety review
-- Risk assessment validation
+- Plan creation and coordination.
+- Codebase complexity analysis.
+- Evidence-based cleanup recommendations.
+- Identification of safety requirements and risks.
 
 ## Safety Requirements
 

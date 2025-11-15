@@ -9,14 +9,16 @@ argument-hint: [Specification File Path]
 
 To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while preserving 100% fidelity to the original specification. This command bypasses complexity systems and PRD conversion to maintain exact scope boundaries and requirements as specified. Think harder.
 
+Also follow this repository's `AGENTS.md` for project-specific conventions, branch policies, and testing expectations.
+
 ## Core Principle: Specification Fidelity
 
 **The specification is the absolute authority.** This command:
 
-- Adds ZERO requirements beyond the specification
-- Makes NO scope expansions or "improvements"
-- Preserves ALL original decisions and constraints
-- Creates tasks that implement EXACTLY what's written
+- Does not add requirements beyond the specification.
+- Does not expand scope or “improve” requirements.
+- Preserves original decisions and constraints.
+- Creates tasks that implement exactly what's written.
 
 ## Input
 

@@ -21,10 +21,9 @@ codex/prompts/
 ├── doc:update.md                # Documentation update command
 ├── prd:1:create-prd.md          # PRD workflow (step 1)
 ├── prd:2:gen-tasks.md           # PRD workflow (step 2)
-├── prd:3:process-tasks.md       # PRD workflow (step 3)
+├── 3:process-tasks.md           # Shared task processing workflow (step 3)
 ├── spec:1:create-spec.md        # Specification workflow (step 1)
 ├── spec:2:gen-tasks.md          # Specification workflow (step 2)
-├── spec:3:process-tasks.md      # Specification workflow (step 3)
 ├── simplify:1:create-plan.md    # Simplification workflow (step 1)
 └── simplify:2:process-plan.md   # Simplification workflow (step 2)
 ```
@@ -48,12 +47,12 @@ codex/prompts/
 ### PRD Workflow (`prd:*`)
 1. **`prd:1:create-prd`** - Create Product Requirements Documents from scratch
 2. **`prd:2:gen-tasks`** - Convert PRDs to executable task lists
-3. **`prd:3:process-tasks`** - Process and execute PRD-based tasks
+3. **`3:process-tasks`** - Process and execute PRD-based tasks
 
 ### Specification Workflow (`spec:*`)
 1. **`spec:1:create-spec`** - Research and generate technical specifications
 2. **`spec:2:gen-tasks`** - Convert specs to executable task lists
-3. **`spec:3:process-tasks`** - Process and execute spec-based tasks
+3. **`3:process-tasks`** - Process and execute spec-based tasks (shared with PRD workflow)
 
 ### Code Simplification (`simplify:*`)
 1. **`simplify:1:create-plan`** - Analyze code for simplification opportunities
@@ -211,6 +210,23 @@ All commands use consistent:
 3. **Test before commit** - all commands enforce test passing
 4. **Context preservation** - rich execution plans maintain full context
 5. **Progress tracking** - regular task list updates required
+
+## Fidelity & Execution House Rules
+
+These rules apply to all fidelity‑oriented prompts (`prd:*`, `spec:*`, `3:process-tasks`, `simplify:*`, and related commands):
+
+- **Fidelity**
+  - Treat the source document (user input, PRD, spec, or task file) as the single source of truth.
+  - Do not add requirements, tests, or security work beyond what is explicitly specified.
+  - Do not broaden scope; when in doubt, ask for clarification instead of guessing.
+
+- **Execution**
+  - Work on a non‑`main` branch for any code changes; create a branch if needed.
+  - Run the repository’s primary tests (and any task‑specific checks) before committing.
+  - When working from task lists or simplification plans:
+    - After completing a listed sub‑task/step, immediately change its checkbox from `[ ]` to `[x]` in the same file and verify the change.
+    - Avoid batching checkbox updates; progress in the markdown file should reflect actual progress in real time.
+    - Keep any “Relevant Files” sections accurate as files are created or modified.
 
 ## File Outputs
 

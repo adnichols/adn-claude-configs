@@ -7,18 +7,20 @@ argument-hint: [Idea/Feature Description]
 
 ## Goal
 
-To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter. This document will serve as input to downstream task generation commands. Think harder.
+To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter. This document will serve as input to downstream task generation commands.
+
+Also follow this repository's `AGENTS.md` for project-specific technical constraints, testing expectations, and security requirements.
 
 ## Research Approach
 
 This command uses a standard research depth approach to create comprehensive specification documents that include:
 
-1. **Core functionality analysis** based on research findings and feature characteristics
-2. **Appropriate technical depth** matching the requirements
-3. **Integration considerations** for existing codebase patterns
-4. **Standard quality requirements** for production-ready features
+1. Core functionality analysis based on research findings and feature characteristics.
+2. Appropriate technical depth matching the requirements.
+3. Integration considerations for existing codebase patterns.
+4. Quality requirements appropriate for production-ready features where warranted.
   
-**Operational requirement:** this workflow expects `--dangerously-bypass-approvals-and-sandbox` and Codex web search to be enabled so the agent can perform end-to-end research. If those permissions are absent, pause immediately and ask the operator to rerun the command with the required flags rather than continuing with incomplete context.
+**Operational note:** this workflow assumes web search and filesystem access are available so the agent can perform end-to-end research. If those capabilities are restricted, state the limitation clearly and proceed with the best specification you can produce from available context.
 
 ## Input
 
@@ -56,58 +58,22 @@ The AI will need to:
 
 ## Research Areas
 
-The research should comprehensively cover:
+The research should cover at least:
 
-### Core Research (Always Include)
-
-- Existing implementations and design patterns
-- Framework and library recommendations (from current codebase)
-- Integration with existing systems
-- User journey and interface patterns
-- Existing code patterns and conventions
-- Available utilities and shared components
-
-### Technical Research
-
-- Data modeling requirements
-- Security considerations (input validation, authentication, authorization)
-- Testing approaches (unit, integration, e2e tests)
-- Error handling patterns and edge cases
-- Configuration and environment requirements
-
-### Production Readiness Research
-
-- Performance considerations and optimization opportunities
-- Security best practices and compliance needs
-- Reliability and resilience features
-- Monitoring and observability requirements
-- Deployment considerations and CI/CD integration
-- Backward compatibility requirements (if applicable)
+- Existing implementations, design patterns, and recommended frameworks/libraries (prefer those already used in the codebase).
+- Integration with existing systems, APIs, and shared components.
+- Data modeling and configuration requirements.
+- Security considerations (input validation, authn/authz) and error handling patterns.
+- Testing approaches (unit, integration, e2e) and quality gates.
+- Performance, reliability, monitoring/observability, deployment, and backward compatibility (when applicable).
 
 ## Clarifying Questions (Only When Needed)
 
-Ask questions using letter/number lists for easy selection. Examples:
+Ask clarifying questions only when needed to resolve important gaps. Prefer short letter/number option lists for quick selection, focusing on:
 
-**If problem scope is unclear:**
-"To better research this idea, I need to understand the scope. Which best describes your vision?
-A) A simple feature addition to existing system  
-B) An enhancement to current functionality
-C) A complete standalone application
-D) A developer tool or utility"
-
-**If target users are ambiguous:**
-"Who is the primary user for this feature?
-A) End users (customers/clients)
-B) Internal team members
-C) Developers/technical users
-D) System administrators"
-
-**If backward compatibility might be relevant:**
-"Are there backward compatibility requirements?
-A) No - can break existing interfaces
-B) Yes - must maintain existing API compatibility
-C) Partial - some breaking changes acceptable
-D) Not applicable"
+- Problem scope (simple addition, enhancement, standalone app, developer tool, etc.).
+- Target users (end users, internal teams, developers, administrators).
+- Backward compatibility expectations (no compatibility, must remain compatible, partial, or not applicable).
 
 ## Specification Template
 
@@ -116,11 +82,11 @@ The specification document uses this comprehensive structure:
 ```markdown
 # [Idea Name] - Research Specification
 
-## 🎯 Executive Summary
+## Executive Summary
 
 [Comprehensive problem, solution, value, and success criteria]
 
-## 🔍 Core Research Findings
+## Core Research Findings
 
 ### Technical Approach
 
@@ -162,7 +128,7 @@ The specification document uses this comprehensive structure:
 
 [Security best practices, reliability features, and compliance requirements]
 
-## 🎨 User Interface
+## User Interface
 
 ### User Flow
 
@@ -172,7 +138,7 @@ The specification document uses this comprehensive structure:
 
 [Comprehensive UI/UX requirements and design considerations]
 
-## 🧪 Testing Approach
+## Testing Approach
 
 ### Test Strategy
 
@@ -182,7 +148,7 @@ The specification document uses this comprehensive structure:
 
 [Quality gates, validation processes, and acceptance testing]
 
-## ⚡ Performance & Reliability
+## Performance & Reliability
 
 ### Performance Requirements
 
@@ -196,7 +162,7 @@ The specification document uses this comprehensive structure:
 
 [Logging, monitoring, metrics, and debugging considerations]
 
-## 🔒 Security & Compliance
+## Security & Compliance
 
 ### Security Architecture
 
@@ -206,7 +172,7 @@ The specification document uses this comprehensive structure:
 
 [Regulatory compliance, industry standards, and security policies]
 
-## 🔄 Compatibility & Migration
+## Compatibility & Migration
 
 ### Backward Compatibility
 
@@ -216,7 +182,7 @@ The specification document uses this comprehensive structure:
 
 [API compatibility, data migration, and system integration needs]
 
-## 📈 Implementation Plan
+## Implementation Plan
 
 ### Development Phases
 
@@ -230,7 +196,7 @@ The specification document uses this comprehensive structure:
 
 [Risk assessment, mitigation strategies, and contingency planning]
 
-## 📚 Research References
+## Research References
 
 ### Technical References
 
@@ -240,7 +206,7 @@ The specification document uses this comprehensive structure:
 
 [Industry standards, patterns, and recommended practices]
 
-## 📋 Specification Complete
+## Specification Complete
 
 [This specification contains all necessary information for task generation and implementation]
 ```
@@ -257,23 +223,4 @@ The specification document uses this comprehensive structure:
 2. **Evidence-Based:** Ground recommendations in thorough research and analysis
 3. **Well-Defined:** Provide sufficient detail for downstream task generation and implementation
 4. **Codebase Integration:** Prioritize existing patterns and conventions in implementation recommendations
-5. **Production-Ready:** Focus on creating specifications suitable for reliable production systems
-
-## Target Audience
-
-This command is designed for standard feature development requiring:
-
-- Production-ready quality with reliability and performance considerations
-- Comprehensive technical planning and risk assessment
-- Integration with existing systems and codebases
-- Full testing, security, and monitoring coverage
-
-## Success Indicators
-
-A well-researched specification should:
-
-- **Comprehensive Coverage:** Contain all sections needed for production implementation
-- **Solve Core Problem:** Address the user's stated problem with thorough analysis
-- **Enable Execution:** Provide sufficient context for downstream task generation commands
-- **Technical Depth:** Include all necessary technical, security, and performance considerations
-- **Follow Template:** Use the standardized comprehensive template structure
+5. Production-ready focus where appropriate: emphasize reliability, performance, and operability when the feature warrants it.

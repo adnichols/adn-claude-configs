@@ -5,7 +5,7 @@ argument-hint: "[library_name] [--version VERSION] [--sections SECTIONS] [--upda
 
 # Documentation Fetch Command
 
-Fetch and curate documentation for programming libraries, frameworks, coding languages, and toolsets. This command transforms scattered online documentation into locally stored, AI-friendly Markdown files within the `/workspace/docs/` directory. Think harder.
+Fetch and curate documentation for programming libraries, frameworks, coding languages, and toolsets. This command transforms scattered online documentation into locally stored, AI-friendly Markdown files within the `/workspace/docs/` directory.
 
 The package we are refering to will be provided via $ARGUMENTS
 
@@ -31,50 +31,12 @@ The package we are refering to will be provided via $ARGUMENTS
 
 ## Implementation
 
-$ARGUMENTS
+The AI should:
 
-I'll help you fetch and curate documentation for the specified library or framework. Let me process your request:
-
-1. **Parse Arguments**: Extract library name and optional parameters
-2. **Source Discovery**: Identify official documentation URLs and site patterns
-3. **Content Fetching**: Use appropriate scraping method based on site type
-4. **Content Processing**: Convert HTML to AI-friendly Markdown format
-5. **Organization**: Structure content using Technical Writer agent patterns
-6. **Storage**: Save to `/workspace/docs/` with consistent naming conventions
-
-Let me start by parsing your arguments and executing the documentation fetch process.
-
-<function_calls>
-<invoke name="Bash">
-<parameter name="command">python .codex/prompts/_lib/scripts/docs-fetch.py $ARGUMENTS</parameter>
-<parameter name="description">Execute documentation fetch script with user arguments</parameter>
-</invoke>
-
-Now let me update CLAUDE.md to reference the newly fetched documentation so Claude Code knows where to find it for future assistance.
-
-<function_calls>
-<invoke name="Edit">
-<parameter name="file_path">CLAUDE.md</parameter>
-<parameter name="old_string">## Repository Structure
-
-This is a Claude Code configuration repository containing:
-
-- **agents/**: Custom agent definitions for specialized tasks (developer, quality-reviewer, simplify-planner, etc.)
-- **commands/**: Custom slash commands for task processing and code management
-- **settings.json**: Claude Code configuration with custom status line and MCP servers</parameter>
-  <parameter name="new_string">## Repository Structure
-
-This is a Claude Code configuration repository containing:
-
-- **agents/**: Custom agent definitions for specialized tasks (developer, quality-reviewer, simplify-planner, etc.)
-- **commands/**: Custom slash commands for task processing and code management
-- **docs/**: Fetched documentation for libraries, frameworks, and languages (AI-optimized Markdown format)
-- **settings.json**: Claude Code configuration with custom status line and MCP servers</parameter>
-  </invoke>
-
-<function_calls>
-<invoke name="Read">
-<parameter name="file_path">CLAUDE.md</parameter>
-<parameter name="offset">40</parameter>
-<parameter name="limit">20</parameter>
-</invoke>
+1. **Parse Arguments**: Extract library name and optional parameters from `$ARGUMENTS`.
+2. **Source Discovery**: Identify official documentation URLs and site patterns (using the local `site-patterns.json` when helpful).
+3. **Content Fetching**: Use the local helper script to fetch and convert docs:
+   - Invoke `python codex/scripts/docs-fetch.py $ARGUMENTS` from the repository root.
+4. **Content Processing**: Convert HTML to AI-friendly Markdown and organize sections logically for coding assistance.
+5. **Storage**: Save results under `/workspace/docs/` (or the repo’s configured docs directory) with consistent naming.
+6. **Repository Integration**: If `CLAUDE.md` or `README.md` describe local docs, update them briefly to mention the new docs location.
