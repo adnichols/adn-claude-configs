@@ -2,9 +2,7 @@
 
 ## Goal
 
-To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format with YAML front-matter based on an existing Product Requirements Document (PRD). The system uses fidelity-preserving agents to ensure exact scope implementation. This command only generates the task list; execution is handled by separate commands.
-
-Also follow this repository's `AGENTS.md` for project-specific conventions, branch policies, and testing expectations.
+To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format with YAML front-matter based on an existing Product Requirements Document (PRD). The system uses fidelity-preserving agents to ensure exact scope implementation. Think harder.
 
 ## Fidelity Preservation
 
@@ -12,8 +10,9 @@ This command follows the fidelity-preserving approach to:
 
 1. **Parse PRD Content:** Extract all requirements exactly as specified in the PRD
 2. **Preserve Scope Boundaries:** Maintain exact scope without additions or expansions
-3. **Minimal Task Detail:** Create only tasks necessary to implement specified requirements
-4. **Apply Only Specified Validation:** Include testing and validation only as specified in PRD
+3. **Use Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity agents
+4. **Minimal Task Detail:** Create only tasks necessary to implement specified requirements
+5. **Apply Only Specified Validation:** Include testing and validation only as specified in PRD
 
 ## Output
 
@@ -59,6 +58,9 @@ The generated task list _must_ follow this structure with YAML front-matter:
 version: 1
 fidelity_mode: strict
 source_prd: [path to source PRD file]
+agents:
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
 specification_metadata:
@@ -72,16 +74,19 @@ specification_metadata:
 
 ## Relevant Files
 
-Document the surface area the implementation is likely to touch:
-
-- Highlight existing files that require updates and why they matter.
-- Call out new files or directories that need to be created.
-- Include documentation or test assets only when the PRD explicitly requires them.
+- `path/to/potential/file1.ts` - Brief description of why this file is relevant (e.g., Contains the main component for this feature).
+- `path/to/file1.test.ts` - Unit tests for `file1.ts`.
+- `path/to/another/file.tsx` - Brief description (e.g., API route handler for data submission).
+- `path/to/another/file.test.tsx` - Unit tests for `another/file.tsx`.
+- `lib/utils/helpers.ts` - Brief description (e.g., Utility functions needed for calculations).
+- `lib/utils/helpers.test.ts` - Unit tests for `helpers.ts`.
+- `README.md` - Update main documentation with feature description and usage.
+- `docs/api/[feature].md` - API documentation for new endpoints/interfaces (if applicable).
+- `docs/guides/[feature]-usage.md` - User guide for the new feature (if complex).
 
 ### Notes
 
-- Use test commands defined in TESTING.md (or the repository's documented process).
-- Reference AGENTS.md for available fidelity agents and support roles.
+- Use test commands defined in TESTING.md or CLAUDE.md.
 - Use `/docs:update` command for comprehensive documentation updates.
 - Integrate technical-writer agent for complex documentation tasks.
 
@@ -105,3 +110,57 @@ Document the surface area the implementation is likely to touch:
 ## Interaction Model
 
 The process explicitly requires a pause after generating parent tasks to get user confirmation ("Go") before proceeding to generate the detailed sub-tasks. This ensures the high-level plan aligns with user expectations before diving into details.
+
+## Target Audience
+
+Assume the primary reader of the task list is a **junior developer** who will implement the feature with awareness of the existing codebase context.
+
+# Task List Management
+
+Guidelines for managing task lists in markdown files to track progress on completing a PRD
+
+## Task Implementation
+
+- **One sub-task at a time:** Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y"
+- **Completion protocol:**
+  1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
+  2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
+  - **First**: Run the full test suite as defined in TESTING.md or CLAUDE.md
+  - **Only if all tests pass**: Stage changes (`git add .`)
+  - **Clean up**: Remove any temporary files and temporary code before committing
+  - **Commit**: Use a descriptive commit message that:
+    - Uses conventional commit format (`feat:`, `fix:`, `refactor:`, etc.)
+    - Summarizes what was accomplished in the parent task
+    - Lists key changes and additions
+    - References the task number and PRD context
+    - **Formats the message as a single-line command using `-m` flags**, e.g.:
+
+      ```
+      git commit -m "feat: add payment validation logic" -m "- Validates card type and expiry" -m "- Adds unit tests for edge cases" -m "Related to T123 in PRD"
+      ```
+  3. Once all the subtasks are marked completed and changes have been committed, mark the **parent task** as completed.
+
+- Stop after each sub‑task and wait for the user's go‑ahead.
+
+## Task List Maintenance
+
+1. **Update the task list as you work:**
+   - Mark tasks and subtasks as completed (`[x]`) per the protocol above.
+   - Add new tasks as they emerge.
+
+2. **Maintain the "Relevant Files" section:**
+   - List every file created or modified.
+   - Give each file a one‑line description of its purpose.
+
+## AI Instructions
+
+When working with task lists, the AI must:
+
+1. Regularly update the task list file after finishing any significant work.
+2. Follow the completion protocol:
+   - Mark each finished **sub‑task** `[x]`.
+   - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`.
+3. Add newly discovered tasks.
+4. Keep "Relevant Files" accurate and up to date.
+5. Before starting work, check which sub‑task is next.
+6. After implementing a sub‑task, update the file and then pause for user approval.

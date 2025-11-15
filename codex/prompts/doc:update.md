@@ -7,9 +7,7 @@ argument-hint: [@feature-files]
 
 ## Goal
 
-To update existing core documentation files (README.md, TESTING.md, CLAUDE.md) and any pre-existing documentation for completed features using the technical-writer agent.
-
-Also follow this repository's `AGENTS.md` for project-specific documentation and review expectations.
+To update existing core documentation files (README.md, TESTING.md, CLAUDE.md) and any pre-existing documentation for completed features using the technical-writer agent. Think harder. 
 
 ## Usage
 
@@ -45,18 +43,45 @@ Primary focus on existing core documentation:
 The AI should:
 
 1. **Change Analysis**:
-   - If no feature files are provided, inspect recent git history (for example, using `git log` and `git diff --name-only`) to find changed areas that may need documentation updates.
+   ```bash
+   # Check for recent commits if no specific files provided
+   git log --oneline -5
+   
+   # Identify recently modified files
+   git diff --name-only HEAD~3..HEAD
+   ```
 
 2. **Find Existing Documentation**:
-   - Locate core documentation files (README.md, TESTING.md, CLAUDE.md).
-   - Identify any other existing documentation files that may be relevant.
+   ```bash
+   # Locate core documentation files
+   ls README.md TESTING.md CLAUDE.md 2>/dev/null
+   
+   # Find any other existing documentation
+   find . -maxdepth 2 -name "*.md" | grep -v node_modules
+   ```
 
 3. **Launch technical-writer agent** with focused context:
 
-   - Provide the technical-writer agent with:
-     - A summary of changes to document.
-     - The current contents of README.md, TESTING.md, CLAUDE.md, and any other relevant docs.
-     - A clear instruction to update only existing docs, not create new ones.
+   **Agent Prompt Structure:**
+   ```
+   Task: Update existing core documentation files for recent feature changes.
+   
+   CHANGES TO DOCUMENT:
+   [Analysis of recent code changes and their impact]
+   
+   EXISTING DOCUMENTATION:
+   [Current state of README.md, TESTING.md, CLAUDE.md and other existing docs]
+   
+   UPDATE REQUIREMENTS:
+   Please update ONLY the following existing files:
+   1. README.md - Update feature descriptions, installation, usage as needed
+   2. TESTING.md - Update test procedures if testing changed
+   3. CLAUDE.md - Update project instructions if workflow changed
+   4. [Other existing docs] - Update only if they exist and are relevant
+   
+   Do NOT create new documentation files. Focus on keeping existing docs current.
+   Ensure updates accurately reflect the actual implementation.
+   ```
 
 4. **Documentation Updates**:
    - Update existing README.md sections as needed

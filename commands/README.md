@@ -23,19 +23,19 @@ This directory contains a comprehensive set of commands that support a complete 
 8. **`doc:update.md`** - Post-implementation documentation generation
 
 ### Simplification Commands
-9. **`simplify:create-plan.md`** - Generate code simplification plans
-10. **`simplify:process-plan.md`** - Execute approved simplification plans
+9. **`simplify:1:create-plan.md`** - Generate code simplification plans
+10. **`simplify:2:process-plan.md`** - Execute approved simplification plans
 
 ### Git Utility Commands
-11. **`commit-push.md`** - Commit all changes and push to GitHub
-12. **`create-pr.md`** - Create a pull request
-13. **`start-linear-issue.md`** - Start work on a Linear issue with branch management
+11. **`cmd:commit-push.md`** - Commit all changes and push to GitHub
+12. **`cmd:create-pr.md`** - Create a pull request
+13. **`cmd:start-linear-issue.md`** - Start work on a Linear issue with branch management
 
 ## Command Workflows
 
 ### Workflow 1: PRD-Based Development (Fidelity-Preserving)
 ```
-/prd:1:create-prd → /prd:2:gen-tasks → /3:process-tasks → /commit-push → /create-pr
+/prd:1:create-prd → /prd:2:gen-tasks → /3:process-tasks → /cmd:commit-push → /cmd:create-pr
 ```
 - Create a PRD for a feature with exact scope preservation
 - Generate task list using fidelity-preserving approach
@@ -44,7 +44,7 @@ This directory contains a comprehensive set of commands that support a complete 
 
 ### Workflow 2: Specification-Driven Development (Full Fidelity)
 ```
-/spec:1:create-spec → /spec:2:gen-tasks → /3:process-tasks → /commit-push → /create-pr
+/spec:1:create-spec → /spec:2:gen-tasks → /3:process-tasks → /cmd:commit-push → /cmd:create-pr
 ```
 - Research and create detailed specification
 - Convert specification directly to executable tasks (preserves 100% fidelity)
@@ -53,7 +53,7 @@ This directory contains a comprehensive set of commands that support a complete 
 
 ### Workflow 3: Code Simplification
 ```
-/simplify:create-plan → [Review/Approval] → /simplify:process-plan → /commit-push
+/simplify:1:create-plan → [Review/Approval] → /simplify:2:process-plan → /cmd:commit-push
 ```
 - Analyze codebase for simplification opportunities
 - Get approval for changes from quality-reviewer or stakeholders
@@ -141,26 +141,27 @@ All commands use consistent:
 - Generated after feature completion
 - Uses technical-writer agent
 
-**`/simplify:create-plan`** & `/simplify:process-plan`**:
+**`/simplify:1:create-plan`** & `/simplify:2:process-plan`**:
 - Code complexity reduction
 - Technical debt management
 - Refactoring legacy systems
 - Performance optimization through simplification
 
-**`/commit-push`**:
+**`/cmd:commit-push`**:
 - Commit all changes with conventional commit format
 - Push to remote repository
 - Creates descriptive commit messages
 
-**`/create-pr`**:
+**`/cmd:create-pr`**:
 - Create pull request from current branch
 - Auto-generates PR description from commits
 - Includes test plan and summary
 
-**`/start-linear-issue`**:
-- Bootstrap work on Linear issues
-- Creates appropriate git branch
-- Sets up workspace for task
+**`/cmd:start-linear-issue`**:
+- Bootstrap work on Linear issues with worktree management
+- Creates dedicated branch and worktree for isolated development
+- Copies local config and MCP servers
+- Uses Linear CLI for issue metadata
 
 ## Fidelity-Preserving Agents
 
@@ -198,11 +199,11 @@ commands/
 ├── doc:fetch.md
 ├── doc:fetch-batch.md
 ├── doc:update.md
-├── simplify:create-plan.md
-├── simplify:process-plan.md
-├── commit-push.md
-├── create-pr.md
-├── start-linear-issue.md
+├── simplify:1:create-plan.md
+├── simplify:2:process-plan.md
+├── cmd:commit-push.md
+├── cmd:create-pr.md
+├── cmd:start-linear-issue.md
 └── _lib/ (helper scripts)
 ```
 
@@ -225,11 +226,11 @@ All commands integrate with:
 ## Command Naming Convention
 
 Commands use colon-delimited namespacing:
-- `prd:` - PRD workflow commands
-- `spec:` - Specification workflow commands
+- `prd:[phase]:` - PRD workflow commands (e.g., `prd:1:create-prd`)
+- `spec:[phase]:` - Specification workflow commands (e.g., `spec:1:create-spec`)
 - `doc:` - Documentation commands
-- `simplify:` - Code simplification commands
-- `[number]:` - Phase-numbered commands (e.g., `3:process-tasks`)
-- No prefix - Utility commands (e.g., `commit-push`, `create-pr`)
+- `simplify:[phase]:` - Code simplification commands (e.g., `simplify:1:create-plan`)
+- `cmd:` - Git and utility commands (e.g., `cmd:commit-push`, `cmd:start-linear-issue`)
+- `[number]:` - Cross-workflow phase commands (e.g., `3:process-tasks`)
 
 This flat structure ensures compatibility with all AI coding agents that don't traverse subdirectories.

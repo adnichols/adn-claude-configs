@@ -6,9 +6,7 @@ argument-hint: [Plan file path] [Options: NOSUBCONF]
 # Instructions
 
 Execute the code simplification plan step by step according to the Plan Processing Protocol below.
-$ARGUMENTS.
-
-Also follow this repository's `AGENTS.md` for project-specific branch, testing, and safety rules.
+$ARGUMENTS. Think harder.
 
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore step confirmation in plan execution below
@@ -23,56 +21,161 @@ CRITICAL: Always track and update the plan file throughout execution:
 - Never lose track of which plan file you're processing
 </plan_file_tracking>
 
-## Plan Processing Protocol
+# Plan Processing Protocol
 
 Guidelines for safely executing code simplification plans while preserving functionality and tracking progress.
 
-### Critical Safety Requirements
+## Critical Safety Requirements
 
-**Functionality Preservation**
-- Before any changes, run the primary test suite to establish a baseline.
-- After each major step that alters code, rerun relevant tests and compare to the baseline.
-- If any previously passing test fails, stop, surface details to the user, and wait for guidance before proceeding.
+### Functionality Preservation Protocol
+1. **Baseline Establishment:**
+   - Run full test suite BEFORE any changes
+   - Document current system state and behavior
+   - Establish performance benchmarks
+   - Record current test coverage metrics
 
-**Branch Management**
-- Do not proceed unless you are on a git branch other than `main`.
-- If needed, create a branch specifically for this simplification work (for example, `simplify/[area-name]-[date]`).
+2. **Change Validation:**
+   - Run full test suite AFTER each major step
+   - Compare results to baseline - ANY degradation = STOP
+   - Validate integration points remain functional
+   - Verify performance regressions are within acceptable bounds
 
-**Step-by-Step Execution**
-- Execute steps in the plan in order, one at a time.
-- Do not delegate execution to subagents; implement and validate changes directly.
-- After each completed sub-step, immediately update its checkbox in the plan file from `[ ]` to `[x]` and verify the change.
-- By default, stop after each major step and wait for the user’s go-ahead; if `NOSUBCONF` is present in `$ARGUMENTS`, you may proceed automatically between steps but must still pause on test failures and at phase boundaries.
+3. **Failure Response:**
+   - If ANY test fails that previously passed: **STOP IMMEDIATELY**
+   - Do not continue to next step
+   - Alert user with specific failure details
+   - Provide rollback instructions
+   - Wait for user decision before proceeding
 
-### Checkbox Update Protocol
+## Plan Execution Rules
 
-Before starting:
-- Extract the plan file path from the first argument and store it as `PLAN_FILE`.
-- Read the plan file once to understand current state and locate the next unchecked step.
+### Branch Management
+- Do not proceed unless you are on a git branch other than main
+- If needed, create a branch specifically for this simplification work
+- Branch naming: `simplify/[area-name]-[date]`
 
-For each completed step:
-- Identify the specific `- [ ]` line for that step.
-- Use a targeted search/replace update to change it to `- [x]`.
-- Re-read the relevant section of `PLAN_FILE` to confirm the checkbox is now `[x]`.
-- For nested items, update both sub-items and parent items when appropriate.
+### Step-by-Step Execution
+- **Execute steps IN ORDER:** Follow the checklist sequence exactly
+- **One step at a time:** Complete current step fully before starting next
+- **No delegation:** Do NOT delegate execution to subagents - execute directly
+- **IMMEDIATE Progress tracking:** Update checkbox to `[x]` using search_replace tool THE MOMENT each sub-task is done
+- **NO BATCHING:** Never wait until end of phase to update multiple checkboxes - update each one immediately
+- **Real-time visibility:** User should see progress in real-time by checking the plan file
+
+### Confirmation Protocol
+- **Stop after each major step** and wait for user's go-ahead
+- **UNLESS NOSUBCONF is specified:** Then proceed automatically between steps
+- **Always stop after phases complete:** Wait for user confirmation between phases
+- **Always stop on any test failure:** Immediate user notification required
+
+## Checkbox Update Protocol
+
+### CRITICAL: Plan File Checkbox Management
+
+**Before Starting Any Plan Processing:**
+1. **Extract Plan File Path:** Get the plan file path from the first argument
+2. **Store as Variable:** Maintain PLAN_FILE variable throughout execution
+3. **Initial Verification:** Read the plan file to understand current state
+
+**For Each Completed Step:**
+1. **Identify Target Checkbox:** Locate the specific `- [ ]` checkbox for the completed step
+2. **Use search_replace Tool:** Replace `- [ ]` with `- [x]` for that specific step
+3. **Include Sufficient Context:** Use enough surrounding text to make the replacement unique
+4. **Verify Update:** Read back the modified section to confirm checkbox was updated
+5. **Handle Nested Checkboxes:** For sub-items, update both the sub-item and parent as appropriate
+
+**Example Real-Time Checkbox Update Workflow:**
+```
+# Step 1: Start sub-task
+"I'm now working on P2.1 - Create tests/debug/ directory"
+
+# Step 2: Complete the sub-task
+[Execute: mkdir tests/debug/]
+
+# Step 3: IMMEDIATELY update checkbox (DO NOT WAIT)
+[Use search_replace to change:]
+Old: "- [ ] Create `tests/debug/` directory"
+New: "- [x] Create `tests/debug/` directory"
+
+# Step 4: Verify update worked
+[Read plan file to confirm checkbox is now [x]]
+
+# Step 5: Move to next sub-task
+"Now I'm working on the next sub-task: Copy test files"
+
+# WRONG APPROACH:
+"I'll complete all the file operations and then update all checkboxes at once"
+
+# CORRECT APPROACH:
+Complete one thing → Update one checkbox → Complete next thing → Update next checkbox
+```
+
+**Troubleshooting Failed Updates:**
+- If search_replace fails, read the plan file again to see current state
+- Check for formatting differences (spaces, indentation, text variations)
+- Use more specific context to make the target unique
+- Try updating sub-items first, then parent items
+- If still failing, try updating with more surrounding context lines
+- **NEVER SKIP CHECKBOX UPDATES** - if all else fails, ask user for help with the specific update
+- Document the exact error and what you tried for user assistance
 
 ## Step Processing Workflow
 
-For each step in the plan:
+### For Each Step in the Plan:
 
-1. **Pre-Step Verification**
-   - Confirm which step is next and understand its intent.
-   - Ensure prerequisites are complete and the workspace is in a good state.
+1. **Pre-Step Verification:**
+   ```
+   - [ ] Current step: [Step Description]
+   - [ ] Verify all prerequisite steps are complete
+   - [ ] Run baseline tests if this is a code-changing step
+   - [ ] Document current state
+   ```
 
-2. **Step Execution**
-   - Execute the specific actions for the step (code changes, test creation, verification, etc.).
-   - Immediately after completion, update the corresponding checkbox in `PLAN_FILE` from `[ ]` to `[x]` and verify the change.
+2. **Step Execution:**
+   ```
+   - [ ] Execute the specific step actions
+   - [ ] For code changes: Implement changes directly (no subagent delegation)
+   - [ ] For test creation: Write tests directly
+   - [ ] For verification: Run specified validation
+   - [ ] IMMEDIATELY after completion: Update checkbox from [ ] to [x] using search_replace
+   - [ ] Verify the checkbox update was successful by reading the plan file
+   ```
 
-3. **Post-Step Validation**
-   - Run relevant tests when code has changed and compare to the baseline.
-   - Update any “Relevant Files”, issues, or risk sections in the plan file as needed.
+3. **Post-Step Validation:**
+   ```
+   - [ ] Mark step as completed [x] in plan file using search_replace tool
+   - [ ] Verify checkbox update by reading plan file section
+   - [ ] Run test suite if code was modified
+   - [ ] Compare results to baseline
+   - [ ] Document any changes or observations
+   - [ ] Update "Relevant Files" section
+   ```
 
-Do not proceed to the next step until the current step’s checkbox is confirmed `[x]` in the plan file and required tests for that step are passing or explicitly explained.
+4. **Safety Gate:**
+   ```
+   - [ ] All tests pass (or explain any expected changes)
+   - [ ] No functionality regressions detected
+   - [ ] Performance within acceptable bounds
+   - [ ] Integration points still functional
+   ```
+
+5. **Progress Update:**
+   ```
+   - [ ] Update plan file with completed step
+   - [ ] Add any newly discovered issues or risks
+   - [ ] Note time taken and any challenges encountered
+   ```
+
+**MANDATORY CHECKPOINT - DO NOT PROCEED TO NEXT STEP UNTIL:**
+- [ ] Current step checkbox is marked [x] in the plan file
+- [ ] Checkbox update has been verified by reading the plan file back
+- [ ] User can see progress by checking the plan file
+
+**ANTI-BATCHING ENFORCEMENT:**
+- ❌ WRONG: Complete 5 sub-tasks, then update all 5 checkboxes at once
+- ✅ CORRECT: Complete sub-task 1 → Update checkbox 1 → Complete sub-task 2 → Update checkbox 2 → etc.
+- ❌ WRONG: "I'll update all the checkboxes after I finish this phase"
+- ✅ CORRECT: "I just completed task X, let me update its checkbox immediately"
 
 ## Phase Completion Protocol
 
@@ -205,20 +308,37 @@ echo "Processing plan file: $PLAN_FILE"
 When processing simplification plans, the AI must:
 
 1. **Follow the safety protocol absolutely:**
-   - Do not skip test validation or continue after test failures.
-   - Do not delegate execution to subagents.
+   - Never skip test validation
+   - Never continue after test failures
+   - Never delegate execution to subagents
+   - **CRITICAL: Never skip checkbox updates - this is MANDATORY for progress tracking**
 
-2. **Maintain progress tracking:**
-   - Treat `PLAN_FILE` as the source of truth for progress.
-   - After each step, mark the corresponding checkbox `[x]`, verify the change, and avoid batching updates.
+2. **Maintain detailed progress tracking:**
+   - Update plan file after every significant action using search_replace tool
+   - Mark steps complete immediately with `[x]` checkbox updates
+   - Verify each checkbox update by reading the modified section
+   - Document issues and deviations promptly
+   - Never proceed to next step without updating current step checkbox
 
 3. **Execute steps directly:**
-   - Implement code and tests yourself and run validations directly.
+   - Implement code changes personally
+   - Write tests directly
+   - Run validations without delegation
 
-4. **Preserve functionality:**
-   - Validate preservation after changes and stop immediately on any regression.
+4. **Preserve functionality unconditionally:**
+   - Validate preservation after every change
+   - Stop immediately on any regression
+   - Prioritize safety over speed
 
-5. **Communicate clearly:**
-   - Provide concise status updates, surface issues quickly, and ask for guidance when uncertain.
+5. **Communicate clearly with user:**
+   - Provide detailed status updates
+   - Alert immediately on any issues
+   - Ask for guidance when uncertain
 
-The goal is safe, systematic simplification with absolute functionality preservation; speed is secondary to safety and correctness.
+6. **CRITICAL: Prevent checkbox batching behavior:**
+   - Update ONE checkbox immediately after completing ONE sub-task
+   - Never accumulate multiple completed tasks before updating checkboxes
+   - Think: "Task done → Update checkbox → Next task" not "All tasks done → Update all checkboxes"
+   - This provides real-time progress visibility to the user
+
+Remember: The goal is safe, systematic simplification with absolute functionality preservation. Speed is secondary to safety and correctness.

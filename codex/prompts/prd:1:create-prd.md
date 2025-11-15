@@ -7,18 +7,17 @@ argument-hint: [Feature Description]
 
 ## Goal
 
-To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands.
-
-Also follow this repository's `AGENTS.md` for project-specific constraints, testing expectations, and security requirements.
+To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands. Think harder.
 
 ## Core Principle: Specification Fidelity
 
 **The user's requirements are the absolute authority.** This command:
 
-- Does not add requirements beyond user specifications.
-- Does not expand scope or "improve" requirements.
-- Preserves original decisions and constraints.
-- Creates PRDs that document exactly what's requested.
+- Adds ZERO requirements beyond user specifications
+- Makes NO scope expansions or "improvements"
+- Preserves ALL original decisions and constraints
+- Creates PRDs that document EXACTLY what's requested
+- Uses fidelity-preserving agents that cannot modify scope
 
 ## Input
 
@@ -94,6 +93,9 @@ D) Security scope to be determined later"
 ---
 version: 1
 fidelity_mode: strict
+agents:
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
 document_metadata:
@@ -171,8 +173,9 @@ Technical approach: To be determined during implementation phase
 
 ### Next Steps
 
+- Use developer-fidelity agent for implementation planning
+- Use quality-reviewer-fidelity agent for validation
 - Follow strict scope preservation throughout implementation
-- Validate against requirements during implementation
 
 ## Open Questions
 
@@ -189,7 +192,8 @@ Technical approach: To be determined during implementation phase
 1. **Absolute Fidelity:** User requirements are the complete and sole authority
 2. **Zero Additions:** No requirements, features, or scope beyond user specifications
 3. **Clear Boundaries:** Explicit documentation of what's included and excluded
-4. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
+4. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity for implementation
+5. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
 
 ## Output Format
 
@@ -197,3 +201,22 @@ Technical approach: To be determined during implementation phase
 - **Location:** `/tasks/`
 - **Filename:** `prd-[feature-name].md`
 - **Metadata:** Fidelity-preserving YAML front-matter
+
+## Success Indicators
+
+A well-crafted PRD should:
+
+- **Fidelity Metadata:** Include complete YAML front-matter with fidelity settings
+- **Clear Scope Boundaries:** Explicit documentation of included and excluded functionality
+- **Agent Specification:** Reference fidelity-preserving agents for implementation
+- **Zero Scope Creep:** No additions, improvements, or expansions beyond user requirements
+- **Complete Context:** All necessary information captured without external dependencies
+
+## Target Audience
+
+This command serves teams that need:
+
+- Exact requirement preservation without scope creep
+- Clear boundaries between what's included and excluded
+- Fidelity guarantees throughout the development process
+- Simple, predictable PRD creation without complexity overhead

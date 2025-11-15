@@ -6,69 +6,13 @@ argument-hint: [Files]
 # Instructions
 
 Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses developer-fidelity and quality-reviewer-fidelity agents to implement only what's explicitly specified, without additions or scope expansions.
-$ARGUMENTS.
-
-## Task File Validation
-
-Before processing tasks, validate the task file is ready:
-
-1. **Validate Task File Exists:**
-   - Check task file exists at provided path
-   - Confirm file is readable markdown format
-   - If file not found, report clear error message and halt
-
-2. **Validate YAML Front-matter:**
-   - Parse YAML front-matter for required fields:
-     - `source_prd` OR `source_specification`: Path to source document (verify file exists)
-     - `fidelity_mode`: Should be "strict"
-     - `agents`: Extract developer and reviewer agent names
-     - `complexity_level`: (optional, for specs) Note the depth level
-     - `validated`: Should be `true` (indicates task coverage was validated)
-   - If YAML is missing or incomplete:
-     - Report specific missing fields
-     - Suggest running appropriate gen-tasks command again
-     - Halt processing
-
-3. **Validate Source Document:**
-   - Check that source document file exists (from `source_prd` or `source_specification` field)
-   - Detect source type: PRD if `source_prd` present, specification if `source_specification` present
-   - If source document missing:
-     - Report error: "Source [PRD/specification] not found at [path]"
-     - Cannot proceed without source document
-     - Halt processing
-   - If source document exists, note its location and type for reference during implementation
-
-4. **Validate Task Structure:**
-   - Verify task file contains task lists (checkboxes)
-   - Check for parent/child task structure (and phase structure if present)
-   - Confirm "Relevant Files" or "Implementation Files" section is present
-   - If structure is malformed:
-     - Report specific structural issues
-     - Suggest fixes or regeneration
-     - Halt processing
-
-5. **Validate Dependencies:**
-   - Check files mentioned in "Relevant Files" or "Implementation Files" section:
-     - For existing files: Verify they exist
-     - For new files: Verify parent directories exist or can be created
-   - Check for external dependencies (libraries, APIs) mentioned in tasks
-   - If critical dependencies missing:
-     - Report missing dependencies
-     - Suggest installation steps if known
-     - Ask user if they want to proceed anyway
-   - If validation successful, proceed to fidelity preservation
-
-**Error Handling:** If any validation fails:
-- Provide clear, specific error message
-- Suggest remediation steps
-- Do NOT proceed with implementation
-- Allow graceful exit
+$ARGUMENTS. Think harder.
 
 ## Fidelity Preservation Process
 
-After successful validation, prepare for task implementation:
+Before starting task implementation:
 
-1. **Parse Task File Metadata:** Extract fidelity information from validated YAML front-matter
+1. **Parse Task File Metadata:** Extract fidelity information from task file YAML front-matter
 2. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
    - Developer agent: `@developer-fidelity`
    - Quality reviewer: `@quality-reviewer-fidelity`
@@ -77,35 +21,9 @@ After successful validation, prepare for task implementation:
    - Implement only specified security measures
    - Do not add tests or validation beyond what's explicitly required
 
-4. **Initialize Progress Tracking:**
-   - Count total phases (if present), parent tasks, and subtasks for progress reporting
-   - Note complexity level if specified (simple/standard/comprehensive)
-   - Display initial progress: "📊 Starting implementation: [X phases,] Y parent tasks, Z subtasks total"
-
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
 </skip_subtask_confirmation>
-
-## Progress Indicators
-
-Throughout implementation, provide clear status updates:
-
-**Phase Progress (if applicable):**
-- When starting a phase: "🔄 **Phase N/X**: [Phase Name] - Starting..."
-- When completing a phase: "✅ **Phase N/X Complete** - [Brief summary of accomplishments]"
-
-**Task Progress:**
-- When starting a parent task: "📝 **Task N.0**: [Task Name] - [M subtasks]"
-- When completing a subtask: "✅ **Subtask N.M** complete ([M/Total] subtasks [in this phase])"
-- After validation: "🔍 Running validation: lint → build → [secrets →] tests..."
-- After quality review: "👁️ Quality review passed using @quality-reviewer-fidelity"
-
-**Error Reporting:**
-- If validation fails: "❌ **Validation Failed**: [specific issue] - Fixing before commit..."
-- If critical error: "🛑 **Critical Error**: [issue] - Stopping work for user intervention"
-
-**Overall Progress:**
-- Periodically (every 3-5 subtasks): "📊 **Progress**: N% complete (X/Y tasks done)"
 
 # Task List Management
 
@@ -153,11 +71,8 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
-  - **First**: Run validation checks appropriate to source document and complexity level:
-    - **For PRDs or simple specs**: lint, build (if build script exists)
-    - **For standard specs**: lint, build, unit tests
-    - **For comprehensive specs**: lint, build, secrets scan, unit tests
-    - If source document specifies additional validation, include that too
+  - **First**: Run standard validation checks:
+    - Always: lint, build, secrets scan, unit tests
   - **Only if all validations pass**: Stage changes (`git add .`)
   - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
   - **Clean up**: Remove any temporary files and temporary code before committing
@@ -186,7 +101,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
    - Mark tasks and subtasks as completed (`[x]`) per the protocol above.
    - Add new tasks as they emerge.
 
-2. **Maintain the "Relevant Files" or "Implementation Files" section:**
+2. **Maintain the "Relevant Files" section:**
 
    - List every file created or modified during implementation.
    - Update descriptions as implementation progresses.
@@ -205,22 +120,11 @@ When working with task lists, the AI must:
 2. Follow the completion protocol:
    - Mark each finished **sub‑task** `[x]`.
    - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`.
-3. Add newly discovered tasks while maintaining phase structure (if applicable).
-4. Keep "Relevant Files" or "Implementation Files" accurate and up to date.
+3. Add newly discovered tasks while maintaining phase structure.
+4. Keep "Relevant Files" accurate and up to date.
 5. Before starting work, check which sub‑task is next and review context sections if present.
 6. After implementing a sub‑task, update the file and then pause for user approval.
 7. For rich execution plans: Reference preserved context when making implementation decisions.
 8. For rich execution plans: Ensure traceability between implementation and source document rationale.
 9. For rich execution plans: Validate against success criteria throughout implementation.
 10. **CRITICAL CHECKPOINT:** After each subtask completion, Claude MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.
-
-## Implementation Best Practices
-
-1. **Source Detection:** Auto-detect whether source is PRD or specification based on YAML front-matter
-2. **Validation Levels:** Adapt validation rigor to complexity level (simple/standard/comprehensive) if specified
-3. **Progress Transparency:** Provide regular status updates for long-running implementations
-4. **Error Recovery:** If validation fails, fix issues before proceeding to next task
-5. **Dependency Awareness:** Reference validated files section for file operations
-6. **Fidelity Adherence:** Constantly reference source document to prevent scope creep
-7. **Graceful Degradation:** If optional dependencies missing, ask user before proceeding
-8. **Clear Communication:** Use progress indicators to keep user informed of status

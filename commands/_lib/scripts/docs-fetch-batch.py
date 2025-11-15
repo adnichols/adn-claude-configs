@@ -378,7 +378,7 @@ class BatchDocsFetcher:
     def _call_docs_fetch_command(self, library_name: str, version: str = None, url: str = None, format_option: str = None) -> bool:
         """Call the existing docs:fetch command for a single library."""
         try:
-            cmd = ['python3', '.claude/commands/_lib/scripts/docs-fetch.py', library_name]
+            cmd = ['python3', '.claude/scripts/docs-fetch.py', library_name]
 
             if version:
                 cmd.extend(['--version', version])

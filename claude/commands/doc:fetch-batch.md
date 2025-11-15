@@ -60,9 +60,8 @@ Let me start by parsing your markdown content and executing the batch documentat
 
 <function_calls>
 <invoke name="Bash">
-<parameter name="command">python .claude/commands/_lib/scripts/docs-fetch-batch.py $ARGUMENTS</parameter>
-<parameter name="description">Execute batch documentation fetch script with user arguments</parameter>
-</invoke>
+<parameter name="command">python .claude/scripts/docs-fetch-batch.py $ARGUMENTS</parameter>
+<parameter name="description">Execute batch documentation fetch script with user arguments
 
 Now let me update CLAUDE.md to reference all the newly fetched documentation so Claude Code knows where to find it for future assistance.
 

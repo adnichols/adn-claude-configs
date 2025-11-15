@@ -11,7 +11,15 @@ Linear issue and optional base branch: $ARGUMENTS
 - Require at least one argument; fail fast with guidance if missing.
 - Verify the working tree at repo root is clean (`git status --porcelain=v1`); halt and request operator cleanup if dirty.
 - Run `git fetch --prune --tags` before branching so worktrees never start from stale refs.
-- Use the Linear MCP client to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
+- Use the `linear` CLI to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
+
+## Linear CLI Usage
+Uses the `linear` CLI tool for issue metadata. Common commands:
+- `linear issues --filter "id:<ISSUE_KEY>" --format json --limit 1` - Get issue details as JSON
+- `linear whoami` - Verify authentication status
+- `linear auth` - Authenticate if needed
+
+Parse JSON output to extract: `title`, `description`, `project.name`, `state.name`, `labels`, `url`. Verify `project.name` equals "Doc Thingy". Empty array `[]` means issue doesn't exist.
 
 ## Branch & Worktree Creation
 1. The branch and worktree should simply be the Linear issue (e.g., nod-123).
@@ -37,35 +45,11 @@ Ensure the worktree mirrors indispensable local assets that are not committed:
 - Mirror executable bits (`chmod --reference`) and re-run `direnv allow` if an `.envrc` was copied.
 - Log every copied path; warn (do not fail) when expected files listed in `SETUP.md`, `README.md`, or `.env.example` are absent.
 
-### MCP Server Configuration & Authentication
-Claude Code uses project-specific MCP server configuration. The worktree must have access to all MCP servers configured in the main repository:
-
-1. **Locate MCP Configuration**:
-   - Check for `.claude/mcp-servers.json` in the repository root
-   - If not found, check for global config at `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or equivalent platform paths
-
-2. **Copy MCP Configuration**:
-   - Create `.claude/` directory in the worktree if it doesn't exist
-   - Copy `.claude/mcp-servers.json` from the repository root to the worktree
-   - If `.claude/mcp-servers.json` doesn't exist in the repo, create it with an empty `{"mcpServers": {}}` structure
-
-3. **Propagate MCP Authentication**:
-   - MCP servers may require environment variables for authentication (API keys, tokens, etc.)
-   - Scan the copied `mcp-servers.json` for any `env` fields that reference environment variables
-   - For each referenced environment variable (e.g., `LINEAR_API_KEY`, `GITHUB_TOKEN`):
-     - Check if the variable is set in the current environment
-     - If set, ensure it's copied to the worktree's `.env.local` or `.envrc` file
-     - If not set, warn the user that MCP server functionality may be limited
-   - Common MCP authentication patterns to check:
-     - `LINEAR_API_KEY` for Linear MCP server
-     - `GITHUB_TOKEN` or `GITHUB_PAT` for GitHub MCP server
-     - `SLACK_TOKEN` for Slack MCP server
-     - Any custom environment variables defined in the MCP config
-
-4. **Verify MCP Server Accessibility**:
-   - Log all MCP servers that were configured in the worktree
-   - Warn if critical servers (like Linear) are configured but missing authentication
-   - Document in the finalization checklist which MCP servers are available
+### Copy MCP Configuration
+Copy `.claude/mcp-servers.json` to the worktree if it exists (e.g., Playwright, GitHub MCP servers).
+- Create `.claude/` directory in worktree if needed
+- Copy environment variables referenced in MCP server configs (e.g., `GITHUB_TOKEN`)
+- Linear uses CLI auth via `linear auth` (no MCP or environment variables needed)
 
 ## Linear Context Notes
 - Create (or update) `notes/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
@@ -75,7 +59,9 @@ Claude Code uses project-specific MCP server configuration. The worktree must ha
 - Switch Claude Code working directory to the new worktree so subsequent commands run there.
 - Print a ready-state checklist:
   - Worktree location & branch
+  - Linear issue summary (title, URL, project)
   - Config files copied
-  - MCP servers configured (with authentication status)
+  - Linear CLI authentication status (from `linear whoami`)
+  - MCP servers copied (non-Linear servers like Playwright)
   - Next suggested commands (install deps, run tests, etc.) derived from repository docs
 - Leave the original repository untouched aside from the new worktree metadata and branch creation.

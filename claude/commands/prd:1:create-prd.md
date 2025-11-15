@@ -7,7 +7,7 @@ argument-hint: [Feature Description]
 
 ## Goal
 
-To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands.
+To guide an AI assistant in creating a Product Requirements Document (PRD) in Markdown format with YAML front-matter, using a fidelity-preserving approach that captures exact requirements without scope expansion. The document creation is the sole purpose of this command - implementation is handled by separate commands. Think harder.
 
 ## Core Principle: Specification Fidelity
 
@@ -30,31 +30,10 @@ The user will provide:
 ## Process
 
 1. **Gather Precise Requirements:** Ask focused questions to understand exact scope and boundaries
-
-2. **Analyze Existing Codebase:** Systematically discover relevant context:
-   - Use Glob to find similar features: `**/*[pattern]*`
-   - Use Grep to locate related APIs, services, components
-   - Identify existing patterns and conventions
-   - Review testing infrastructure and standards
-   - Document build and deployment patterns
-   - **Use parallel tool calls** to read multiple files simultaneously for faster analysis
-   - Compile findings into "Technical Considerations" section of PRD
-
-3. **Define Clear Boundaries:** Explicitly capture what's included and what's excluded based on requirements and codebase analysis
-
-4. **Generate PRD with Fidelity Metadata:** Create PRD with YAML front-matter containing fidelity settings
-
-5. **Validate PRD Completeness:**
-   - Verify all required sections are present and complete
-   - Check that codebase analysis findings are incorporated (if applicable)
-   - Confirm YAML front-matter is complete and correct
-   - Validate that requirements address the user's original problem
-   - Verify scope boundaries are clearly defined (explicitly included/excluded)
-   - Mark PRD as validated in YAML front-matter
-
-6. **Save PRD:** Save as `prd-[feature-name].md` in `/tasks` directory with fidelity preservation settings
-
-7. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
+2. **Define Clear Boundaries:** Explicitly capture what's included and what's excluded
+3. **Generate PRD with Fidelity Metadata:** Create PRD with YAML front-matter containing fidelity settings
+4. **Save PRD:** Save as `prd-[feature-name].md` in `/tasks` directory with fidelity preservation settings
+5. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
 
 ## Clarifying Questions for Scope Definition
 
@@ -121,11 +100,9 @@ scope_preservation: true
 additions_allowed: none
 document_metadata:
   source_type: user_requirements
-  creation_date: [timestamp YYYY-MM-DD]
+  creation_date: [timestamp]
   fidelity_level: absolute
   scope_changes: none
-codebase_analyzed: true
-validated: true
 ---
 
 # [Feature Name] - Product Requirements Document
@@ -182,21 +159,8 @@ Security scope: To be determined during implementation phase
 
 ## Technical Considerations
 
-[Include findings from codebase analysis:]
-
-### Existing Patterns
-- [Relevant existing implementations found via Glob/Grep]
-- [Similar features that can be referenced or extended]
-
-### Integration Points
-- [Existing APIs, services, or components to integrate with]
-- [Shared utilities or patterns to leverage]
-
-### Testing Infrastructure
-- [Existing test patterns and frameworks to follow]
-- [Test coverage expectations based on project standards]
-
-[If no specific technical aspects mentioned by user, include only codebase findings above]
+[Include only technical aspects explicitly mentioned by user, otherwise use:]
+Technical approach: To be determined during implementation phase
 
 ## Implementation Notes
 
@@ -220,25 +184,16 @@ Security scope: To be determined during implementation phase
 
 ## Document Status
 
-✅ **PRD Complete and Validated:** This document has been validated and contains all necessary information:
-- All required sections are present and complete
-- Codebase analysis findings have been incorporated
-- YAML front-matter is complete and accurate
-- Requirements address the user's original problem
-- Scope boundaries are clearly defined (explicitly included/excluded)
-- Ready for handoff to task generation (prd/2:gen-tasks)
+✅ **PRD Complete:** This document captures the exact requirements as specified. Ready for fidelity-preserving implementation.
 ```
 
 ## Key Principles
 
 1. **Absolute Fidelity:** User requirements are the complete and sole authority
 2. **Zero Additions:** No requirements, features, or scope beyond user specifications
-3. **Codebase-Driven:** Use systematic Glob/Grep analysis to discover existing patterns and integration points
-4. **Parallel Efficiency:** Use parallel tool calls for faster codebase analysis
-5. **Validated Output:** Verify PRD completeness before handoff to task generation
-6. **Clear Boundaries:** Explicit documentation of what's included and excluded
-7. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity for implementation
-8. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
+3. **Clear Boundaries:** Explicit documentation of what's included and excluded
+4. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity for implementation
+5. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
 
 ## Output Format
 
@@ -251,14 +206,11 @@ Security scope: To be determined during implementation phase
 
 A well-crafted PRD should:
 
-- **Complete YAML:** Include all metadata fields (fidelity settings, codebase_analyzed, validated)
-- **Codebase Integration:** Include findings from systematic codebase analysis (Glob/Grep results)
-- **Validated Structure:** Pass all completeness checks before handoff to task generation
+- **Fidelity Metadata:** Include complete YAML front-matter with fidelity settings
 - **Clear Scope Boundaries:** Explicit documentation of included and excluded functionality
 - **Agent Specification:** Reference fidelity-preserving agents for implementation
 - **Zero Scope Creep:** No additions, improvements, or expansions beyond user requirements
 - **Complete Context:** All necessary information captured without external dependencies
-- **Ready for Handoff:** Marked as complete and validated, ready for prd/2:gen-tasks
 
 ## Target Audience
 

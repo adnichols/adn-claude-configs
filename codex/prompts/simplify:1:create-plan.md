@@ -7,9 +7,7 @@ argument-hint: [Target directory/files to analyze]
 
 ## Goal
 
-To guide an AI assistant in creating a detailed Code Simplification Plan with careful cleanup recommendations while ensuring absolute preservation of core functionality.
-
-Also follow this repository's `AGENTS.md` for project-specific refactoring limits, testing expectations, and safety constraints.
+To guide an AI assistant in creating a detailed Code Simplification Plan with appropriate agent selection and careful cleanup recommendations while ensuring absolute preservation of core functionality. Think harder.
 
 ## Simplification Approach
 
@@ -17,7 +15,7 @@ This command uses a comprehensive approach to code simplification that:
 
 1. **Analyze Project Structure:** Examine existing project files to understand architecture and patterns
 2. **Conservative Cleanup Approach:** Use careful, evidence-based simplification with comprehensive testing
-3. **Quality Review Integration:** Perform thorough quality review for validation
+3. **Quality Review Integration:** Use appropriate quality reviewer agents for validation
 4. **Apply Safety Safeguards:** Include comprehensive validation requirements to ensure functionality preservation
 
 ## Process
@@ -35,8 +33,8 @@ This command uses a comprehensive approach to code simplification that:
 5. **Ensure Working Branch:** Operate on a feature branch, create one if needed for these changes
 6. **Review Recent Changes:** Leverage git history to identify recent changes to the current repository
 7. **Test Coverage Assessment:** Verify existing test coverage is adequate for safe simplification
-8. **Generate Simplification Plan:** Analyze the codebase and create a detailed plan identifying complexity, deprecated code, and consolidation opportunities
-9. **Quality Review:** Perform comprehensive plan review and safety validation
+8. **Generate Simplification Plan:** Use the @simplify-planner agent to analyze the codebase and create a detailed plan
+9. **Quality Review:** Use quality reviewer agent for comprehensive plan review and safety validation
 10. **Save Plan:** Save the generated plan as `simplify-plan-[area-name].md` inside the `/tasks` directory
 
 ## Pre-Simplification Requirements
@@ -44,14 +42,21 @@ This command uses a comprehensive approach to code simplification that:
 Before generating any simplification plan, ensure comprehensive safety requirements:
 
 1. **Test Coverage Verification:**
-   - Analyze existing test coverage for the target area and identify gaps for core functionality.
-   - Document current test structure and quality at a high level.
+   - Analyze existing test coverage for the target area (aim for comprehensive coverage)
+   - Identify gaps in test coverage for core functionality
+   - Document current test structure and quality
+   - Favor integration tests and end-to-end scenarios where possible
+   - Minimize mocks and stubs where possible, use real scenarios
 
 2. **Recent Change Analysis:**
-   - Review git history for recent modifications and areas of frequent change.
+   - Review git history for recent modifications
+   - Identify areas of frequent change or bug fixes
+   - Understand evolution patterns and complexity accumulation
 
 3. **Dependency Mapping:**
-   - Identify external dependencies on the target code and key integration points.
+   - Identify all external dependencies on the target code
+   - Map integration points and API contracts
+   - Document concurrent behavior and thread safety requirements
 
 ## Simplification Plan Structure
 
@@ -69,15 +74,15 @@ The generated plan should include the following sections as a checklist:
   - [ ] Implement regression tests for identified edge cases
 
 - [ ] **P1.3: Complexity Analysis**
-  - [ ] Complete codebase archaeology to identify complexity accumulation
+  - [ ] Complete @simplify-planner codebase archaeology
   - [ ] Document evidence of unused/deprecated code
   - [ ] Identify consolidation opportunities
   - [ ] Map preservation requirements
 
 ### Phase 2: Plan Review and Validation
 - [ ] **P2.1: Comprehensive Quality Review**
-  - [ ] Perform thorough quality review of the plan
-  - [ ] Apply comprehensive safety checks
+  - [ ] Submit plan to quality reviewer agent (e.g., @quality-reviewer)
+  - [ ] Apply thorough review depth and comprehensive safety checks
   - [ ] Update plan to address all safety concerns or gaps identified
   - [ ] Confirm strong preservation guarantees for all functionality
 
@@ -124,12 +129,24 @@ The generated plan should include the following sections as a checklist:
   - [ ] Create deployment notes
   - [ ] Archive simplification artifacts
 
-## Responsibilities
+## Agent Responsibilities
 
-- Plan creation and coordination.
-- Codebase complexity analysis.
-- Evidence-based cleanup recommendations.
-- Identification of safety requirements and risks.
+### Current Agent (Orchestrator)
+- Plan creation and coordination
+- Git branch management
+- Progress tracking and checklist updates
+- Quality gates and safety verification
+
+### @simplify-planner Agent
+- Codebase complexity analysis
+- Evidence-based cleanup recommendations
+- Preservation strategy design
+- Risk identification and mitigation planning
+
+### @quality-reviewer Agent
+- Plan safety review
+- Risk assessment validation
+- Quality gate approval
 
 ## Safety Requirements
 
@@ -161,6 +178,6 @@ The generated plan should include the following sections as a checklist:
 
 1. Do NOT start implementing any simplification
 2. Ensure all checklist items are specific and actionable
-3. Verify that evidence is provided for all recommendations
-4. Incorporate quality review feedback into the plan before proceeding
+3. Verify @simplify-planner agent provides evidence for all recommendations
+4. Incorporate @quality-reviewer feedback into the plan where appropriate before proceeding
 5. Remember: This creates the PLAN only - execution happens via simplify:process-plan.md

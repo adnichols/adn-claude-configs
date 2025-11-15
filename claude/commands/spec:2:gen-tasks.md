@@ -7,7 +7,7 @@ argument-hint: [Specification File Path]
 
 ## Goal
 
-To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while preserving 100% fidelity to the original specification. This command bypasses complexity systems and PRD conversion to maintain exact scope boundaries and requirements as specified.
+To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while preserving 100% fidelity to the original specification. This command bypasses complexity systems and PRD conversion to maintain exact scope boundaries and requirements as specified. Think harder.
 
 ## Core Principle: Specification Fidelity
 
@@ -27,19 +27,7 @@ The user will provide:
 
 ## Process
 
-1. **Validate Specification:** Before reading, verify specification is ready:
-   - Check specification file exists at provided path
-   - Confirm file is readable and properly formatted markdown
-   - Parse YAML front-matter (if present) for:
-     - `fidelity_mode`: Should be "strict"
-     - `agents`: Extract developer and reviewer agent specifications
-     - `complexity_level`: Note the chosen depth (simple/standard/comprehensive)
-     - `codebase_analyzed`: Verify codebase analysis was performed
-   - Verify specification has completion marker in final section
-   - If validation fails, report specific error and halt
-   - If successful, extract metadata for use in task generation
-
-2. **Read Specification Completely:** Parse the entire specification document to understand:
+1. **Read Specification Completely:** Parse the entire specification document to understand:
 
    - All functional requirements
    - All technical constraints and decisions
@@ -50,82 +38,34 @@ The user will provide:
    - Resource constraints
    - Explicit scope boundaries (what's included/excluded)
 
-3. **Analyze Implementation Context:** Systematically discover files that will be affected:
-   - Use Glob to find files matching patterns mentioned in spec: `**/*[pattern]*`
-   - Use Grep to search for relevant classes, functions, and APIs mentioned in spec
-   - Identify files that will need:
-     - Creation (new files)
-     - Modification (existing files)
-     - Integration (connection points)
-   - **Use parallel tool calls** for faster file discovery
-   - Populate "Implementation Files" section with:
-     - File paths
-     - Current status (exists/new)
-     - Purpose (based on spec requirements)
-     - Estimated scope of changes
-   - Document integration points and dependencies discovered
-
-4. **Extract Task Structure:** Identify natural implementation phases from the specification:
+2. **Extract Task Structure:** Identify natural implementation phases from the specification:
 
    - Use specification's own phase structure if provided
    - Create logical groupings based on specification content
    - Maintain specification's dependencies
    - Preserve specification's success criteria for each phase
 
-5. **Generate Task List:** Create tasks that implement:
+3. **Create and Save Task List:** Generate and save tasks that implement:
 
    - ONLY what's explicitly stated in the specification
    - Testing ONLY as specified (not more, not less)
    - Security ONLY as specified (not more, not less)
    - Performance measures ONLY as specified
    - Documentation ONLY as specified
-   - Include discovered implementation files from step 3
-   - Use YAML front-matter from specification for metadata continuity
-
-6. **Validate Task Coverage:** Before saving, verify task completeness:
-   - Check all specification requirements have corresponding tasks
-   - Verify no scope expansion beyond specification
-   - Confirm task phases match specification structure
-   - Validate that testing/security tasks match specification level
-   - Ensure implementation files section is populated with discoveries
-   - Check YAML front-matter is complete:
-     - Source specification path
-     - Fidelity mode (from spec)
-     - Agent specifications (from spec)
-     - Complexity level (from spec)
-   - If validation finds gaps, report to user for clarification
-   - If validation passes, proceed to save
-
-7. **Save and Report:** Save validated task list:
    - Save tasks to `/tasks/tasks-fidelity-[spec-name].md`
-   - Report validation results to user
-   - Confirm task list is ready for processing (spec/3:process-tasks)
-   - Inform user of file location for review
+   - Inform user of draft location for review
 
 ## Final Task File Format
 
 The final task file at `/tasks/tasks-fidelity-[spec-name].md`:
 
 ```markdown
----
-source_specification: [path to spec file]
-fidelity_mode: strict
-complexity_level: [simple|standard|comprehensive - from spec]
-agents:
-  developer: developer-fidelity
-  reviewer: quality-reviewer-fidelity
-created: [timestamp YYYY-MM-DD]
-validated: true
----
-
 # [Specification Title] - Fidelity Implementation Tasks
 
 ## 🎯 Implementation Authority
 
-**Source Specification:** `[path to spec file]`
+**Source Specification:** [path to spec file]
 **Implementation Scope:** Exactly as specified, no additions or modifications
-**Complexity Level:** [simple|standard|comprehensive]
-**Validation Status:** ✅ Task coverage validated against specification
 
 ### Specification Summary
 
@@ -134,27 +74,14 @@ validated: true
 ### Implementation Boundaries
 
 **Included:** [What specification explicitly includes]
-**Excluded:** [What specification explicitly excludes]
+**Excluded:** [What specification explicitly excludes]  
 **Testing Level:** [As specified in original document]
 **Security Level:** [As specified in original document]
 **Documentation Level:** [As specified in original document]
 
 ## 🗂️ Implementation Files
 
-*Discovered through systematic codebase analysis (Glob/Grep)*
-
-### Files to Create
-- `path/to/new/file1.ext` - [Purpose from spec]
-- `path/to/new/file2.ext` - [Purpose from spec]
-
-### Files to Modify
-- `path/to/existing/file1.ext` (exists) - [Changes needed per spec]
-  *Lines/functions affected: [specific locations if known]*
-- `path/to/existing/file2.ext` (exists) - [Changes needed per spec]
-
-### Integration Points
-- [Existing API/service that will be integrated with]
-- [Shared utility/component that will be leveraged]
+[List of files that will need creation/modification based on specification analysis]
 
 ### Development Notes
 
@@ -243,26 +170,18 @@ validated: true
 
 1. **Absolute Fidelity:** The specification is the complete and sole authority
 2. **Zero Additions:** No requirements, tests, or features beyond specification
-3. **Validation-First:** Validate spec before reading, validate tasks before saving
-4. **Codebase-Aware:** Use Glob/Grep to discover actual implementation files
-5. **Parallel Efficiency:** Use parallel tool calls for faster file discovery
-6. **Metadata Continuity:** Preserve YAML front-matter from spec → tasks → implementation
-7. **Preserve Constraints:** Maintain all limitations and boundaries from specification
-8. **Context Preservation:** Include necessary specification context in task file
+3. **Preserve Constraints:** Maintain all limitations and boundaries from specification
+4. **Context Preservation:** Include necessary specification context in task file
 
 ## Success Indicators
 
 A well-converted task list should:
 
-- **Validated Input:** Specification passed all validation checks before processing
 - **100% Specification Match:** Every task maps directly to specification requirements
 - **Zero Scope Creep:** No additions, improvements, or expansions beyond spec
-- **Discovered Files:** Implementation Files section populated through systematic Glob/Grep analysis
-- **Complete Metadata:** YAML front-matter includes all metadata from source specification
-- **Validated Output:** Task coverage validation confirms completeness before save
 - **Complete Context:** Implementer has all necessary information from specification
 - **Clear Boundaries:** Explicit documentation of what's included/excluded
-- **Ready for Execution:** Marked as validated and ready for spec/3:process-tasks
+- **Validation Criteria:** Clear success measures extracted from specification
 
 ## Target Audience
 
