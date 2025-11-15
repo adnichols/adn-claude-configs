@@ -11,7 +11,88 @@ Linear issue and optional base branch: $ARGUMENTS
 - Require at least one argument; fail fast with guidance if missing.
 - Verify the working tree at repo root is clean (`git status --porcelain=v1`); halt and request operator cleanup if dirty.
 - Run `git fetch --prune --tags` before branching so worktrees never start from stale refs.
-- Use the Linear MCP client to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
+- Use the `linear` CLI to pull full issue metadata for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
+
+## Linear CLI Commands Reference
+
+The `linear` CLI tool provides the following commands needed for this workflow:
+
+### Fetching Issue Details
+```bash
+# Get single issue with full details (human-readable output)
+linear issue <ISSUE_ID>
+
+# Get issue in JSON format (use filter query for structured data)
+linear issues --filter "id:<ISSUE_ID>" --format json --limit 1
+
+# Example JSON output structure:
+# [
+#   {
+#     "id": "abc123",
+#     "identifier": "ENG-123",
+#     "title": "Issue title",
+#     "description": "Issue description",
+#     "state": {"name": "In Progress", "type": "started"},
+#     "priority": 2,
+#     "assignee": {"name": "John Doe", "email": "john@example.com"},
+#     "project": {"name": "Project Name", "id": "proj123"},
+#     "labels": [{"name": "bug"}],
+#     "url": "https://linear.app/team/issue/ENG-123"
+#   }
+# ]
+```
+
+### Listing Projects
+```bash
+# List all projects (human-readable)
+linear projects
+
+# To get project details in JSON, use issues filter:
+linear issues --filter "project:<PROJECT_NAME>" --format json --limit 1
+```
+
+### Listing and Filtering Issues
+```bash
+# List issues with various filters (supports --format json)
+linear issues --format json --limit 50
+
+# Filter by team
+linear issues --team ENG --format json
+
+# Filter by project
+linear issues --filter "project:Doc Thingy" --format json
+
+# Filter by assignee
+linear issues --assignee user@example.com --format json
+
+# Search by title
+linear issues --search "bug" --format json
+
+# Advanced filtering examples:
+linear issues --filter "assignee:john@example.com AND priority:>2" --format json
+linear issues --filter "has-label:urgent AND state:started" --format json
+```
+
+### Verifying Authentication
+```bash
+# Check if authenticated and get current user info
+linear whoami
+
+# If not authenticated, guide user to run:
+linear auth
+```
+
+### Parsing Issue Data
+When fetching issue metadata:
+1. Use `linear issues --filter "id:<ISSUE_KEY>" --format json --limit 1` to get structured JSON
+2. Parse the JSON to extract: `title`, `description`, `project.name`, `state.name`, `labels`, `url`
+3. Verify `project.name` equals "Doc Thingy" (case-sensitive)
+4. If the project doesn't match, halt with: "Error: Issue <ISSUE_KEY> belongs to project '<actual-project>', not 'Doc Thingy'"
+
+### Error Handling
+- If `linear issues --filter "id:<ISSUE_KEY>"` returns empty array `[]`, the issue doesn't exist
+- If `linear whoami` fails, the user needs to authenticate with `linear auth`
+- All commands may fail if not authenticated - check auth status first
 
 ## Branch & Worktree Creation
 1. The branch and worktree should simply be the Linear issue (e.g., nod-123).
@@ -25,6 +106,8 @@ Linear issue and optional base branch: $ARGUMENTS
 
 ## Propagate Local Configuration
 Ensure the worktree mirrors indispensable local assets that are not committed:
+
+### Environment & Config Files
 - Identify environment/config files in the root repository that exist but are git-ignored, including:
   - All `.env*` variants (e.g., `.env`, `.env.local`, `.env.development`, `.env.test.local`)
   - `.envrc`
@@ -35,6 +118,11 @@ Ensure the worktree mirrors indispensable local assets that are not committed:
 - Mirror executable bits (`chmod --reference`) and re-run `direnv allow` if an `.envrc` was copied.
 - Log every copied path; warn (do not fail) when expected files listed in `SETUP.md`, `README.md`, or `.env.example` are absent.
 
+### Linear CLI Authentication
+- The `linear` CLI uses its own authentication (typically via `linear auth`)
+- Verify the CLI is authenticated by running `linear whoami` - if it fails, guide user to run `linear auth`
+- No environment variables need to be propagated for Linear CLI (authentication is global per user)
+
 ## Linear Context Notes
 - Create (or update) `notes/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
 - Record the branch name, worktree path, base ref, and timestamp in the note for future handoff.
@@ -43,6 +131,8 @@ Ensure the worktree mirrors indispensable local assets that are not committed:
 - Switch Codex working directory to the new worktree so subsequent commands run there.
 - Print a ready-state checklist:
   - Worktree location & branch
+  - Linear issue summary (title, URL, project)
   - Config files copied
+  - Linear CLI authentication status (from `linear whoami`)
   - Next suggested commands (install deps, run tests, etc.) derived from repository docs
 - Leave the original repository untouched aside from the new worktree metadata and branch creation.
