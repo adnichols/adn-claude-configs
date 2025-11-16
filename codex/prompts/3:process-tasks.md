@@ -8,12 +8,22 @@ argument-hint: [Files]
 Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses developer-fidelity and quality-reviewer-fidelity agents to implement only what's explicitly specified, without additions or scope expansions.
 $ARGUMENTS. Think harder.
 
+## AUTONOMOUS PHASE PROCESSING
+
+**EXECUTION MODE**: This command processes the ENTIRE TASK LIST autonomously.
+
+- Process ALL subtasks without stopping for confirmation between subtasks or between phases
+- Update markdown after each subtask completion
+- Follow all fidelity safeguards
+- Continue directly from one phase to the next until the whole task list is complete
+- After completing the entire task list: run tests, commit changes, and report completion
+
 ## Fidelity Preservation Process
 
 Before starting task implementation:
 
 1. **Parse Task File Metadata:** Extract fidelity information from task file YAML front-matter
-2. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
+2. **Use Fidelity Agents:** Always route implementation work through fidelity-preserving agents:
    - Developer agent: `@developer-fidelity`
    - Quality reviewer: `@quality-reviewer-fidelity`
 3. **Apply Only Specified Validation:** Include only the testing and validation explicitly specified in the source document:
@@ -21,19 +31,20 @@ Before starting task implementation:
    - Implement only specified security measures
    - Do not add tests or validation beyond what's explicitly required
 
-<skip_subtask_confirmation>
-If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
-</skip_subtask_confirmation>
-
 # Task List Management
 
 Guidelines for managing task lists in markdown files to track progress on completing source document implementations
 
 ## Task Implementation
 
+**GIT BRANCH REQUIREMENTS:**
+- Do not proceed with tasks unless you are on a git branch other than main
+- If needed, create a branch scoped to the full task list work you are implementing
+- Parent agent (you) are responsible for git branch creation, not subagents
+
 ## Critical Task Update Protocol
 
-**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, Claude MUST follow this exact sequence:
+**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, the Codex agent MUST follow this exact sequence:
 
 1. **Declare completion with mandatory update statement:**
    "✅ Subtask [X.Y] [task name] completed.
@@ -41,90 +52,106 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
 2. **Immediately perform the markdown update:**
 
-- Use Edit tool to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
+- Update the task list file right away (for example, via the Codex file-edit command) to change `- [ ] X.Y [task name]` to `- [x] X.Y [task name]`
 - Show the actual edit operation in the response
 
 3. **Confirm update completion:**
    "✅ Markdown file updated: [ ] → [x] for subtask X.Y
    📋 Task list is now current."
 
-4. **Request permission to proceed (unless NOSUBCONF specified):**
-   "Ready to proceed to next subtask. May I continue? (y/n)"
+4. **Proceed to next subtask:**
+   State "▶️ Proceeding to next subtask..." and immediately continue to the next subtask without waiting for confirmation.
 
-**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If Claude completes a subtask without immediately updating the markdown file, it MUST:
+**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If the Codex agent completes a subtask without immediately updating the markdown file, it MUST:
 
 - Stop all work immediately
 - State: "❌ CRITICAL ERROR: I failed to update the task list. Stopping work."
 - Wait for user intervention before proceeding
 
-**VERIFICATION REQUIREMENT:** After each edit, Claude must show the updated section of the markdown file to confirm the change was made correctly.
+**VERIFICATION REQUIREMENT:** After each edit, the Codex agent must show the updated section of the markdown file to confirm the change was made correctly.
 
-- Do not proceed with tasks unless you are on a git branch other than main
-- If needed, create a branch for the phase of work you are implementing
-  - Parent agent (you) are responsible for git branch creation, not subagents
-- **One sub-task at a time:** Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
-- **Completion protocol:**
+## Completion Protocol
 
-  1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
+When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
 
-  - **MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful
+**MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful.
 
-  2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
+If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
-  - **First**: Run standard validation checks:
-    - Always: lint, build, secrets scan, unit tests
-  - **Only if all validations pass**: Stage changes (`git add .`)
-  - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
-  - **Clean up**: Remove any temporary files and temporary code before committing
-  - **Commit**: Use a descriptive commit message that:
+1. **First**: Run validation checks defined by the plan and repository guidance:
+   - Prioritize commands listed in the task file, TESTING.md, or AGENTS.md
+   - If nothing specific is provided, run the primary repository test suite and add lint, build, or secrets scans only when those commands exist and the scope requires them
 
-    - Uses conventional commit format (`feat:`, `fix:`, `refactor:`, etc.)
-    - Summarizes what was accomplished in the parent task
-    - Lists key changes and additions
-    - References the phase number and source context
-    - **Formats the message as a single-line command using `-m` flags**, e.g.:
+2. **If validation fails:**
+   - Summarize the failure, remediate the issue, and rerun validation
+   - Repeat up to three remediation cycles per phase or execution pass
+   - After three failures, halt and ask the operator how to proceed
 
-      ```
-      git commit -m "feat: add payment validation logic" -m "- Validates card type and expiry" -m "- Adds unit tests for edge cases" -m "Related to Phase 2.1"
-      ```
+3. **Only if all validations pass**: Stage changes (`git add .`)
 
-  3. Once all the subtasks are marked completed and changes have been committed, mark the **parent task** as completed.
+4. **Quality Review**: Perform quality review for final approval
 
-- Stop after each sub‑task and wait for the user's go‑ahead UNLESS NOSUBCONF is specified by the user
+5. **Clean up**: Remove any temporary files and temporary code before committing
 
-- Always stop after parent tasks complete, run test suite, and commit changes
+6. **Commit**: Use a descriptive commit message that:
+   - Uses conventional commit format (`feat:`, `fix:`, `refactor:`, etc.)
+   - Summarizes what was accomplished in the parent task
+   - Lists key changes and additions
+   - References the relevant phase numbers and source context
+   - **Formats the message as a single-line command using `-m` flags**, e.g.:
+     ```
+     git commit -m "feat: add payment validation logic" -m "- Validates card type and expiry" -m "- Adds unit tests for edge cases" -m "Related to Phase 2.1"
+     ```
+
+7. Once all the subtasks are marked completed and changes have been committed, mark the **parent task** as completed.
+
+**FINAL COMPLETION:** Stop only after the entire task list is complete, validated, committed, and the user has been informed.
 
 ## Task List Maintenance
 
 1. **Update the task list as you work:**
-
-   - Mark tasks and subtasks as completed (`[x]`) per the protocol above.
-   - Add new tasks as they emerge.
+   - Mark tasks and subtasks as completed (`[x]`) per the protocol above
+   - Add new tasks as they emerge
 
 2. **Maintain the "Relevant Files" section:**
-
-   - List every file created or modified during implementation.
-   - Update descriptions as implementation progresses.
-   - Add new files discovered during implementation.
+   - List every file created or modified during implementation
+   - Update descriptions as implementation progresses
+   - Add new files discovered during implementation
 
 3. **Context Validation (for rich execution plans):**
-   - Ensure implementation stays true to source document's technical specifications.
-   - Validate security requirements are being followed.
-   - Confirm performance benchmarks are being met.
+   - Ensure implementation stays true to source document's technical specifications
+   - Validate security requirements are being followed
+   - Confirm performance benchmarks are being met
 
 ## AI Instructions
 
 When working with task lists, the AI must:
 
-1. Regularly update the task list file after finishing any significant work.
-2. Follow the completion protocol:
+1. Process the entire task list autonomously without stopping for confirmation between subtasks or between phases.
+2. Regularly update the task list file after finishing any significant work.
+3. Follow the completion protocol:
    - Mark each finished **sub‑task** `[x]`.
    - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`.
-3. Add newly discovered tasks while maintaining phase structure.
-4. Keep "Relevant Files" accurate and up to date.
-5. Before starting work, check which sub‑task is next and review context sections if present.
-6. After implementing a sub‑task, update the file and then pause for user approval.
-7. For rich execution plans: Reference preserved context when making implementation decisions.
-8. For rich execution plans: Ensure traceability between implementation and source document rationale.
-9. For rich execution plans: Validate against success criteria throughout implementation.
-10. **CRITICAL CHECKPOINT:** After each subtask completion, Claude MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.
+4. Add newly discovered tasks while maintaining phase structure.
+5. Keep "Relevant Files" accurate and up to date.
+6. Before starting work, check which sub‑task is next and review context sections if present.
+7. After implementing a sub‑task:
+   - Update the markdown file immediately
+   - State you're proceeding and continue immediately to the next subtask
+8. For rich execution plans: Reference preserved context when making implementation decisions.
+9. For rich execution plans: Ensure traceability between implementation and source document rationale.
+10. For rich execution plans: Validate against success criteria throughout implementation.
+11. **CRITICAL CHECKPOINT:** After each subtask completion, the Codex agent MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and then continue to the next subtask without pausing. Failure to do this is a critical error that requires stopping all work.
+
+## Stop Conditions
+
+Continue through the entire task list without prompting between subtasks or phases. Stop only when:
+- You require clarification or additional input
+- A phase fails quality gates three consecutive times and further autonomous recovery is unlikely
+- The entire task list is complete, validated, and committed
+
+## Fidelity Guardrails
+
+- Apply only the security, testing, and performance work explicitly authorized by the source material
+- Maintain exact traceability to requirements; cite the relevant section when making design or implementation choices
+- Escalate ambiguities instead of guessing; do not expand scope
