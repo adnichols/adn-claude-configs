@@ -1,0 +1,25 @@
+# Codex Configuration Template
+# This file will be merged with your existing ~/.codex/config.toml
+
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = true
+
+[tools]
+web_search = true
+view_image = true
+
+# MCP Servers - see mcp-servers.toml for additional server definitions
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]
+
+[cli]
+default_cli_flags = [
+  "--dangerously-bypass-approvals-and-sandbox",
+  "--enable-web-search"
+]

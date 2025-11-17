@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Installation script for Claude Code and Codex configurations
-# Usage: ./install.sh [--claude|--codex|--all] [--append-agents] [target-directory]
+# Usage: ./install.sh [--claude|--codex|--all|--tools|--skills] [--append-agents] [target-directory]
 
 set -e
 
@@ -10,6 +10,8 @@ REPO_ROOT="$SCRIPT_DIR"
 TARGET_DIR="."
 INSTALL_MODE="--all"
 APPEND_AGENTS=false
+INSTALL_TOOLS=false
+INSTALL_SKILLS=false
 
 # Colors for output
 RED='\033[0;31m'
@@ -18,12 +20,14 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 print_usage() {
-    echo "Usage: $0 [--claude|--codex|--all] [--append-agents] [target-directory]"
+    echo "Usage: $0 [--claude|--codex|--tools|--skills|--all] [--append-agents] [target-directory]"
     echo ""
     echo "Options:"
     echo "  --claude    Install Claude Code configuration only"
     echo "  --codex     Install Codex configuration only"
-    echo "  --all       Install both (default)"
+    echo "  --tools     Install CLI tools only (e.g., ltui)"
+    echo "  --skills    Install Claude skills only (to ~/.claude/skills/)"
+    echo "  --all       Install everything: Claude, Codex, tools, and skills (default)"
     echo "  --append-agents"
     echo "             Ensure a project-level AGENTS.md exists in the target directory."
     echo "             If AGENTS.md exists and is missing the Fidelity & Execution rules,"
@@ -32,8 +36,10 @@ print_usage() {
     echo "Examples:"
     echo "  $0 --claude                        # Install Claude to current directory"
     echo "  $0 --codex ~/my-project            # Install Codex to ~/my-project"
+    echo "  $0 --tools                         # Install CLI tools globally"
+    echo "  $0 --skills                        # Install Claude skills globally"
     echo "  $0 --codex --append-agents ~/proj  # Install Codex and ensure AGENTS.md in ~/proj"
-    echo "  $0 --all --append-agents           # Install both and ensure AGENTS.md in current dir"
+    echo "  $0 --all --append-agents           # Install everything and ensure AGENTS.md in current dir"
 }
 
 ensure_codex_cli_flags() {
@@ -306,6 +312,84 @@ install_claude() {
     fi
 }
 
+install_tools() {
+    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}  Installing CLI Tools${NC}"
+    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Install ltui
+    if [ -d "$REPO_ROOT/tools/ltui" ]; then
+        echo "Installing ltui..."
+
+        # Check for Bun
+        if ! command -v bun &> /dev/null; then
+            echo -e "${RED}Error: Bun is required to build ltui${NC}"
+            echo "Install from: https://bun.sh"
+            return 1
+        fi
+
+        local current_dir=$(pwd)
+        cd "$REPO_ROOT/tools/ltui"
+
+        echo "  - Installing dependencies..."
+        bun install
+
+        echo "  - Building ltui..."
+        bun run build
+
+        echo "  - Linking ltui globally..."
+        bun link
+
+        cd "$current_dir"
+        echo -e "${GREEN}✓ ltui installed successfully${NC}"
+        echo ""
+
+        # Check if ~/.bun/bin is in PATH
+        if [[ ":$PATH:" != *":$HOME/.bun/bin:"* ]]; then
+            echo -e "${YELLOW}⚠  NOTE: ~/.bun/bin is not in your PATH${NC}"
+            echo "  Add this to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
+            echo "    export PATH=\"\$HOME/.bun/bin:\$PATH\""
+            echo ""
+            echo "  After updating, run: source ~/.zshrc  (or restart your shell)"
+            echo "  Then verify with: ltui --help"
+        else
+            echo "  ltui is now available globally. Try: ltui --help"
+        fi
+    else
+        echo -e "${YELLOW}No tools directory found, skipping...${NC}"
+    fi
+}
+
+install_skills() {
+    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}  Installing Claude Skills${NC}"
+    echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    local skills_dir="$HOME/.claude/skills"
+    mkdir -p "$skills_dir"
+
+    if [ -d "$REPO_ROOT/skills" ]; then
+        echo "  - Installing skills to ~/.claude/skills/..."
+
+        # Copy each skill directory
+        for skill_path in "$REPO_ROOT/skills/"*/; do
+            if [ -d "$skill_path" ]; then
+                local skill_name=$(basename "$skill_path")
+                echo "    - Installing skill: $skill_name"
+                cp -r "$skill_path" "$skills_dir/"
+            fi
+        done
+
+        echo -e "${GREEN}✓ Skills installed successfully${NC}"
+        echo ""
+        echo "  Skills are now available in Claude Code"
+    else
+        echo -e "${YELLOW}No skills directory found, skipping...${NC}"
+    fi
+}
+
 install_codex() {
     local target="$1/.codex"
     local is_update=false
@@ -385,7 +469,7 @@ install_codex() {
 # Argument parsing
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        --claude|--codex|--all)
+        --claude|--codex|--tools|--skills|--all)
             INSTALL_MODE="$1"
             shift
             ;;
@@ -418,10 +502,20 @@ case "$INSTALL_MODE" in
     --codex)
         install_codex "$TARGET_DIR"
         ;;
+    --tools)
+        install_tools
+        ;;
+    --skills)
+        install_skills
+        ;;
     --all)
         install_claude "$TARGET_DIR"
         echo ""
         install_codex "$TARGET_DIR"
+        echo ""
+        install_tools
+        echo ""
+        install_skills
         ;;
     *)
         echo -e "${RED}Error: Unknown option $INSTALL_MODE${NC}"

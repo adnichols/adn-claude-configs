@@ -108,10 +108,16 @@ adn-claude-configs/
 │   ├── mcp-servers.toml     # MCP server definitions
 │   └── README.md            # Codex-specific documentation
 ├── install.sh                # Install and update script (auto-detects existing installs)
-├── tools/                    # Repository maintenance tools
-│   └── gen_agents.py        # Agent generation from templates
-├── test/                     # Test fixtures and validation
-│   └── fixtures/            # Sample PRDs for testing
+├── tools/                    # Distributable CLI tools
+│   └── ltui/                # Linear CLI for AI agents
+│       ├── src/             # TypeScript source code
+│       ├── bin/ltui         # CLI entrypoint
+│       ├── package.json     # Dependencies
+│       └── README.md        # Tool documentation
+├── skills/                   # Claude Code skills
+│   └── linear/              # Linear integration skill for ltui
+│       ├── SKILL.md         # Skill definition
+│       └── references/      # Command references
 ├── docs/                     # Fetched documentation
 ├── tasks/                    # Generated PRDs, specs, and task lists
 ├── .claude/                  # Local example (bind mount)
@@ -122,7 +128,82 @@ adn-claude-configs/
 
 - **agents/** and **commands/** - Source of truth for all agents and commands (commands use flat structure with colon-delimited namespacing)
 - **claude/** and **codex/** - Installable configurations for each tool
+- **tools/** - Distributable CLI tools (installed globally via `--tools`)
+- **skills/** - Claude Code skills (installed to ~/.claude/skills/ via `--skills`)
 - **install.sh** - Single script for installation and updates (auto-detects existing installations)
+
+## 🔧 Distributed Tools
+
+This repository includes CLI tools designed for AI-assisted development workflows.
+
+### ltui - Linear CLI for AI Agents
+
+A token-efficient Linear issue tracker CLI optimized for AI coding agents. Provides deterministic, compact outputs perfect for LLM consumption.
+
+**Installation:**
+
+```bash
+# Install ltui and its Claude Code skill
+cd /path/to/adn-claude-configs
+./install.sh --tools --skills
+
+# Or install everything at once
+./install.sh --all
+```
+
+**Requirements:**
+- [Bun](https://bun.sh) runtime (for building and running)
+- Linear API key (obtain from linear.app/settings/api)
+- `~/.bun/bin` in your PATH (add to ~/.zshrc or ~/.bashrc): `export PATH="$HOME/.bun/bin:$PATH"`
+
+**Features:**
+- **Multiple output formats**: TSV (default, most token-efficient), table, detail, JSON
+- **Issue management**: Create, update, comment, relate issues
+- **Project operations**: List, view, align repositories with Linear projects
+- **Team workflows**: Manage teams, labels, users, cycles
+- **Integrated Claude skill**: The `linear` skill enables Claude Code to use ltui automatically
+
+**Quick Start:**
+
+```bash
+# Configure authentication
+ltui auth add --name default --key lin_api_...
+
+# List your issues
+ltui issues list --assignee me --state "Todo" --format table
+
+# Create an issue
+ltui issues create --team ENG --title "Add new feature" --description @spec.md
+
+# View issue with full context
+ltui issues view ENG-123 --format detail
+
+# Update issue state
+ltui issues update ENG-123 --state "In Progress" --assignee me
+```
+
+**Usage in Claude Code:**
+
+After installation, Claude Code automatically has access to the `linear` skill and can interact with Linear on your behalf:
+
+```
+User: "Create a Linear issue for implementing OAuth login"
+Claude: [Uses ltui via the linear skill to create the issue]
+
+User: "What are my current todos in Linear?"
+Claude: [Uses ltui to list issues assigned to you in Todo state]
+```
+
+**Documentation:**
+- Tool README: `tools/ltui/README.md`
+- Technical spec: `tools/ltui/SPEC.md`
+- Skill documentation: `skills/linear/SKILL.md`
+- Complete command reference: `skills/linear/references/ltui-command-reference.md`
+
+**Configuration:**
+- Global: `~/.config/ltui/config.json` (profiles and API keys)
+- Per-project: `.ltui.json` (team/project defaults)
+- Cache: `~/.config/ltui/cache.json` (5-minute TTL for entity lookups)
 
 ## 🤖 Available Agents
 

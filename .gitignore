@@ -49,3 +49,9 @@ venv.bak/
 .claude/agents/
 .claude/commands/
 .claude/scripts/
+
+# Tool build artifacts
+tools/*/dist/
+tools/*/node_modules/
+tools/*/*.zip
+tools/*/.bun/
