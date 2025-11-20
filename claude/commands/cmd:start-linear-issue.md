@@ -11,15 +11,22 @@ Linear issue and optional base branch: $ARGUMENTS
 - Require at least one argument; fail fast with guidance if missing.
 - Verify the working tree at repo root is clean (`git status --porcelain=v1`); halt and request operator cleanup if dirty.
 - Run `git fetch --prune --tags` before branching so worktrees never start from stale refs.
-- Use the `linear` CLI to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
+- Use the `ltui` CLI to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
 
 ## Linear CLI Usage
-Uses the `linear` CLI tool for issue metadata. Common commands:
-- `linear issues --filter "id:<ISSUE_KEY>" --format json --limit 1` - Get issue details as JSON
-- `linear whoami` - Verify authentication status
-- `linear auth` - Authenticate if needed
+Uses the `ltui` CLI tool for issue metadata. Common commands:
+- `ltui issues view <ISSUE_KEY> --format detail` - Get full issue details with description
+- `ltui auth list` - Verify authentication status
+- `ltui auth add --name default --key <api-key>` - Configure authentication if needed
 
-Parse JSON output to extract: `title`, `description`, `project.name`, `state.name`, `labels`, `url`. Verify `project.name` equals "Doc Thingy". Empty array `[]` means issue doesn't exist.
+Parse detail format output which includes:
+- `ISSUE:` line with identifier
+- `title:`, `state:`, `labels:`, `project:` fields
+- `DESCRIPTION_START` / `DESCRIPTION_END` blocks
+- Issue URL in web format
+
+Use TSV format for listing: `ltui issues list --team <TEAM> --format tsv`
+Empty output means issue doesn't exist.
 
 ## Branch & Worktree Creation
 1. The branch and worktree should simply be the Linear issue (e.g., nod-123).
@@ -49,7 +56,7 @@ Ensure the worktree mirrors indispensable local assets that are not committed:
 Copy `.claude/mcp-servers.json` to the worktree if it exists (e.g., Playwright, GitHub MCP servers).
 - Create `.claude/` directory in worktree if needed
 - Copy environment variables referenced in MCP server configs (e.g., `GITHUB_TOKEN`)
-- Linear uses CLI auth via `linear auth` (no MCP or environment variables needed)
+- Linear uses ltui CLI with profile-based auth or LINEAR_API_KEY environment variable (no MCP needed)
 
 ## Linear Context Notes
 - Create (or update) `notes/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
@@ -61,7 +68,7 @@ Copy `.claude/mcp-servers.json` to the worktree if it exists (e.g., Playwright, 
   - Worktree location & branch
   - Linear issue summary (title, URL, project)
   - Config files copied
-  - Linear CLI authentication status (from `linear whoami`)
+  - Linear CLI authentication status (from `ltui auth list`)
   - MCP servers copied (non-Linear servers like Playwright)
   - Next suggested commands (install deps, run tests, etc.) derived from repository docs
 - Leave the original repository untouched aside from the new worktree metadata and branch creation.

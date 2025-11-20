@@ -27,13 +27,7 @@
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_evaluate",
       "mcp__playwright__browser_press_key",
-      "mcp__playwright__browser_close",
-      "mcp__linear-server__list_projects",
-      "mcp__linear-server__list_issues",
-      "mcp__linear-server__get_issue",
-      "mcp__linear-server__update_issue",
-      "mcp__linear-server__create_issue",
-      "mcp__linear-server__list_teams"
+      "mcp__playwright__browser_close"
     ],
     "deny": []
   },

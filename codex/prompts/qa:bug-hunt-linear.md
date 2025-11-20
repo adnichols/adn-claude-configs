@@ -11,7 +11,7 @@ Run a focused visual QA sweep, concentrating on bugs introduced or surfaced with
 - Track blockers preventing investigation; note partial coverage when timeboxes expire.
 
 ## Linear Issue Workflow
-- Operate on the Linear workspace directly via MCP tools. Before creating issues, ensure the `AIFound` label exists (create it if missing) and reference the canonical `bug` label.
+- Operate on the Linear workspace directly via ltui commands. Before creating issues, ensure the `AIFound` label exists using `ltui labels list --team <TEAM>` to check, or `ltui labels create --name "AIFound" --team <TEAM>` to create if missing. Reference the canonical `bug` label.
 - File each issue in the "Doc Thingy" project, backlog state. Title format: `[Bug] <Area> - <Short Symptom>`.
 - Issue body must include:
   - **Summary**: one–two sentences describing the visual defect and user impact.
@@ -21,6 +21,21 @@ Run a focused visual QA sweep, concentrating on bugs introduced or surfaced with
   - **Assets**: embed screenshot/video references or attach uploaded files.
   - **Suspected Cause**: optional hypothesis referencing code files or recent PRs (no fixes).
 - Create issues as soon as each bug is confirmed—do not batch at the end. Verify each API call succeeds and capture the returned issue identifier.
+
+**Create issues using ltui:**
+```bash
+ltui issues create \
+  --team <TEAM> \
+  --project "Doc Thingy" \
+  --title "[Bug] <Area> - <Short Symptom>" \
+  --description "<formatted-body>" \
+  --state "Backlog" \
+  --label bug \
+  --label AIFound \
+  --format detail
+```
+
+Parse the `ISSUE:` line from output to capture the issue identifier/URL.
 
 ## Completion Criteria
 - Surface up to 10 highest-impact visual/UX bugs. If fewer than 10 exist, explain coverage gaps and remaining areas to audit.

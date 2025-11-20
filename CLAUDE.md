@@ -181,6 +181,105 @@ After installation, merge MCP server configurations:
 - **Claude Desktop**: Add to `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Codex**: Add to `~/.codex/config.toml`
 
+## Linear Integration
+
+This repository uses the `ltui` CLI tool for Linear integration, which provides a token-efficient, AI-friendly interface to Linear's API.
+
+### Setup
+
+1. **Obtain Linear API Key**
+   - Go to [linear.app/settings/api](https://linear.app/settings/api)
+   - Create a new Personal API Key
+   - Copy the key (it won't be shown again)
+
+2. **Configure ltui Authentication**
+   ```bash
+   # Add authentication profile
+   ltui auth add --name default --key <your-api-key>
+
+   # Verify authentication
+   ltui auth list
+   ltui teams list
+   ```
+
+3. **Test the Setup**
+   ```bash
+   # List your teams
+   ltui teams list
+
+   # View an issue (replace with actual issue key)
+   ltui issues view <ISSUE_KEY> --format detail
+   ```
+
+### Project Alignment
+
+For streamlined workflows, create a `.ltui.json` file in your project root:
+
+```json
+{
+  "profile": "default",
+  "team": "ENG",
+  "project": "Doc Thingy",
+  "defaultIssueState": "Todo",
+  "defaultLabels": ["bug"],
+  "defaultAssignee": "me"
+}
+```
+
+This allows shorter commands (e.g., `ltui issues create --title "Fix"` instead of specifying team/project/labels each time).
+
+### Common Commands
+
+**View issue details:**
+```bash
+ltui issues view <ISSUE_KEY> --format detail
+```
+
+**Create an issue:**
+```bash
+ltui issues create \
+  --team <TEAM> \
+  --project "Project Name" \
+  --title "Issue title" \
+  --description "Description" \
+  --state "Backlog" \
+  --label bug
+```
+
+**Update issue state:**
+```bash
+ltui issues update <ISSUE_KEY> --state "In Review"
+```
+
+**Add a comment:**
+```bash
+ltui issues comment <ISSUE_KEY> --body "Comment text"
+```
+
+**Link a PR:**
+```bash
+ltui issues link <ISSUE_KEY> --url <pr-url> --title "PR #123"
+```
+
+### Migration from linear CLI / MCP
+
+This repository previously used the `linear` CLI tool and Linear MCP server. All Linear commands have been migrated to use `ltui` for:
+
+- **Token efficiency**: TSV format uses 50-70% fewer tokens than JSON
+- **Deterministic output**: Same command always produces same format
+- **AI-friendly**: Structured formats (detail, TSV) designed for parsing
+- **Unified interface**: Single tool for all Linear operations
+
+If you have the Linear MCP server configured in your global Claude Desktop config, you can remove it as it's no longer needed.
+
+### Available ltui Commands
+
+For full documentation, see the [ltui tool README](tools/ltui/README.md) or run:
+```bash
+ltui --help
+ltui issues --help
+```
+
 ## Maintenance
 
 To keep installed configurations up-to-date:

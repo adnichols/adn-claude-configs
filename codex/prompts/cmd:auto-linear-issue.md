@@ -14,8 +14,8 @@ Linear issue: $ARGUMENTS
 - Require at least one argument; fail fast with clear usage guidance if missing.
 - Verify the repository root (`git rev-parse --show-toplevel`) has no staged or unstaged changes; halt and ask the operator to clean up if dirty.
 - Run `git fetch --prune --tags` before branching to avoid stale bases.
-- Retrieve full Linear issue metadata via MCP (title, description, project, status, labels, attachments) and confirm it belongs to the "Doc Thingy" project; abort with a warning if not.
-- Record the Linear issue URL for later status updates and PR descriptions.
+- Retrieve full Linear issue metadata via ltui (title, description, project, status, labels) using `ltui issues view <ISSUE_KEY> --format detail` and confirm it belongs to the "Doc Thingy" project; abort with a warning if not.
+- Parse the detail output to extract all fields and the Linear issue URL for later status updates and PR descriptions.
 
 ## Branch & Worktree Creation
 
@@ -58,7 +58,7 @@ Linear issue: $ARGUMENTS
    - If a check fails, remediate and rerun until clean or until three attempts fail; on repeated failure, pause and surface diagnostics to the operator while leaving the workspace intact.
 4. **Documentation & Status Updates**
    - Update the worktree note with implementation summary, commands run, and remaining risks.
-   - Post a draft update to Linear via MCP (comment) summarizing progress when major milestones complete or a blocker arises.
+   - Post a draft update to Linear using `ltui issues comment <ISSUE_KEY> --body "<comment-text>"` summarizing progress when major milestones complete or a blocker arises.
 
 ## Completion & Hand-off
 
@@ -67,6 +67,6 @@ Linear issue: $ARGUMENTS
 - Auto-create a pull request (GitHub CLI or equivalent) with:
   - Title `[<ISSUE_KEY>] <Linear title>`
   - Body including summary, validation commands, checklist of acceptance criteria, and Linear issue URL.
-- Transition the Linear issue state to "In Review" (or appropriate) and add a comment linking the PR.
+- Transition the Linear issue state to "In Review" using `ltui issues update <ISSUE_KEY> --state "In Review"` and add a comment linking the PR with `ltui issues comment <ISSUE_KEY> --body "PR: <url>"` or `ltui issues link <ISSUE_KEY> --url <pr-url> --title "PR #<number>"`.
 - Present a final Codex summary: branch, PR URL, test results, remaining concerns. If work is incomplete, clearly outline blockers and leave the issue in the appropriate Linear state without creating a PR.
 - Keep the primary repo pristine aside from worktree metadata and pushed branch.
