@@ -31,7 +31,8 @@ print_usage() {
     echo "  --append-agents"
     echo "             Ensure a project-level AGENTS.md exists in the target directory."
     echo "             If AGENTS.md exists and is missing the Fidelity & Execution rules,"
-    echo "             append that section from AGENTS.template.md."
+    echo "             append that section from AGENTS.template.md. Also offers to append"
+    echo "             ltui (Linear) usage guidance from this repository."
     echo ""
     echo "Examples:"
     echo "  $0 --claude                        # Install Claude to current directory"
@@ -144,11 +145,87 @@ PY
     esac
 }
 
+append_ltui_guidance() {
+    local agents_path="$1"
+    local agents_created="$2"
+    local ltui_marker="## Linear Integration (ltui)"
+
+    if [ ! -f "$agents_path" ] || grep -q "$ltui_marker" "$agents_path"; then
+        return
+    fi
+
+    local should_append=false
+
+    if [ "$agents_created" = true ]; then
+        should_append=true
+    elif [ "$APPEND_AGENTS" = true ]; then
+        should_append=true
+    elif [ -t 0 ]; then
+        printf "  - Add ltui (Linear) guidance to AGENTS.md now? [Y/n] "
+        read -r reply
+        case "$reply" in
+            ""|"Y"|"y")
+                should_append=true
+                ;;
+            *)
+                echo "  - Skipping ltui guidance append (re-run with --append-agents to add automatically)."
+                ;;
+        esac
+    else
+        echo "  - Skipping ltui guidance append (non-interactive; run with --append-agents or edit manually)."
+    fi
+
+    if [ "$should_append" = true ]; then
+        echo "  - Appending ltui Linear guidance to AGENTS.md..."
+        cat <<'EOF' >> "$agents_path"
+
+## Linear Integration (ltui)
+
+`ltui` is the token-efficient Linear CLI for AI agents (replaces the legacy linear CLI/MCP). Use it for all Linear interactions.
+
+### Setup
+1. Get a Linear API key: https://linear.app/settings/api
+2. Configure authentication:
+   ```bash
+   ltui auth add --name default --key <api-key>
+   ltui auth list
+   ltui teams list
+   ```
+
+### Project Alignment (.ltui.json)
+Create a `.ltui.json` in the repo root so agents target the right team/project by default:
+```json
+{
+  "profile": "default",
+  "team": "ENG",
+  "project": "Doc Thingy",
+  "defaultIssueState": "Todo",
+  "defaultLabels": ["bug"],
+  "defaultAssignee": "me"
+}
+```
+Commit this file so everyone shares the defaults.
+
+### Common Commands
+```bash
+ltui issues view <ISSUE_KEY> --format detail
+ltui issues create --team <TEAM> --project "Project Name" --title "Issue title" --description "Description" --state "Backlog" --label bug
+ltui issues update <ISSUE_KEY> --state "In Review"
+ltui issues comment <ISSUE_KEY> --body "Comment text"
+ltui issues link <ISSUE_KEY> --url <pr-url> --title "PR #123"
+```
+
+For more, run `ltui --help` or see the ltui README in this configuration repo.
+EOF
+    fi
+}
+
 ensure_project_agents() {
     # Ensure a project-level AGENTS.md exists and, optionally, append the Fidelity & Execution rules.
     local project_root="$1"
     local template_path="$REPO_ROOT/AGENTS.template.md"
     local agents_path="$project_root/AGENTS.md"
+    local agents_created=false
 
     # Do not touch the config repo's own AGENTS.md via this path
     if [ "$project_root" = "$REPO_ROOT" ]; then
@@ -162,10 +239,11 @@ ensure_project_agents() {
     if [ ! -f "$agents_path" ]; then
         echo "  - No project AGENTS.md found; installing from template..."
         cp "$template_path" "$agents_path"
-        return
+        agents_created=true
     fi
 
     if grep -q "Fidelity & Execution Rules" "$agents_path"; then
+        append_ltui_guidance "$agents_path" "$agents_created"
         return
     fi
 
@@ -174,6 +252,7 @@ ensure_project_agents() {
         echo "  - Appending Fidelity & Execution rules block from template..."
         awk 'BEGIN{flag=0} /^## Fidelity & Execution Rules/{flag=1} flag {print}' "$template_path" >> "$agents_path"
         echo "" >> "$agents_path"
+        append_ltui_guidance "$agents_path" "$agents_created"
     else
         if [ -t 0 ]; then
             printf "  - Add Fidelity & Execution rules section to AGENTS.md now? [Y/n] "
@@ -183,13 +262,16 @@ ensure_project_agents() {
                     echo "  - Appending Fidelity & Execution rules block from template..."
                     awk 'BEGIN{flag=0} /^## Fidelity & Execution Rules/{flag=1} flag {print}' "$template_path" >> "$agents_path"
                     echo "" >> "$agents_path"
+                    append_ltui_guidance "$agents_path" "$agents_created"
                     ;;
                 *)
                     echo "  - Skipping append to AGENTS.md (you can re-run with --append-agents or edit manually)."
+                    append_ltui_guidance "$agents_path" "$agents_created"
                     ;;
             esac
         else
             echo "  - Skipping automatic append to AGENTS.md (non-interactive; run with --append-agents or edit manually)."
+            append_ltui_guidance "$agents_path" "$agents_created"
         fi
     fi
 }
