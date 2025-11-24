@@ -59,13 +59,19 @@ export function runProjectsCommands(program: Command): void {
           filter,
         });
 
-        const rows: ProjectRow[] = data.nodes.map((project: any) => ({
-          id: project.id ?? '',
-          name: sanitizeSingleLine(project.name ?? ''),
-          state: project.state ?? '',
-          status: project.status?.name ?? '',
-          targetDate: project.targetDate ?? '',
-        }));
+        // Await status as it's a promise in the Linear SDK
+        const rows: ProjectRow[] = await Promise.all(
+          data.nodes.map(async (project: any) => {
+            const status = project.status ? await project.status : undefined;
+            return {
+              id: project.id ?? '',
+              name: sanitizeSingleLine(project.name ?? ''),
+              state: project.state ?? '',
+              status: status?.name ?? '',
+              targetDate: project.targetDate ?? '',
+            };
+          })
+        );
 
         const columns: ColumnDefinition<ProjectRow>[] = [
           { key: 'id', header: 'id', value: row => row.id },
@@ -103,9 +109,12 @@ export function runProjectsCommands(program: Command): void {
           return;
         }
 
+        // Await status as it's a promise in the Linear SDK
+        const status = project.status ? await project.status : undefined;
+
         const fields: Record<string, string> = {
           PROJECT: `${project.name ?? ''} (${project.id ?? ''})`,
-          STATUS: project.status?.name ?? '',
+          STATUS: status?.name ?? '',
           STATE: project.state ?? '',
           TARGET_DATE: project.targetDate ?? '',
           URL: project.url ?? '',

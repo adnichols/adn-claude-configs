@@ -45,12 +45,19 @@ export function runLabelsCommands(program: Command): void {
           after: globalOpts.cursor,
           filter,
         });
-        const rows: LabelRow[] = data.nodes.map((label: any) => ({
-          id: label.id ?? '',
-          name: label.name ?? '',
-          group: label.parent?.name ?? (label.isGroup ? 'group' : ''),
-          color: label.color ?? '',
-        }));
+
+        // Await parent as it's a promise in the Linear SDK
+        const rows: LabelRow[] = await Promise.all(
+          data.nodes.map(async (label: any) => {
+            const parent = label.parent ? await label.parent : undefined;
+            return {
+              id: label.id ?? '',
+              name: label.name ?? '',
+              group: parent?.name ?? (label.isGroup ? 'group' : ''),
+              color: label.color ?? '',
+            };
+          })
+        );
 
         const columns: ColumnDefinition<LabelRow>[] = [
           { key: 'id', header: 'id', value: row => row.id },

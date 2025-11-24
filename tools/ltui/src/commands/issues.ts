@@ -139,14 +139,23 @@ export function runIssuesCommands(program: Command): void {
         }
 
         const descriptionInfo = truncateMultiline(issue.description ?? '', options.maxDescriptionChars);
+
+        // Await related entities as they are promises in the Linear SDK
+        const [state, team, project, assignee] = await Promise.all([
+          issue.state ? issue.state : undefined,
+          issue.team ? issue.team : undefined,
+          issue.project ? issue.project : undefined,
+          issue.assignee ? issue.assignee : undefined,
+        ]);
+
         const fields: Record<string, string> = {
           ISSUE: `${issue.identifier ?? ''} (${issue.id ?? ''})`,
           TITLE: issue.title ?? '',
-          STATE: issue.state?.name ?? '',
+          STATE: state?.name ?? '',
           PRIORITY: issue.priority?.toString() ?? '',
-          TEAM: issue.team?.key ?? '',
-          PROJECT: issue.project?.name ?? '',
-          ASSIGNEE: issue.assignee?.name ?? '',
+          TEAM: team?.key ?? '',
+          PROJECT: project?.name ?? '',
+          ASSIGNEE: assignee?.name ?? '',
           LABELS: extractLabelNames(issue).join(','),
           CREATED_AT: issue.createdAt?.toISOString?.() ?? '',
           UPDATED_AT: issue.updatedAt?.toISOString?.() ?? '',
@@ -349,7 +358,9 @@ export function runIssuesCommands(program: Command): void {
         const input: Record<string, unknown> = {};
         let changed = false;
 
-        let effectiveTeamId: string | undefined = issue.team?.id;
+        // Await team as it's a promise in the Linear SDK
+        const currentTeam = issue.team ? await issue.team : undefined;
+        let effectiveTeamId: string | undefined = currentTeam?.id;
         if (options.team) {
           const team = await findTeamByKeyOrId(client, options.team);
           if (!team) {
@@ -809,6 +820,14 @@ async function buildIssueFilter(options: Record<string, any>): Promise<Record<st
 }
 
 async function mapIssueToRow(issue: any): Promise<IssueListRow> {
+  // Await related entities as they are promises in the Linear SDK
+  const [team, state, project, assignee] = await Promise.all([
+    issue.team ? issue.team : undefined,
+    issue.state ? issue.state : undefined,
+    issue.project ? issue.project : undefined,
+    issue.assignee ? issue.assignee : undefined,
+  ]);
+
   let labelNames: string[] = [];
   if (typeof issue.labels === 'function') {
     const connection = await issue.labels({ first: 25 });
@@ -822,14 +841,14 @@ async function mapIssueToRow(issue: any): Promise<IssueListRow> {
       : issue.updatedAt ?? '';
   return {
     id: issue.id ?? '',
-    key: issue.team?.key ?? '',
+    key: team?.key ?? '',
     identifier: issue.identifier ?? '',
     title: sanitizeSingleLine(issue.title ?? ''),
-    state: issue.state?.name ?? '',
+    state: state?.name ?? '',
     priority: issue.priority?.toString() ?? '',
-    assignee: issue.assignee?.name ?? '-',
+    assignee: assignee?.name ?? '-',
     labels: labelNames.join(','),
-    project: issue.project?.name ?? '-',
+    project: project?.name ?? '-',
     updatedAt,
   };
 }
