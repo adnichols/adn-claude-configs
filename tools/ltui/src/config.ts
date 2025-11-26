@@ -76,17 +76,31 @@ export function saveProfilesFile(profiles: Record<string, { apiKey: string }>): 
   writeJsonFile(file, profiles);
 }
 
-export function loadProjectConfig(cwd: string = process.cwd()): ProjectConfig {
-  const file = path.join(cwd, '.ltui.json');
+function safeCwd(): string | undefined {
+  try {
+    return process.cwd();
+  } catch {
+    return undefined;
+  }
+}
+
+export function loadProjectConfig(cwd?: string): ProjectConfig {
+  const dir = cwd ?? safeCwd();
+  if (!dir) return {};
+  const file = path.join(dir, '.ltui.json');
   return readJsonFile<ProjectConfig>(file) as ProjectConfig;
 }
 
-export function saveProjectConfig(config: ProjectConfig, cwd: string = process.cwd()): void {
-  const file = path.join(cwd, '.ltui.json');
+export function saveProjectConfig(config: ProjectConfig, cwd?: string): void {
+  const dir = cwd ?? safeCwd();
+  if (!dir) {
+    throw new Error('api_error Unable to determine current directory (it may have been deleted)');
+  }
+  const file = path.join(dir, '.ltui.json');
   writeJsonFile(file, config);
 }
 
-export function resolveConfig(explicitProfile?: string, cwd: string = process.cwd()): ResolvedConfig {
+export function resolveConfig(explicitProfile?: string, cwd?: string): ResolvedConfig {
   const globalConfig = loadGlobalConfig();
   const profilesFile = loadProfilesFile();
   const projectConfig = loadProjectConfig(cwd);
