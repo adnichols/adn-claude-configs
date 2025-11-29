@@ -154,16 +154,34 @@ export async function resolveLabelIds(
   }
 
   if (missing.length > 0) {
-    const connection = await client.issueLabels({
+    // First try team-scoped labels
+    const teamConnection = await client.issueLabels({
       first: missing.length,
       filter: {
         and: [{ team: { id: { eq: teamId } } }, { name: { in: missing } }],
       },
     });
-    for (const label of connection.nodes) {
+    for (const label of teamConnection.nodes) {
       if (label.name && label.id) {
         byName.set(label.name, label.id);
         setCachedValue('labels', `${teamId}:${label.name.toLowerCase()}`, label.id, CACHE_TTL_SECONDS);
+      }
+    }
+
+    // Check for remaining unresolved labels - try workspace-level labels (no team filter)
+    const stillMissing = missing.filter(name => !byName.has(name));
+    if (stillMissing.length > 0) {
+      const workspaceConnection = await client.issueLabels({
+        first: stillMissing.length,
+        filter: {
+          and: [{ team: { null: true } }, { name: { in: stillMissing } }],
+        },
+      });
+      for (const label of workspaceConnection.nodes) {
+        if (label.name && label.id) {
+          byName.set(label.name, label.id);
+          setCachedValue('labels', `${teamId}:${label.name.toLowerCase()}`, label.id, CACHE_TTL_SECONDS);
+        }
       }
     }
   }
