@@ -12,7 +12,10 @@ Run a focused visual QA sweep, concentrating on bugs introduced or surfaced with
 
 ## Linear Issue Workflow
 - Operate on the Linear workspace directly via ltui commands. Before creating issues, ensure the `AIFound` label exists using `ltui labels list --team <TEAM>` to check, or `ltui labels create --name "AIFound" --team <TEAM>` to create if missing. Reference the canonical `bug` label.
-- File each issue in the "Doc Thingy" project, backlog state. Title format: `[Bug] <Area> - <Short Symptom>`.
+- Determine the target project:
+  - If `.ltui.json` exists in repo root and specifies a `project`, use that project
+  - Otherwise, list projects with `ltui projects list` and ask the user which project to file bugs in
+- File each issue in the target project, backlog state. Title format: `[Bug] <Area> - <Short Symptom>`.
 - Issue body must include:
   - **Summary**: one–two sentences describing the visual defect and user impact.
   - **Environment**: commit hash, browser/device, viewport, relevant flags.
@@ -26,7 +29,7 @@ Run a focused visual QA sweep, concentrating on bugs introduced or surfaced with
 ```bash
 ltui issues create \
   --team <TEAM> \
-  --project "Doc Thingy" \
+  --project "<TARGET_PROJECT>" \
   --title "[Bug] <Area> - <Short Symptom>" \
   --description "<formatted-body>" \
   --state "Backlog" \
@@ -34,6 +37,7 @@ ltui issues create \
   --label AIFound \
   --format detail
 ```
+Replace `<TARGET_PROJECT>` with the project determined earlier (from `.ltui.json` or user selection).
 
 Parse the `ISSUE:` line from output to capture the issue identifier/URL.
 

@@ -11,7 +11,9 @@ Linear issue and optional base branch: $ARGUMENTS
 - Require at least one argument; fail fast with guidance if missing.
 - Verify the working tree at repo root is clean (`git status --porcelain=v1`); halt and request operator cleanup if dirty.
 - Run `git fetch --prune --tags` before branching so worktrees never start from stale refs.
-- Use the `ltui` CLI to pull full issue metadata (title, description, project, status) for the supplied key. Confirm it belongs to the "Doc Thingy" project; stop with a warning if not.
+- Use the `ltui` CLI to pull full issue metadata (title, description, project, status) for the supplied key.
+- If `.ltui.json` exists in the repo root and specifies a `project`, verify the issue belongs to that project; warn if not but allow proceeding with confirmation.
+- If no project is configured, skip project validation.
 
 ## Linear CLI Usage
 Uses the `ltui` CLI tool for issue metadata. Common commands:

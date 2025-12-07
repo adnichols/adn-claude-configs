@@ -14,7 +14,9 @@ Linear issue: $ARGUMENTS
 - Require at least one argument; fail fast with clear usage guidance if missing.
 - Verify the repository root (`git rev-parse --show-toplevel`) has no staged or unstaged changes; halt and ask the operator to clean up if dirty.
 - Run `git fetch --prune --tags` before branching to avoid stale bases.
-- Retrieve full Linear issue metadata via ltui (title, description, project, status, labels) using `ltui issues view <ISSUE_KEY> --format detail` and confirm it belongs to the "Doc Thingy" project; abort with a warning if not.
+- Retrieve full Linear issue metadata via ltui (title, description, project, status, labels) using `ltui issues view <ISSUE_KEY> --format detail`.
+- If `.ltui.json` exists in the repo root and specifies a `project`, verify the issue belongs to that project; warn if not but allow proceeding with confirmation.
+- If no project is configured, skip project validation.
 - Parse the detail output to extract all fields and the Linear issue URL for later status updates and PR descriptions.
 
 ## Branch & Worktree Creation
