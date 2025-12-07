@@ -85,6 +85,21 @@ Important slash commands:
 - `/simplify:1:create-plan`: Generate code simplification plans using simplify-planner agent
 - `/simplify:2:process-plan`: Execute existing simplification plans
 
+### Session Management Commands
+- `/cmd:create-handoff`: Create handoff document for transferring work between sessions
+- `/cmd:resume-handoff`: Resume work from a handoff document
+- `/cmd:research`: Research codebase area without planning commitment
+
+### Verification Commands
+- `/cmd:validate`: Post-implementation verification against plan
+- `/cmd:debug`: Context-preserving investigation for debugging
+
+### Code Review Commands
+- `/cmd:local-review`: Isolated code review in separate worktree
+
+### Graduation Commands
+- `/cmd:graduate`: Synthesize completed artifacts into permanent documentation
+
 ### Git Utility Commands
 - `/cmd:commit-push`: Commit all changes in the repo and push to GitHub
 - `/cmd:create-pr`: Create a pull request
@@ -101,6 +116,52 @@ Important slash commands:
 - Installation copies files (not symlinks) for independence
 - Both Claude Code and Codex can be installed to the same project
 - CLAUDE.md and CODEX.md are NOT installed - codex generates these files
+
+## Thoughts Directory Structure
+
+All working artifacts are stored in the `thoughts/` directory (committed to git):
+
+```
+thoughts/
+├── plans/                    # Implementation plans, PRDs, task lists
+│   ├── prd-*.md              # Product Requirements Documents
+│   ├── tasks-prd-*.md        # Task lists from PRDs
+│   ├── tasks-fidelity-*.md   # Task lists from specifications
+│   └── simplify-plan-*.md    # Code simplification plans
+├── specs/                    # Technical specifications
+│   └── spec-*.md             # Research-based specifications
+├── research/                 # Standalone research documents
+│   └── YYYY-MM-DD-*.md       # Dated research reports
+├── handoffs/                 # Session continuity documents
+│   └── [TICKET]/             # Organized by ticket
+│       └── YYYY-MM-DD_HH-MM-SS_description.md
+├── validation/               # Post-implementation verification
+│   └── YYYY-MM-DD-*.md       # Validation reports
+├── debug/                    # Debug investigations
+│   └── YYYY-MM-DD-*.md       # Debug reports
+├── prs/                      # PR descriptions and reviews
+│   └── {number}_description.md
+├── linear/                   # Linear ticket notes
+│   └── [ISSUE-KEY].md
+└── archive/                  # Completed artifacts (from migration)
+```
+
+### Permanent Documentation
+
+Completed features are graduated from `thoughts/` to permanent documentation:
+
+- **SPECIFICATION.md**: Feature behaviors, constraints, and API contracts
+- **CHANGELOG.md**: Running log of implemented changes
+- **DECISIONS.md**: Architectural Decision Records (ADRs)
+
+Use `/cmd:graduate [feature]` to synthesize artifacts and clean up working files.
+
+### Migration from Legacy Directories
+
+The install script automatically migrates legacy directories:
+- `tasks/` → `thoughts/plans/` and `thoughts/specs/`
+- `tasks-complete/` → `thoughts/archive/`
+- `notes/linear/` → `thoughts/linear/`
 
 
 ## Available Documentation
@@ -144,6 +205,36 @@ All commands now follow the fidelity-preserving approach:
 2. Quality review with @quality-reviewer agent
 3. User approval required before implementation
 4. Use `/simplify:2:process-plan` for execution
+
+### Session Handoff Workflow
+
+For work that spans multiple sessions:
+
+1. **Create Handoff**: Use `/cmd:create-handoff` before ending session
+   - Documents current task status
+   - Lists critical references and recent changes
+   - Records learnings and patterns discovered
+   - Specifies next steps
+
+2. **Resume Work**: Use `/cmd:resume-handoff [ticket or path]` in new session
+   - Reads handoff document
+   - Verifies current state matches handoff claims
+   - Presents action plan for confirmation
+   - Continues work with full context
+
+### Graduation Workflow
+
+After completing a feature, graduate artifacts to permanent documentation:
+
+1. **Verify Completion**: Ensure all tasks checked, tests pass
+2. **Graduate**: Use `/cmd:graduate [feature]`
+   - Synthesizes spec → SPECIFICATION.md
+   - Synthesizes plan → CHANGELOG.md
+   - Synthesizes research → DECISIONS.md
+   - Deletes working artifacts (preserved in git history)
+3. **Commit**: Two commits created automatically
+   - Permanent doc updates
+   - Artifact removal
 
 ### Batch Documentation Workflow
 

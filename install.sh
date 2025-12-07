@@ -17,6 +17,9 @@ INSTALL_SKILLS=false
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
 NC='\033[0m' # No Color
 
 print_usage() {
@@ -276,6 +279,249 @@ ensure_project_agents() {
     fi
 }
 
+# Setup thoughts directory structure
+setup_thoughts_structure() {
+    local target_dir="$1"
+    local thoughts_dir="$target_dir/thoughts"
+
+    # Create main thoughts directory
+    mkdir -p "$thoughts_dir"
+
+    # Create all subdirectories
+    local subdirs=(plans specs research handoffs prs validation debug linear archive)
+    for subdir in "${subdirs[@]}"; do
+        mkdir -p "$thoughts_dir/$subdir"
+    done
+
+    echo "  - Created thoughts/ directory structure"
+}
+
+# Create permanent documentation templates if they don't exist
+create_permanent_docs() {
+    local target_dir="$1"
+
+    # CHANGELOG.md
+    if [ ! -f "$target_dir/CHANGELOG.md" ]; then
+        cat > "$target_dir/CHANGELOG.md" << 'EOF'
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+<!--
+Entries are added by /cmd:graduate after completing features.
+Format:
+## [Feature Name] - YYYY-MM-DD
+### Added/Changed/Fixed
+- Description of change
+-->
+EOF
+        echo "  - Created CHANGELOG.md template"
+    fi
+
+    # SPECIFICATION.md
+    if [ ! -f "$target_dir/SPECIFICATION.md" ]; then
+        cat > "$target_dir/SPECIFICATION.md" << 'EOF'
+# Specification
+
+This document describes the features, behaviors, and constraints of the system.
+
+<!--
+Entries are added by /cmd:graduate after completing features.
+Each section describes a feature's behaviors and constraints as implemented.
+-->
+
+## Features
+
+<!-- Feature sections will be added here -->
+EOF
+        echo "  - Created SPECIFICATION.md template"
+    fi
+
+    # DECISIONS.md
+    if [ ! -f "$target_dir/DECISIONS.md" ]; then
+        cat > "$target_dir/DECISIONS.md" << 'EOF'
+# Architectural Decision Records
+
+This document captures key architectural decisions and their rationale.
+
+<!--
+Entries are added by /cmd:graduate after completing features.
+Format:
+## ADR-NNN: [Decision Title] - YYYY-MM-DD
+### Context
+### Decision
+### Consequences
+-->
+EOF
+        echo "  - Created DECISIONS.md template"
+    fi
+}
+
+# Detect and migrate legacy directories
+migrate_legacy_directories() {
+    local target_dir="$1"
+    local thoughts_dir="$target_dir/thoughts"
+
+    # Check for legacy directories
+    local has_tasks=false
+    local has_tasks_complete=false
+    local has_notes_linear=false
+    local files_to_migrate=()
+
+    if [ -d "$target_dir/tasks" ]; then
+        has_tasks=true
+    fi
+    if [ -d "$target_dir/tasks-complete" ]; then
+        has_tasks_complete=true
+    fi
+    if [ -d "$target_dir/notes/linear" ]; then
+        has_notes_linear=true
+    fi
+
+    # If no legacy directories, return
+    if [ "$has_tasks" = false ] && [ "$has_tasks_complete" = false ] && [ "$has_notes_linear" = false ]; then
+        return 0
+    fi
+
+    # Display OBVIOUS migration banner
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}${BOLD}  🔄 MIGRATION DETECTED: Moving existing files to new thoughts/ structure${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "  ${BOLD}Found legacy directories:${NC}"
+
+    if [ "$has_tasks" = true ]; then
+        echo -e "    ${GREEN}✓${NC} tasks/           → will migrate to thoughts/plans/ and thoughts/specs/"
+    fi
+    if [ "$has_tasks_complete" = true ]; then
+        echo -e "    ${GREEN}✓${NC} tasks-complete/  → will migrate to thoughts/archive/"
+    fi
+    if [ "$has_notes_linear" = true ]; then
+        echo -e "    ${GREEN}✓${NC} notes/linear/    → will migrate to thoughts/linear/"
+    fi
+    echo ""
+
+    # List files to be moved
+    echo -e "  ${BOLD}The following files will be moved:${NC}"
+
+    if [ "$has_tasks" = true ]; then
+        shopt -s nullglob
+        for file in "$target_dir/tasks"/*.md; do
+            local filename=$(basename "$file")
+            local dest=""
+            case "$filename" in
+                prd-*.md|tasks-*.md|simplify-plan-*.md)
+                    dest="thoughts/plans/$filename"
+                    ;;
+                spec-*.md|research-spec-*.md)
+                    dest="thoughts/specs/$filename"
+                    ;;
+                *)
+                    dest="thoughts/plans/$filename"
+                    ;;
+            esac
+            echo -e "    ${YELLOW}$filename${NC} → ${GREEN}$dest${NC}"
+            files_to_migrate+=("$file:$target_dir/$dest")
+        done
+        shopt -u nullglob
+    fi
+
+    if [ "$has_tasks_complete" = true ]; then
+        shopt -s nullglob
+        for file in "$target_dir/tasks-complete"/*.md; do
+            local filename=$(basename "$file")
+            echo -e "    ${YELLOW}tasks-complete/$filename${NC} → ${GREEN}thoughts/archive/$filename${NC}"
+            files_to_migrate+=("$file:$thoughts_dir/archive/$filename")
+        done
+        shopt -u nullglob
+    fi
+
+    if [ "$has_notes_linear" = true ]; then
+        shopt -s nullglob
+        for file in "$target_dir/notes/linear"/*.md; do
+            local filename=$(basename "$file")
+            echo -e "    ${YELLOW}notes/linear/$filename${NC} → ${GREEN}thoughts/linear/$filename${NC}"
+            files_to_migrate+=("$file:$thoughts_dir/linear/$filename")
+        done
+        shopt -u nullglob
+    fi
+
+    echo ""
+    echo -e "  ${YELLOW}⚠️  This is a ONE-TIME migration. Original directories will be removed.${NC}"
+    echo -e "  ${YELLOW}⚠️  Git history preserves all files at their original locations.${NC}"
+    echo ""
+
+    # Prompt for confirmation
+    if [ -t 0 ]; then
+        printf "  Press ENTER to continue, or Ctrl+C to cancel... "
+        read -r
+    else
+        echo "  (Non-interactive mode: proceeding with migration)"
+    fi
+
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Perform migration
+    echo "  - Migrating files..."
+
+    # Ensure thoughts directory structure exists
+    setup_thoughts_structure "$target_dir"
+
+    # Move files
+    for entry in "${files_to_migrate[@]}"; do
+        local src="${entry%%:*}"
+        local dest="${entry##*:}"
+        if [ -f "$src" ]; then
+            mv "$src" "$dest"
+            echo "    Moved: $(basename "$src")"
+        fi
+    done
+
+    # Remove empty legacy directories
+    if [ "$has_tasks" = true ] && [ -d "$target_dir/tasks" ]; then
+        if [ -z "$(ls -A "$target_dir/tasks" 2>/dev/null)" ]; then
+            rmdir "$target_dir/tasks"
+            echo "  - Removed empty tasks/ directory"
+        else
+            echo -e "  ${YELLOW}- tasks/ still contains files, not removing${NC}"
+        fi
+    fi
+
+    if [ "$has_tasks_complete" = true ] && [ -d "$target_dir/tasks-complete" ]; then
+        if [ -z "$(ls -A "$target_dir/tasks-complete" 2>/dev/null)" ]; then
+            rmdir "$target_dir/tasks-complete"
+            echo "  - Removed empty tasks-complete/ directory"
+        else
+            echo -e "  ${YELLOW}- tasks-complete/ still contains files, not removing${NC}"
+        fi
+    fi
+
+    if [ "$has_notes_linear" = true ] && [ -d "$target_dir/notes/linear" ]; then
+        if [ -z "$(ls -A "$target_dir/notes/linear" 2>/dev/null)" ]; then
+            rmdir "$target_dir/notes/linear"
+            # Also remove notes/ if empty
+            if [ -d "$target_dir/notes" ] && [ -z "$(ls -A "$target_dir/notes" 2>/dev/null)" ]; then
+                rmdir "$target_dir/notes"
+            fi
+            echo "  - Removed empty notes/linear/ directory"
+        else
+            echo -e "  ${YELLOW}- notes/linear/ still contains files, not removing${NC}"
+        fi
+    fi
+
+    echo ""
+    echo -e "${GREEN}  ✓ Migration complete!${NC}"
+    echo ""
+    echo -e "  ${BOLD}Suggested next step:${NC}"
+    echo -e "    ${CYAN}git add -A && git commit -m \"chore: migrate to thoughts/ directory structure\"${NC}"
+    echo ""
+}
+
 sync_codex_prompts() {
     local destination="$1"
     local label="$2"
@@ -381,6 +627,13 @@ install_claude() {
     # Update MCP servers configuration
     echo "  - Installing mcp-servers.json..."
     cp "$REPO_ROOT/claude/mcp-servers.json" "$target/"
+
+    # Setup thoughts directory structure and migrate legacy directories
+    migrate_legacy_directories "$1"
+    if [ ! -d "$1/thoughts" ]; then
+        setup_thoughts_structure "$1"
+    fi
+    create_permanent_docs "$1"
 
     if [ "$is_update" = true ]; then
         echo -e "${GREEN}✓ Claude Code update complete${NC}"

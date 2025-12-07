@@ -32,7 +32,7 @@ The user will provide:
 1. **Gather Precise Requirements:** Ask focused questions to understand exact scope and boundaries
 2. **Define Clear Boundaries:** Explicitly capture what's included and what's excluded
 3. **Generate PRD with Fidelity Metadata:** Create PRD with YAML front-matter containing fidelity settings
-4. **Save PRD:** Save as `prd-[feature-name].md` in `/tasks` directory with fidelity preservation settings
+4. **Save PRD:** Save as `prd-[feature-name].md` in `thoughts/plans/` directory with fidelity preservation settings
 5. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
 
 ## Clarifying Questions for Scope Definition
@@ -198,7 +198,7 @@ Technical approach: To be determined during implementation phase
 ## Output Format
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/`
+- **Location:** `thoughts/plans/`
 - **Filename:** `prd-[feature-name].md`
 - **Metadata:** Fidelity-preserving YAML front-matter
 

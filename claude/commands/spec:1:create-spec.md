@@ -49,7 +49,7 @@ The AI will need to:
    - Performance considerations and reliability features
    - Implementation planning and dependencies
 4. **Generate Specification:** Create complete document with all necessary sections
-5. **Save Specification:** Save as `research-spec-[idea-name].md` in `/tasks/` directory
+5. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
 6. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
 ## Research Areas
@@ -246,8 +246,8 @@ The specification document uses this comprehensive structure:
 ## Output
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/`
-- **Filename:** `research-spec-[idea-name].md`
+- **Location:** `thoughts/specs/`
+- **Filename:** `spec-[idea-name].md`
 
 ## Key Principles
 

@@ -59,7 +59,7 @@ Copy `.claude/mcp-servers.json` to the worktree if it exists (e.g., Playwright, 
 - Linear uses ltui CLI with profile-based auth or LINEAR_API_KEY environment variable (no MCP needed)
 
 ## Linear Context Notes
-- Create (or update) `notes/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
+- Create (or update) `thoughts/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
 - Record the branch name, worktree path, base ref, and timestamp in the note for future handoff.
 
 ## Finalize Session

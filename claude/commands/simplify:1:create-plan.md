@@ -171,7 +171,7 @@ The generated plan should include the following sections as a checklist:
 ## Output
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/`
+- **Location:** `thoughts/plans/`
 - **Filename:** `simplify-plan-[area-name].md`
 
 ## Final Instructions

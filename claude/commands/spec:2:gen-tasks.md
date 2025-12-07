@@ -52,12 +52,12 @@ The user will provide:
    - Security ONLY as specified (not more, not less)
    - Performance measures ONLY as specified
    - Documentation ONLY as specified
-   - Save tasks to `/tasks/tasks-fidelity-[spec-name].md`
+   - Save tasks to `thoughts/plans/tasks-fidelity-[spec-name].md`
    - Inform user of draft location for review
 
 ## Final Task File Format
 
-The final task file at `/tasks/tasks-fidelity-[spec-name].md`:
+The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 
 ```markdown
 # [Specification Title] - Fidelity Implementation Tasks

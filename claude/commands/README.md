@@ -209,10 +209,22 @@ commands/
 
 ## File Outputs
 
-- **PRDs**: `/tasks/prd-[feature-name].md`
-- **Task Lists**: `/tasks/tasks-[source-name].md`
-- **Simplification Plans**: `/tasks/simplify-[target].md`
-- **Task Processing**: Updates existing task files in place
+All working artifacts are stored in the `thoughts/` directory:
+
+- **PRDs**: `thoughts/plans/prd-[feature-name].md`
+- **Specifications**: `thoughts/specs/spec-[idea-name].md`
+- **Task Lists**: `thoughts/plans/tasks-[source-name].md`
+- **Simplification Plans**: `thoughts/plans/simplify-plan-[target].md`
+- **Research Documents**: `thoughts/research/YYYY-MM-DD-[description].md`
+- **Handoffs**: `thoughts/handoffs/[TICKET]/YYYY-MM-DD_HH-MM-SS_description.md`
+- **Validation Reports**: `thoughts/validation/YYYY-MM-DD-[description].md`
+- **Debug Investigations**: `thoughts/debug/YYYY-MM-DD-[description].md`
+- **Linear Notes**: `thoughts/linear/[ISSUE-KEY].md`
+
+Completed features are graduated to permanent documentation:
+- **SPECIFICATION.md**: Feature behaviors and constraints
+- **CHANGELOG.md**: Implementation summaries
+- **DECISIONS.md**: Architectural decision records
 
 ## Integration Notes
 

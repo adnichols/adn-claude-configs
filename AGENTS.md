@@ -126,3 +126,41 @@ These rules apply to fidelity-oriented workflows (PRDs/specs → tasks → imple
 
 Agents should treat this `AGENTS.md` as authoritative for project-specific rules and combine it with any instructions in prompt files that are invoked from Codex. When in doubt, prefer the stricter rule (safer choice) and surface ambiguities to the human operator.
 
+
+## Linear Integration (ltui)
+
+`ltui` is the token-efficient Linear CLI for AI agents (replaces the legacy linear CLI/MCP). Use it for all Linear interactions.
+
+### Setup
+1. Get a Linear API key: https://linear.app/settings/api
+2. Configure authentication:
+   ```bash
+   ltui auth add --name default --key <api-key>
+   ltui auth list
+   ltui teams list
+   ```
+
+### Project Alignment (.ltui.json)
+Create a `.ltui.json` in the repo root so agents target the right team/project by default:
+```json
+{
+  "profile": "default",
+  "team": "ENG",
+  "project": "Doc Thingy",
+  "defaultIssueState": "Todo",
+  "defaultLabels": ["bug"],
+  "defaultAssignee": "me"
+}
+```
+Commit this file so everyone shares the defaults.
+
+### Common Commands
+```bash
+ltui issues view <ISSUE_KEY> --format detail
+ltui issues create --team <TEAM> --project "Project Name" --title "Issue title" --description "Description" --state "Backlog" --label bug
+ltui issues update <ISSUE_KEY> --state "In Review"
+ltui issues comment <ISSUE_KEY> --body "Comment text"
+ltui issues link <ISSUE_KEY> --url <pr-url> --title "PR #123"
+```
+
+For more, run `ltui --help` or see the ltui README in this configuration repo.

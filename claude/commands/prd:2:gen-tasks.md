@@ -17,8 +17,8 @@ This command follows the fidelity-preserving approach to:
 ## Output
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/`
-- **Filename:** `tasks-[prd-file-name].md` (e.g., `tasks-prd-user-profile-editing.md`)
+- **Location:** `thoughts/plans/`
+- **Filename:** `tasks-prd-[prd-file-name].md` (e.g., `tasks-prd-user-profile-editing.md`)
 
 ## Process
 
