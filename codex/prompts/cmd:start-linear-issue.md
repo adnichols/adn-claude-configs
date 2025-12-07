@@ -41,18 +41,11 @@ Empty output means issue doesn't exist.
 5. Inside the new worktree, configure tracking (`git branch --set-upstream-to=<base-remote>`) and confirm `git status` is clean.
 
 ## Propagate Local Configuration
-Ensure the worktree mirrors indispensable local assets that are not committed:
-
-### Environment & Config Files
-- Identify environment/config files in the root repository that exist but are git-ignored, including:
-  - All `.env*` variants (e.g., `.env`, `.env.local`, `.env.development`, `.env.test.local`)
-  - `.envrc`
-  - `*.local` or `*.local.*` under `config/`, `settings/`, or `scripts/`
-  - `*.private.*`, `docker-compose.override.yml`, `package-lock.private.json`
-- Use `find` combined with `git check-ignore -vq` to detect which files are present locally yet ignored.
-- Copy each discovered file or directory into the worktree using `rsync -avh --relative` so directory structures are preserved.
-- Mirror executable bits (`chmod --reference`) and re-run `direnv allow` if an `.envrc` was copied.
-- Log every copied path; warn (do not fail) when expected files listed in `SETUP.md`, `README.md`, or `.env.example` are absent.
+Copy git-ignored `.env*` files from the main repository to the worktree:
+- Find all `.env*` files (e.g., `.env`, `.env.local`, `.env.development`, `.env.test.local`)
+- Verify each is git-ignored using `git check-ignore -q`
+- Copy to the worktree root
+- Log each copied file
 
 ## Linear Context Notes
 - Create (or update) `notes/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
@@ -63,7 +56,7 @@ Ensure the worktree mirrors indispensable local assets that are not committed:
 - Print a ready-state checklist:
   - Worktree location & branch
   - Linear issue summary (title, URL, project)
-  - Environment/config files copied (git-ignored files only)
+  - `.env*` files copied (if any)
   - Linear CLI authentication status (from `ltui auth list`)
   - Next suggested commands (install deps, run tests, etc.) derived from repository docs
 - Leave the original repository untouched aside from the new worktree metadata and branch creation.
