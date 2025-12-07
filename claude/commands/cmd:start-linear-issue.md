@@ -54,12 +54,6 @@ Ensure the worktree mirrors indispensable local assets that are not committed:
 - Mirror executable bits (`chmod --reference`) and re-run `direnv allow` if an `.envrc` was copied.
 - Log every copied path; warn (do not fail) when expected files listed in `SETUP.md`, `README.md`, or `.env.example` are absent.
 
-### Copy MCP Configuration
-Copy `.claude/mcp-servers.json` to the worktree if it exists (e.g., Playwright, GitHub MCP servers).
-- Create `.claude/` directory in worktree if needed
-- Copy environment variables referenced in MCP server configs (e.g., `GITHUB_TOKEN`)
-- Linear uses ltui CLI with profile-based auth or LINEAR_API_KEY environment variable (no MCP needed)
-
 ## Linear Context Notes
 - Create (or update) `thoughts/linear/<issue-key-lower>.md` inside the worktree (create directories as needed) summarizing the Linear issue: title, description, acceptance criteria, labels, and link.
 - Record the branch name, worktree path, base ref, and timestamp in the note for future handoff.
@@ -69,8 +63,7 @@ Copy `.claude/mcp-servers.json` to the worktree if it exists (e.g., Playwright, 
 - Print a ready-state checklist:
   - Worktree location & branch
   - Linear issue summary (title, URL, project)
-  - Config files copied
+  - Environment/config files copied (git-ignored files only)
   - Linear CLI authentication status (from `ltui auth list`)
-  - MCP servers copied (non-Linear servers like Playwright)
   - Next suggested commands (install deps, run tests, etc.) derived from repository docs
 - Leave the original repository untouched aside from the new worktree metadata and branch creation.
