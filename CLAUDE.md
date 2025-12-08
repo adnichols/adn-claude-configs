@@ -108,28 +108,6 @@ Important slash commands:
 ### Other Utility Commands
 - `/user:add-command`: Create new personal slash commands in ~/.claude/commands
 
-### Beads Integration Commands (bd/)
-
-Commands that use `bd` (beads) for issue tracking instead of TodoWrite. These are alternative workflows for projects using the beads task tracking system.
-
-**Beads is the sole source of truth - no separate plan files.**
-
-- `/bd:create_plan`: Create implementation plans as beads issues - all details stored in issue descriptions (uses opus model)
-- `/bd:create_plan_generic`: Generic version for non-project-specific planning with thoughts/plans files (uses opus model)
-- `/bd:implement_plan`: Implement work tracked in beads issues - uses `bd ready` to find available work
-- `/bd:iterate_plan`: Iterate on existing implementation plans with beads tracking (uses opus model)
-- `/bd:linear`: Manage Linear tickets with beads tracking (create, comment, search, update)
-- `/bd:research_codebase`: Document codebase as-is with beads tracking - pure documentation, no recommendations (uses opus model)
-- `/bd:research_codebase_generic`: Generic research version for comprehensive exploration (uses opus model)
-- `/bd:resume_handoff`: Resume work from handoff document with beads tracking
-- `/bd:validate_plan`: Validate implementation against plan with beads tracking
-
-**Key differences from standard commands:**
-- Uses `bd` CLI tool instead of TodoWrite for task tracking
-- Plan details stored directly in beads issue descriptions (not separate markdown files)
-- Research commands focus on pure documentation (no improvements suggested)
-- Key commands: `bd create`, `bd update`, `bd close`, `bd sync`, `bd ready`, `bd show`, `bd dep add`
-
 ## Configuration Notes
 
 - Uses "sonnet" model as default
