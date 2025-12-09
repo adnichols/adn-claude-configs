@@ -23,27 +23,28 @@ BOLD='\033[1m'
 NC='\033[0m' # No Color
 
 print_usage() {
-    echo "Usage: $0 [--claude|--codex|--tools|--skills|--all] [--append-agents] [target-directory]"
+    echo "Usage: $0 [--claude|--codex|--gemini|--tools|--skills|--all] [--append-agents] [target-directory]"
     echo ""
     echo "Options:"
     echo "  --claude    Install Claude Code configuration only"
     echo "  --codex     Install Codex configuration only"
+    echo "  --gemini    Install Gemini CLI configuration only"
     echo "  --tools     Install CLI tools only (e.g., ltui)"
     echo "  --skills    Install Claude skills only (to ~/.claude/skills/)"
-    echo "  --all       Install everything: Claude, Codex, tools, and skills (default)"
+    echo "  --all       Install everything: Claude, Codex, Gemini, tools, and skills (default)"
     echo "  --append-agents"
-    echo "             Ensure a project-level AGENTS.md exists in the target directory."
-    echo "             If AGENTS.md exists and is missing the Fidelity & Execution rules,"
-    echo "             append that section from AGENTS.template.md. Also offers to append"
-    echo "             ltui (Linear) usage guidance from this repository."
+    echo "             Ensure project-level context files (AGENTS.md, GEMINI.md) exist."
+    echo "             If they exist but are missing core sections (Fidelity rules, Personas),"
+    echo "             append them from templates. Also offers to append ltui guidance."
     echo ""
     echo "Examples:"
     echo "  $0 --claude                        # Install Claude to current directory"
     echo "  $0 --codex ~/my-project            # Install Codex to ~/my-project"
+    echo "  $0 --gemini ~/my-project           # Install Gemini to ~/my-project"
     echo "  $0 --tools                         # Install CLI tools globally"
     echo "  $0 --skills                        # Install Claude skills globally"
     echo "  $0 --codex --append-agents ~/proj  # Install Codex and ensure AGENTS.md in ~/proj"
-    echo "  $0 --all --append-agents           # Install everything and ensure AGENTS.md in current dir"
+    echo "  $0 --all --append-agents           # Install everything and ensure context files"
 }
 
 ensure_codex_cli_flags() {
@@ -164,7 +165,7 @@ append_ltui_guidance() {
     elif [ "$APPEND_AGENTS" = true ]; then
         should_append=true
     elif [ -t 0 ]; then
-        printf "  - Add ltui (Linear) guidance to AGENTS.md now? [Y/n] "
+        printf "  - Add ltui (Linear) guidance to $(basename "$agents_path") now? [Y/n] "
         read -r reply
         case "$reply" in
             ""|"Y"|"y")
@@ -179,7 +180,7 @@ append_ltui_guidance() {
     fi
 
     if [ "$should_append" = true ]; then
-        echo "  - Appending ltui Linear guidance to AGENTS.md..."
+        echo "  - Appending ltui Linear guidance to $(basename "$agents_path")..."
         cat <<'EOF' >> "$agents_path"
 
 ## Linear Integration (ltui)
@@ -276,6 +277,61 @@ ensure_project_agents() {
             echo "  - Skipping automatic append to AGENTS.md (non-interactive; run with --append-agents or edit manually)."
             append_ltui_guidance "$agents_path" "$agents_created"
         fi
+    fi
+}
+
+ensure_gemini_personas() {
+    # Ensure GEMINI.md has the required Personas section
+    local project_root="$1"
+    local template_path="$REPO_ROOT/gemini/GEMINI.template.md"
+    local gemini_path="$project_root/GEMINI.md"
+    local gemini_created=false
+
+    # Do not touch the config repo's own files via this path
+    if [ "$project_root" = "$REPO_ROOT" ]; then
+        return
+    fi
+
+    if [ ! -f "$template_path" ]; then
+        return
+    fi
+
+    if [ ! -f "$gemini_path" ]; then
+        echo "  - No GEMINI.md found; installing from template..."
+        cp "$template_path" "$gemini_path"
+        gemini_created=true
+    fi
+
+    if grep -q "Available Personas" "$gemini_path"; then
+        return
+    fi
+
+    echo "  - Existing GEMINI.md found without 'Available Personas' section."
+    echo "    (These Personas are REQUIRED for Gemini commands to function)"
+
+    local should_append=false
+
+    if [ "$APPEND_AGENTS" = true ]; then
+        should_append=true
+    elif [ -t 0 ]; then
+        printf "  - Append missing Personas to GEMINI.md now? [Y/n] "
+        read -r reply
+        case "$reply" in
+            ""|"Y"|"y")
+                should_append=true
+                ;;
+            *)
+                echo "  - Skipping append. WARNING: Commands may fail without defined Personas."
+                ;;
+        esac
+    else
+        echo "  - Skipping automatic append (non-interactive; run with --append-agents or edit manually)."
+    fi
+
+    if [ "$should_append" = true ]; then
+        echo "  - Appending Personas from template..."
+        # Extract everything from "## Available Personas" to the end
+        awk 'BEGIN{flag=0} /^## Available Personas/{flag=1} flag {print}' "$template_path" >> "$gemini_path"
     fi
 }
 
@@ -801,10 +857,62 @@ install_codex() {
     fi
 }
 
+install_gemini() {
+    local target_root="$1"
+    local target="$target_root/.gemini"
+    local is_update=false
+
+    # Ensure GEMINI.md has the required Personas
+    ensure_gemini_personas "$target_root"
+
+    # Detect if this is an update
+    if [ -d "$target" ]; then
+        is_update=true
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Updating Gemini CLI Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Updating Gemini configuration at $target${NC}"
+    else
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Installing Gemini CLI Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Installing Gemini configuration to $target${NC}"
+        mkdir -p "$target"
+    fi
+
+    # Install commands
+    echo "  - Installing commands..."
+    if [ -d "$target/commands" ]; then
+        rm -rf "$target/commands"
+    fi
+    mkdir -p "$target/commands"
+    cp -r "$REPO_ROOT/gemini/commands/"* "$target/commands/"
+
+    # Setup thoughts directory structure
+    if [ "$target_root" != "$HOME" ]; then
+        setup_thoughts_structure "$target_root"
+        create_permanent_docs "$target_root"
+    fi
+
+    if [ "$is_update" = true ]; then
+        echo -e "${GREEN}✓ Gemini update complete${NC}"
+    else
+        echo -e "${GREEN}✓ Gemini installation complete${NC}"
+    fi
+    echo ""
+    if [ "$APPEND_AGENTS" = true ]; then
+        echo "Note: GEMINI.md was created or updated with required Personas."
+    else
+        echo "Note: To ensure GEMINI.md has all required Personas, re-run with --append-agents."
+    fi
+}
+
 # Argument parsing
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        --claude|--codex|--tools|--skills|--all)
+        --claude|--codex|--gemini|--tools|--skills|--all)
             INSTALL_MODE="$1"
             shift
             ;;
@@ -837,6 +945,9 @@ case "$INSTALL_MODE" in
     --codex)
         install_codex "$TARGET_DIR"
         ;;
+    --gemini)
+        install_gemini "$TARGET_DIR"
+        ;;
     --tools)
         install_tools
         ;;
@@ -847,6 +958,8 @@ case "$INSTALL_MODE" in
         install_claude "$TARGET_DIR"
         echo ""
         install_codex "$TARGET_DIR"
+        echo ""
+        install_gemini "$TARGET_DIR"
         echo ""
         install_tools
         echo ""
