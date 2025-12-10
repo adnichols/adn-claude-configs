@@ -1,7 +1,7 @@
 ---
 name: technical-writer
 description: Creates documentation - use after feature completion
-model: opus
+model: sonnet
 color: green
 ---
 
