@@ -1,6 +1,6 @@
 # Quick Setup Guide
 
-This guide provides quick installation instructions for the Claude Code and Codex configuration system.
+This guide provides quick installation instructions for the Claude Code, Codex, and Gemini CLI configuration system.
 
 ## Installation
 
@@ -19,18 +19,23 @@ pip3 install -r requirements.txt
 # Navigate to your project
 cd /path/to/your/project
 
-# Install Claude Code and/or Codex
+# Install All Tools (Claude, Gemini, Codex)
 bash ~/adn-claude-configs/install.sh --all
+
+# Or install individually:
+# bash ~/adn-claude-configs/install.sh --claude
+# bash ~/adn-claude-configs/install.sh --gemini
+# bash ~/adn-claude-configs/install.sh --codex
 ```
 
-This creates `.claude/` and `.codex/` directories in your project with all agents, commands/prompts, and configurations.
+This creates `.claude/`, `.gemini/`, and `.codex/` directories in your project with all agents, commands/prompts, and configurations.
 
 ### Option 2: Global Installation
 
 Install to your home directory for use across all projects:
 
 ```bash
-# Install to ~/.claude and ~/.codex
+# Install to ~/.claude, ~/.gemini, and ~/.codex
 bash ~/adn-claude-configs/install.sh --all ~
 ```
 
@@ -43,8 +48,9 @@ For developing and testing these configurations:
 git clone <repository-url> ~/adn-claude-configs
 cd ~/adn-claude-configs
 
-# Create symlink for local testing
+# Create symlinks for local testing
 ln -sf ~/adn-claude-configs/claude .claude
+ln -sf ~/adn-claude-configs/gemini .gemini
 ```
 
 ## Updating Existing Installations
@@ -66,7 +72,7 @@ The script will:
 Test your installation:
 
 ```bash
-# In Claude Code, try running a command:
+# In Claude Code or Gemini CLI, try running a command:
 /prd:1:create-prd
 
 # Or fetch documentation:

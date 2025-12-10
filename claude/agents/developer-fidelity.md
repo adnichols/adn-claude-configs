@@ -1,7 +1,7 @@
 ---
 name: developer-fidelity
 description: Implements specifications with absolute fidelity - no additions or modifications
-model: sonnet
+model: opus
 color: blue
 ---
 

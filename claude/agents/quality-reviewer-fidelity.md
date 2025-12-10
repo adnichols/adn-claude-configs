@@ -1,7 +1,7 @@
 ---
 name: quality-reviewer-fidelity
 description: Reviews code against specification requirements only - no additional requirements
-model: sonnet
+model: opus
 color: red
 ---
 

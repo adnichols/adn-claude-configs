@@ -1,12 +1,11 @@
 # Agent Catalog
 
-Current roster of bespoke Claude and Codex agents defined in this repository. All briefs live under `agents/`, and templates for new roles live in `agents/templates/`.
+Current roster of bespoke Claude and Codex agents defined in this repository. All briefs live under `claude/agents/`, and templates for new roles live in `claude/agents/templates/` (if applicable).
 
 ## Implementation & Architecture
-- `developer` (sonnet; `agents/developer.md`) — Implements specs with tests and enforces zero linting violations.
-- `developer-fidelity` (sonnet; `agents/developer-fidelity.md`) — Implements specifications with absolute fidelity—no extra tests, features, or safeguards.
-- `architect` (opus; `agents/plan-architect.md`) — Senior architecture partner who analyses codebases and produces designs/ADRs without writing implementation code.
-- `simplify-planner` (opus; `agents/simplify-planner.md`) — Refactor planning specialist who produces cleanup plans that preserve existing behaviour.
+- `developer` (sonnet; `claude/agents/developer.md`) — Implements specs with tests and enforces zero linting violations.
+- `developer-fidelity` (sonnet; `claude/agents/developer-fidelity.md`) — Implements specifications with absolute fidelity—no extra tests, features, or safeguards.
+- `simplify-planner` (opus; `claude/agents/simplify-planner.md`) — Refactor planning specialist who produces cleanup plans that preserve existing behaviour.
 
 ## Tool Selection Priority (Codex Environment)
 
@@ -26,21 +25,30 @@ When agents run within Codex, they MUST prioritize native Codex tools over MCP s
 **Rationale:** MCP tool wrapping introduces unnecessary latency and may produce inconsistent results. Native Codex tools are optimized for the local filesystem and provide superior performance.
 
 ## Review & Fidelity Safeguards
-- `quality-reviewer` (inherits workspace default model; `agents/quality-reviewer.md`) — Production safety review covering security, data loss, regressions, and performance.
-- `quality-reviewer-opus` (opus; `agents/quality-reviewer-opus.md`) — High-rigor variant of the quality reviewer for complex or high-risk diffs.
-- `quality-reviewer-fidelity` (sonnet; `agents/quality-reviewer-fidelity.md`) — Ensures code matches specification requirements exactly with no scope expansion.
-- `fidelity-reviewer` (opus; `agents/fidelity-reviewer.md`) — Compares generated task lists against source specifications and researches discrepancies.
+- `quality-reviewer` (inherits workspace default model; `claude/agents/quality-reviewer.md`) — Production safety review covering security, data loss, regressions, and performance.
+- `quality-reviewer-fidelity` (sonnet; `claude/agents/quality-reviewer-fidelity.md`) — Ensures code matches specification requirements exactly with no scope expansion.
+- `fidelity-reviewer` (opus; `claude/agents/fidelity-reviewer.md`) — Compares generated task lists against source specifications and researches discrepancies.
 
 ## Debugging Support
-- `debugger` (sonnet; `agents/debugger.md`) — Evidence-driven debugger who gathers logs, forms hypotheses, and recommends fixes without modifying production code.
-- `debugger` (opus; `agents/debugger-hard.md`) — Manual “hard mode” debugger reserved for stubborn issues; enforces TodoWrite tracking and strict cleanup before reporting.
+- `debugger` (sonnet; `claude/agents/debugger.md`) — Evidence-driven debugger who gathers logs, forms hypotheses, and recommends fixes without modifying production code.
 
 ## Documentation
-- `technical-writer` (sonnet; `agents/technical-writer.md`) — Produces concise post-implementation documentation with tight token limits.
+- `technical-writer` (sonnet; `claude/agents/technical-writer.md`) — Produces concise post-implementation documentation with tight token limits.
+
+## Utility Agents
+These agents are typically invoked by other agents or for specific tool-use tasks:
+
+- `codebase-analyzer` (`claude/agents/codebase-analyzer.md`) — Explains how code works, traces execution paths and data flows.
+- `codebase-locator` (`claude/agents/codebase-locator.md`) — Finds where things are in the codebase.
+- `codebase-pattern-finder` (`claude/agents/codebase-pattern-finder.md`) — Identifies architectural patterns and conventions.
+- `thoughts-analyzer` (`claude/agents/thoughts-analyzer.md`) — Synthesizes context from plans, specs, and research in `thoughts/`.
+- `thoughts-locator` (`claude/agents/thoughts-locator.md`) — Finds relevant documentation within `thoughts/`.
+- `web-search-researcher` (`claude/agents/web-search-researcher.md`) — Finds external information using web search.
+- `worktree-creator` (`claude/agents/worktree-creator.md`) — Manages git worktrees for parallel execution.
 
 ---
 
-When adding new agents, create the brief in `agents/` (using templates when possible) and update this catalog so downstream installations discover the new capability.
+When adding new agents, create the brief in `claude/agents/` and update this catalog so downstream installations discover the new capability.
 
 ## Fidelity & Execution House Rules (Template for Project Repos)
 

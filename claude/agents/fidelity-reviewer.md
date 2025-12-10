@@ -1,7 +1,7 @@
 ---
 name: fidelity-reviewer
 description: Reviews task lists against specifications for perfect fidelity - thinks harder
-model: sonnet
+model: opus
 color: purple
 ---
 

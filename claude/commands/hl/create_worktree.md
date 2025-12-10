@@ -1,5 +1,6 @@
 ---
 description: Create worktree and launch implementation session for a plan
+model: haiku
 ---
 
 ## Setup Worktree for Implementation
