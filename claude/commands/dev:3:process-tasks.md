@@ -160,6 +160,24 @@ Guidelines for managing task lists in markdown files to track progress on comple
    - Validate security requirements are being followed.
    - Confirm performance benchmarks are being met.
 
+## Handling Discoveries During Implementation
+
+**When you discover something that invalidates or significantly changes the plan:**
+
+1. **Stop** - Do not continue implementing based on outdated assumptions
+2. **Report** - Explain what you discovered and how you found it
+3. **Assess Impact** - Identify which phases/tasks are affected
+4. **Ask** - Present options and ask me how to proceed before continuing
+
+Examples of discoveries requiring this protocol:
+- A dependency doesn't work as documented
+- An existing implementation already covers part of the plan
+- A technical constraint makes a phase impossible or unnecessary
+- New information suggests a different approach would be better
+- The plan conflicts with existing code patterns
+
+**Do not** silently adjust the plan or continue with an approach you know is suboptimal. The plan is a guide, not a contract—but changes require explicit approval.
+
 ## AI Instructions
 
 When working with task lists, the AI must:

@@ -152,6 +152,23 @@ Guidelines for managing task lists in markdown files to track progress on comple
    - List every file created or modified.
    - Give each file a one‑line description of its purpose.
 
+## Handling Issues During Task Generation
+
+**When you discover problems with the PRD that would prevent accurate task generation:**
+
+1. **Stop** - Do not generate tasks based on incomplete or problematic PRDs
+2. **Report** - Explain what issue you found (ambiguity, contradiction, missing information, impossible requirement)
+3. **Ask** - Request clarification or suggest how to resolve before continuing
+
+Examples requiring this protocol:
+- PRD has contradictory requirements
+- PRD references components/APIs that don't exist
+- PRD is ambiguous about critical implementation details
+- PRD has gaps that would block implementation
+- Requirements are technically infeasible based on codebase analysis
+
+**Do not** guess at intent or fill gaps with assumptions. Ask me to clarify or update the PRD.
+
 ## AI Instructions
 
 When working with task lists, the AI must:

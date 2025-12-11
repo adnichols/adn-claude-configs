@@ -166,6 +166,23 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 [Extract completion criteria exactly from specification]
 ```
 
+## Handling Issues During Task Generation
+
+**When you discover problems with the specification that would prevent accurate task generation:**
+
+1. **Stop** - Do not generate tasks based on incomplete or problematic specifications
+2. **Report** - Explain what issue you found (ambiguity, contradiction, missing information, impossible requirement)
+3. **Ask** - Request clarification or suggest how to resolve before continuing
+
+Examples requiring this protocol:
+- Specification has contradictory requirements
+- Specification references components/APIs that don't exist
+- Specification is ambiguous about critical implementation details
+- Specification has gaps that would block implementation
+- Requirements are technically infeasible based on codebase analysis
+
+**Do not** guess at intent or fill gaps with assumptions. Ask me to clarify or update the specification.
+
 ## Key Principles
 
 1. **Absolute Fidelity:** The specification is the complete and sole authority
