@@ -21,6 +21,54 @@ Before starting task implementation:
    - Implement only specified security measures
    - Do not add tests or validation beyond what's explicitly required
 
+## Sub-Agent Delegation Protocol
+
+When processing tasks, use the Task tool to spawn specialized sub-agents for implementation work. This preserves orchestrator context and ensures fidelity-focused execution.
+
+### For Implementation Tasks
+
+Delegate actual code implementation to the **developer-fidelity** agent using the Task tool:
+
+**Task prompt template:**
+```
+Implement subtask [X.Y]: [subtask description]
+
+Specification requirements:
+- [Requirement 1 from source spec]
+- [Requirement 2 from source spec]
+
+Files: [relevant file paths]
+Context: [relationship to other components]
+
+IMPORTANT: Implement ONLY what's specified above. No additional features, tests, or security beyond requirements.
+```
+
+### For Quality Reviews
+
+When all subtasks under a parent are complete, spawn a **quality-reviewer-fidelity** agent via Task tool:
+
+**Task prompt template:**
+```
+Review Phase [N] implementation for specification fidelity.
+
+Source specification: [path to spec/task file]
+Modified files:
+- [file1.ts]
+- [file2.ts]
+
+Verify: Implementation matches spec exactly, no scope creep, no unauthorized additions.
+```
+
+### Orchestrator Responsibilities (Do NOT Delegate)
+
+The parent agent (you) handles coordination tasks directly:
+- Git branch creation and management
+- Task list updates (`[ ]` → `[x]`)
+- User confirmation prompts
+- Phase transitions and commits
+- Validation command execution (lint, build, tests)
+
+
 <skip_subtask_confirmation>
 If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
 </skip_subtask_confirmation>
@@ -62,7 +110,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
 - Do not proceed with tasks unless you are on a git branch other than main
 - If needed, create a branch for the phase of work you are implementing
   - Parent agent (you) are responsible for git branch creation, not subagents
-- **One sub-task at a time:** Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
+- **One sub-task at a time:** Spawn a **developer-fidelity** sub-agent via Task tool for each subtask implementation. Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
 - **Completion protocol:**
 
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
@@ -74,7 +122,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
   - **First**: Run standard validation checks:
     - Always: lint, build, secrets scan, unit tests
   - **Only if all validations pass**: Stage changes (`git add .`)
-  - **Quality Review**: Use fidelity-preserving quality reviewer agent for final approval
+  - **Quality Review**: Spawn a **quality-reviewer-fidelity** sub-agent via Task tool with the source specification and list of modified files for fidelity validation
   - **Clean up**: Remove any temporary files and temporary code before committing
   - **Commit**: Use a descriptive commit message that:
 
