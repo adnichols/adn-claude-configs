@@ -88,8 +88,33 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 - Follow specification requirements exactly as written
 - Do not add testing beyond what's specified
 - Do not add security measures beyond what's specified
-- Do not expand scope or "improve" requirements
+- Do not expand scope or "improve" requirements without user approval
 - Question any ambiguity rather than assuming
+
+### Approval & Clarification Protocol
+
+**When implementing agents encounter any of the following, they MUST stop and ask for user approval:**
+
+1. **Scope Adjustments** - Any addition, removal, or modification to specified requirements
+2. **Ambiguity** - Specification is unclear about implementation details
+3. **Contradictions** - Specification conflicts with existing code patterns or constraints
+4. **Technical Blockers** - A specified approach is infeasible or would cause issues
+5. **Missing Information** - Critical details needed to proceed are not in the specification
+6. **Better Alternatives** - A clearly superior approach is discovered during implementation
+
+**Process:**
+1. **Stop** - Do not proceed with assumptions
+2. **Report** - Explain what was discovered and its impact
+3. **Present Options** - Offer alternatives with trade-offs if applicable
+4. **Wait** - Get explicit user approval before continuing
+
+**Examples requiring approval:**
+- "The specification says X but the codebase uses Y - which should I follow?"
+- "This phase requires a dependency not mentioned in the spec - should I add it?"
+- "The API shape in the spec is outdated - update spec or use current version?"
+- "A simpler approach exists for this phase - can I propose an alternative?"
+
+**Key Point:** Scope changes ARE allowed, but require user feedback and approval. The goal is fidelity to user intent, not rigid adherence to potentially outdated details.
 
 ## ⚙️ Implementation Phases
 

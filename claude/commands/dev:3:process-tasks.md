@@ -8,6 +8,16 @@ argument-hint: [Files]
 Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses developer-fidelity and quality-reviewer-fidelity agents to implement only what's explicitly specified, without additions or scope expansions.
 $ARGUMENTS. Think harder.
 
+## CRITICAL: Orchestrator-Only Mode
+
+**You (the parent session) are an ORCHESTRATOR, not an implementer.**
+
+- **NEVER** use Edit, Write, or MultiEdit tools to modify code files
+- **NEVER** implement features, fix bugs, or write code directly
+- **ALWAYS** delegate ALL code changes to sub-agents via the Task tool
+
+Your job is to coordinate, track progress, run validations, and manage git—NOT to write code.
+
 ## Fidelity Preservation Process
 
 Before starting task implementation:
@@ -63,10 +73,23 @@ Verify: Implementation matches spec exactly, no scope creep, no unauthorized add
 
 The parent agent (you) handles coordination tasks directly:
 - Git branch creation and management
-- Task list updates (`[ ]` → `[x]`)
+- Task list updates (`[ ]` → `[x]`) in markdown files
 - User confirmation prompts
 - Phase transitions and commits
 - Validation command execution (lint, build, tests)
+- Reading files for context gathering
+- Running Bash commands for git, npm, validation
+
+### What You MUST Delegate (NEVER Do Directly)
+
+**All code changes go to sub-agents.** This includes:
+- Creating new files (use developer-fidelity agent)
+- Editing existing code (use developer-fidelity agent)
+- Writing tests (use developer-fidelity agent)
+- Refactoring (use developer-fidelity agent)
+- Code review (use quality-reviewer-fidelity agent)
+
+If you find yourself about to use Edit/Write/MultiEdit on a code file, STOP and spawn a sub-agent instead.
 
 
 <skip_subtask_confirmation>
@@ -81,10 +104,10 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
 ## Critical Task Update Protocol
 
-**MANDATORY CHECKPOINT SYSTEM:** After completing ANY subtask, Claude MUST follow this exact sequence:
+**MANDATORY CHECKPOINT SYSTEM:** After a sub-agent completes ANY subtask, you (the orchestrator) MUST follow this exact sequence:
 
 1. **Declare completion with mandatory update statement:**
-   "✅ Subtask [X.Y] [task name] completed.
+   "✅ Subtask [X.Y] [task name] completed by sub-agent.
    🔄 UPDATING MARKDOWN FILE NOW..."
 
 2. **Immediately perform the markdown update:**
@@ -99,23 +122,23 @@ Guidelines for managing task lists in markdown files to track progress on comple
 4. **Request permission to proceed (unless NOSUBCONF specified):**
    "Ready to proceed to next subtask. May I continue? (y/n)"
 
-**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If Claude completes a subtask without immediately updating the markdown file, it MUST:
+**FAILURE TO FOLLOW THIS PROTOCOL IS A CRITICAL ERROR.** If a subtask completes without you immediately updating the markdown file, you MUST:
 
 - Stop all work immediately
 - State: "❌ CRITICAL ERROR: I failed to update the task list. Stopping work."
 - Wait for user intervention before proceeding
 
-**VERIFICATION REQUIREMENT:** After each edit, Claude must show the updated section of the markdown file to confirm the change was made correctly.
+**VERIFICATION REQUIREMENT:** After each task list edit, show the updated section of the markdown file to confirm the change was made correctly.
 
 - Do not proceed with tasks unless you are on a git branch other than main
 - If needed, create a branch for the phase of work you are implementing
   - Parent agent (you) are responsible for git branch creation, not subagents
-- **One sub-task at a time:** Spawn a **developer-fidelity** sub-agent via Task tool for each subtask implementation. Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
+- **One sub-task at a time:** Spawn a **developer-fidelity** sub-agent via Task tool for each subtask. Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
 - **Completion protocol:**
 
-  1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
+  1. When a **sub-agent completes** a subtask, immediately mark it as completed by changing `[ ]` to `[x]`.
 
-  - **MANDATORY TASK UPDATE:** Before doing anything else after subtask completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful
+  - **MANDATORY TASK UPDATE:** Before doing anything else after sub-agent completion, immediately update the markdown file `[ ]` → `[x]` and confirm the update was successful
 
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
 
@@ -180,17 +203,18 @@ Examples of discoveries requiring this protocol:
 
 ## AI Instructions
 
-When working with task lists, the AI must:
+As the orchestrator, you must:
 
-1. Regularly update the task list file after finishing any significant work.
-2. Follow the completion protocol:
-   - Mark each finished **sub‑task** `[x]`.
-   - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`.
-3. Add newly discovered tasks while maintaining phase structure.
-4. Keep "Relevant Files" accurate and up to date.
-5. Before starting work, check which sub‑task is next and review context sections if present.
-6. After implementing a sub‑task, update the file and then pause for user approval.
-7. For rich execution plans: Reference preserved context when making implementation decisions.
-8. For rich execution plans: Ensure traceability between implementation and source document rationale.
-9. For rich execution plans: Validate against success criteria throughout implementation.
-10. **CRITICAL CHECKPOINT:** After each subtask completion, Claude MUST immediately declare completion, update the markdown file, show the edit, confirm the update, and request permission to continue. Failure to do this is a critical error that requires stopping all work.
+1. **Delegate all code work** - Spawn sub-agents for every subtask that involves code changes
+2. **Track progress** - Update task list markdown after each sub-agent completes
+3. **Follow completion protocol:**
+   - Mark each finished **sub‑task** `[x]` after sub-agent reports completion
+   - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`
+4. **Manage git** - Handle branching, staging, and commits directly
+5. **Run validations** - Execute lint, build, and test commands directly via Bash
+6. **Coordinate quality reviews** - Spawn quality-reviewer-fidelity after phases complete
+7. **Maintain context** - Keep "Relevant Files" section accurate based on sub-agent reports
+8. **Gate progress** - Pause for user approval unless NOSUBCONF is specified
+9. **CRITICAL CHECKPOINT:** After each subtask, immediately declare completion, update markdown, confirm the update, and request permission to continue
+
+**Remember: You orchestrate, sub-agents implement. Never write code directly.**
