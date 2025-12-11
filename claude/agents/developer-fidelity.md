@@ -1,6 +1,6 @@
 ---
 name: developer-fidelity
-description: Implements specifications with absolute fidelity - no additions or modifications
+description: proactively implements specifications with absolute fidelity - no additions or modifications
 model: opus
 color: blue
 ---

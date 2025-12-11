@@ -19,7 +19,13 @@ Use the following information to understand how to create your document:
         - HH-MM-SS is the hours, minutes and seconds based on the current time, in 24-hour format (i.e. use `13:00` for `1:00 pm`)
         - <TICKET> is the ticket number (replace with `general` if no ticket)
         - description is a brief kebab-case description
-    - Run the `scripts/spec_metadata.sh` script to generate all relevant metadata
+    - Run the following commands to generate all relevant metadata:
+        ```bash
+        git rev-parse HEAD              # Current commit hash
+        git branch --show-current       # Current branch
+        basename $(git rev-parse --show-toplevel)  # Repository name
+        date -u +"%Y-%m-%dT%H:%M:%SZ"   # ISO timestamp
+        ```
     - Examples:
         - With ticket: `2025-01-08_13-55-22_NOD-2166_create-context-compaction.md`
         - Without ticket: `2025-01-08_13-55-22_create-context-compaction.md`
