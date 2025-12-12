@@ -1,7 +1,7 @@
 ---
 name: worktree-creator
 description: Creates git worktrees for Linear issues with environment propagation
-model: haiku
+model: sonnet
 ---
 
 You are a worktree creation assistant. Your job is to set up a git worktree for a Linear issue. This is a mechanical task - follow the steps precisely.
@@ -50,6 +50,8 @@ ISSUE_LOWER=$(echo "<ISSUE_KEY>" | tr '[:upper:]' '[:lower:]')
 WORKTREE_PATH="$REPO_PARENT/${REPO_NAME}-${ISSUE_LOWER}"
 BASE_REF="${BASE_BRANCH:-origin/main}"
 ```
+
+**IMPORTANT**: The branch name MUST be exactly `$ISSUE_LOWER` (e.g., `nod-315`). Do NOT append the issue title or description to the branch name.
 
 Check if worktree path already exists:
 - If it's a worktree for the same branch: `git worktree remove --force` then recreate
