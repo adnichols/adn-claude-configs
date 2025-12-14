@@ -237,46 +237,108 @@ Significant divergences found. How to proceed?
 
 Based on verification, update permanent docs using **ACTUAL implementation state** by default.
 
-### SPECIFICATION.md
+### Target Files
 
-Add new section:
+| Document | Location | Action |
+|----------|----------|--------|
+| Architecture Spec | `spec/architecture/[feature-slug].md` | Create new file |
+| Architecture Index | `spec/architecture/README.md` | Add row to table |
+| ADR Log | `spec/adr-log.md` | Prepend new ADR entry |
+| Changelog | `CHANGELOG.md` | Prepend new entry |
+
+### spec/architecture/[feature-slug].md
+
+Create new architecture document following the established structure:
 
 ```markdown
-## [Feature Name]
+# [Feature Name] System
 
-*Added: YYYY-MM-DD*
-*Verified against implementation: YYYY-MM-DD*
+**Last Updated:** YYYY-MM-DD
+**Status:** ✅ Implemented
 
-### Overview
+## Overview
 
 [Description based on ACTUAL implementation, not spec]
 
-### Behaviors
+## Database Schema
+
+[Tables, relationships, constraints - as actually implemented]
+
+## API Contracts
+
+[Routes, request/response formats from actual code]
+
+## Data Flow
+
+[How data moves through the system]
+
+## Behaviors
 
 - [Behavior 1 - as actually implemented]
 - [Behavior 2 - as actually implemented]
 
-### Constraints
+## Constraints
 
 - [Constraint from actual implementation]
 - [Limitation discovered during verification]
 
-### Configuration
+## Configuration
 
 - `CONFIG_KEY`: [Actual default and behavior from code]
 
-### API
+## Security
 
-[Actual interface/endpoint signatures from code]
+[Auth, authorization, RLS enforcement as implemented]
 
-### Implementation Notes
+## Testing
+
+[How to test the system]
+
+## Integration Points
+
+[How it connects to other systems]
+
+## Implementation Notes
 
 [Any notable divergences from original spec worth documenting]
 ```
 
+### spec/architecture/README.md
+
+Add row to the Architecture Docs table:
+
+```markdown
+| [Feature Name] | [[feature-slug].md](./{feature-slug}.md) | ✅ Implemented | [Key features summary] |
+```
+
+### spec/adr-log.md
+
+Prepend new ADR entry (after the header, before existing ADRs):
+
+```markdown
+## ADR NNNN: [Decision Title]
+**Status:** Accepted (implemented and verified)
+**Date:** YYYY-MM
+
+**Context:** [From research - verified as still accurate]
+
+**Decision:**
+- [What was actually implemented, not just planned]
+- [Key implementation choices]
+
+**Alternatives considered:**
+- [From research - verified these were NOT used in code]
+
+**Current state:** [File references where decision is reflected]
+
+---
+```
+
+Note: ADR numbers continue from the highest existing number in `spec/adr-log.md`.
+
 ### CHANGELOG.md
 
-Add entry (newest first):
+Add entry (newest first, after header):
 
 ```markdown
 ## [Feature Name] - YYYY-MM-DD
@@ -294,37 +356,6 @@ Add entry (newest first):
 
 - [Notable implementation details from codebase]
 - Verified against spec: [X] matches, [Y] divergences documented
-```
-
-### DECISIONS.md
-
-Add ADR entry:
-
-```markdown
-## ADR-NNN: [Decision Title] - YYYY-MM-DD
-
-*Status: Implemented and verified*
-
-### Context
-
-[From research - verified as still accurate]
-
-### Decision
-
-[What was actually implemented, not just planned]
-
-### Alternatives Considered
-
-- [From research - verified these were NOT used in code]
-
-### Consequences
-
-- [Actual consequences observed in implementation]
-
-### Implementation Evidence
-
-- `src/path/to/file.ts:45` - [How decision is reflected]
-- `src/path/to/other.ts:120` - [Supporting implementation]
 ```
 
 ## Phase 7: Delete Working Artifacts
@@ -349,7 +380,7 @@ rm thoughts/debug/*-[feature].md
 ### Commit 1: Permanent Documentation Update
 
 ```bash
-git add SPECIFICATION.md CHANGELOG.md DECISIONS.md
+git add spec/architecture/[feature-slug].md spec/architecture/README.md spec/adr-log.md CHANGELOG.md
 git commit -m "docs: graduate [feature-name] with verified implementation
 
 Verification summary:
@@ -391,9 +422,10 @@ Verification Summary:
   Added to Docs:       [C] undocumented features
 
 Permanent Documentation Updated:
-  [x] SPECIFICATION.md - Verified behaviors and constraints
-  [x] CHANGELOG.md     - Actual implementation summary
-  [x] DECISIONS.md     - Verified architectural decisions
+  [x] spec/architecture/[feature-slug].md - Feature architecture doc (new)
+  [x] spec/architecture/README.md         - Architecture index updated
+  [x] spec/adr-log.md                     - Architectural decision recorded
+  [x] CHANGELOG.md                        - Implementation summary
 
 Artifacts Cleaned Up:
   - thoughts/specs/spec-[feature].md
