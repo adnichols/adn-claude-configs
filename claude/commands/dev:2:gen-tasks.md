@@ -55,6 +55,38 @@ The user will provide:
    - Save tasks to `thoughts/plans/tasks-fidelity-[spec-name].md`
    - Inform user of draft location for review
 
+## Parallel Analysis Strategy
+
+Use the Task tool to spawn parallel analysis subagents for efficient specification processing and codebase exploration.
+
+### Subagent Delegation
+
+Spawn parallel Task agents with `subagent_type=Explore`:
+
+```
+Task 1: Specification Parsing
+- Extract all functional requirements from spec
+- Identify testing/security/performance requirements
+- Document scope boundaries (included/excluded)
+- List success criteria and completion conditions
+
+Task 2: Codebase Analysis
+- Find existing files that will need modification
+- Locate relevant patterns and conventions
+- Identify integration points and dependencies
+- Document available utilities and shared components
+```
+
+### Orchestrator Responsibilities
+
+The parent agent (you) handles:
+- Coordinating specification and codebase analysis
+- Synthesizing findings into coherent task structure
+- Generating the final task list with proper phasing
+- User communication for ambiguities or issues
+
+Wait for ALL subagents to complete before synthesizing into the task list.
+
 ## Final Task File Format
 
 The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
@@ -234,3 +266,12 @@ This command serves teams that have:
 - Want direct specification-to-implementation workflow
 - Require fidelity guarantees throughout implementation
 - Must avoid scope creep or complexity-based additions
+
+---
+
+## ➡️ Next Command
+
+When the task list is complete and approved, run:
+```
+/dev:3:process-tasks [path-to-tasks]
+```

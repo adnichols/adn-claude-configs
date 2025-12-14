@@ -52,6 +52,41 @@ The AI will need to:
 5. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
 6. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
+## Parallel Research Strategy
+
+Use the Task tool to spawn parallel research subagents for efficient codebase exploration. This accelerates research while preserving orchestrator context for synthesis.
+
+### Subagent Delegation
+
+Spawn parallel Task agents with `subagent_type=Explore`:
+
+```
+Task 1: Core Functionality Research
+- Find existing implementations and patterns in codebase
+- Locate relevant utilities and shared components
+- Document integration points with existing systems
+
+Task 2: Technical Research  
+- Analyze data modeling requirements
+- Review security patterns used in codebase
+- Identify testing approaches from existing tests
+
+Task 3: Production Readiness Research
+- Find performance patterns and optimization examples
+- Locate monitoring/observability implementations
+- Review deployment and configuration patterns
+```
+
+### Orchestrator Responsibilities
+
+The parent agent (you) handles:
+- Initial scope analysis and question formulation
+- Synthesizing findings from all subagents
+- Generating the final specification document
+- User communication and clarifications
+
+Wait for ALL subagents to complete before synthesizing findings into the specification.
+
 ## Research Areas
 
 The research should comprehensively cover:
@@ -275,3 +310,12 @@ A well-researched specification should:
 - **Enable Execution:** Provide sufficient context for downstream task generation commands
 - **Technical Depth:** Include all necessary technical, security, and performance considerations
 - **Follow Template:** Use the standardized comprehensive template structure
+
+---
+
+## ➡️ Next Command
+
+When the specification is complete and approved, run:
+```
+/dev:2:gen-tasks [path-to-spec]
+```

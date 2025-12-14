@@ -1,19 +1,23 @@
 ---
-description: Synthesize completed artifacts into permanent documentation
+description: Synthesize completed artifacts into permanent documentation with codebase verification
 argument-hint: [feature name or spec/plan path]
 ---
 
-# Graduate Feature
+# Graduate Feature (with Verification)
 
-Synthesize completed feature artifacts into permanent documentation (SPECIFICATION.md, CHANGELOG.md, DECISIONS.md) and clean up working files. Git history preserves all original artifacts.
+Graduate completed feature artifacts to permanent documentation. This command VERIFIES that specs/research match actual implementation before documenting, ensuring permanent docs reflect what was actually built.
 
 Feature or path: $ARGUMENTS
 
-## Process
+## Process Overview
 
-### 1. Locate Artifacts
+```
+DISCOVER → EXTRACT → LOCATE → VERIFY → REPORT → UPDATE → CLEANUP → COMMIT
+```
 
-Search for completed artifacts related to the feature:
+## Phase 1: Discover Artifacts
+
+Use `@thoughts-locator` to find all artifacts related to the feature:
 
 ```
 thoughts/specs/spec-[feature].md       - Technical specification
@@ -25,163 +29,371 @@ thoughts/validation/[date]-[feature].md - Validation reports
 thoughts/debug/[date]-[feature].md     - Debug reports
 ```
 
-Read all found artifacts completely.
+### Categorize Artifacts
 
-### 2. Verify Completion
+| Category | Files | Action |
+|----------|-------|--------|
+| **Verifiable** | specs, research | Extract claims → verify against codebase → document actual |
+| **Removable** | tasks, PRDs, handoffs, validation, debug | Remove without review |
 
-Before graduating, verify:
-- [ ] All tasks in task list are checked
-- [ ] Tests pass (if tests were specified)
-- [ ] Build succeeds (if applicable)
-- [ ] No open blockers
+Read all **verifiable** artifacts completely. Note **removable** artifacts for cleanup.
 
-If incomplete, stop and report what's missing.
+## Phase 2: Extract Spec Claims
 
-### 3. Synthesize to SPECIFICATION.md
+Use `@thoughts-analyzer` to extract verifiable claims from specs and research documents.
 
-Extract from specs and plans:
-- Feature behaviors and constraints
-- API contracts (if applicable)
-- Configuration options
-- User-facing functionality
+### From Specifications, Extract:
 
-Add new section to SPECIFICATION.md:
+- **Behaviors**: What the feature should do (user-facing functionality)
+- **API Contracts**: Interfaces, endpoints, function signatures, parameters
+- **Constraints**: Limitations, edge cases, error handling
+- **Configuration**: Options, defaults, environment variables
+- **Dependencies**: External libraries, services, integrations
+
+### From Research Documents, Extract:
+
+- **Architectural Decisions**: Technical approaches chosen
+- **Alternatives Rejected**: Approaches considered but not used
+- **Rationale**: Why specific decisions were made
+- **Technical Constraints**: Discovered limitations or requirements
+
+Output a list of **verifiable claims** with source references:
+
+```markdown
+## Extracted Claims
+
+### Behaviors (from spec-[feature].md)
+1. [Behavior description] (line 45)
+2. [Behavior description] (line 52)
+
+### API Contracts (from spec-[feature].md)
+1. [Interface/endpoint] (line 78)
+
+### Decisions (from research-[feature].md)
+1. [Decision] because [rationale] (line 23)
+```
+
+## Phase 3: Locate Codebase Files
+
+Use `@codebase-locator` to find implementation files relevant to the extracted claims.
+
+### Search Using:
+
+1. **Feature name** - Direct search for feature-related files
+2. **Key terms from specs** - Module names, class names, function names
+3. **Explicit file paths** - Any paths mentioned in specs
+4. **API identifiers** - Endpoint paths, interface names
+
+### Cross-Reference:
+
+- Check task lists for "Relevant Files" sections
+- Check handoffs for "Recent Changes" sections
+- Look for test files that exercise the feature
+
+Output a categorized list of implementation files:
+
+```markdown
+## Relevant Implementation Files
+
+### Core Implementation
+- src/features/[feature]/index.ts
+- src/features/[feature]/[component].ts
+
+### API/Interfaces
+- src/api/[endpoint].ts
+- src/types/[feature].ts
+
+### Configuration
+- src/config/[feature].ts
+
+### Tests
+- tests/[feature].test.ts
+```
+
+## Phase 4: Verify Implementation
+
+Use `@codebase-analyzer` to examine each relevant file and verify spec claims against actual implementation.
+
+### For Each Claim, Determine:
+
+**Match** - Implementation matches spec claim exactly
+**Modified** - Behavior exists but works differently than specified
+**Missing** - Spec describes something not found in codebase
+**Added** - Implementation has functionality not in spec
+
+### Verification Checklist:
+
+#### Behaviors
+- [ ] Each behavior from spec exists in code
+- [ ] Behavior works as described (API matches)
+- [ ] Edge cases handled as specified
+- [ ] Error handling matches spec
+
+#### Decisions/Architecture
+- [ ] Decision from research is reflected in code
+- [ ] Rejected alternatives are NOT implemented
+- [ ] Rationale constraints are respected
+
+#### Configuration
+- [ ] Config options from spec exist
+- [ ] Defaults match spec
+- [ ] Validation matches spec constraints
+
+### Record Divergences:
+
+For each divergence, record:
+- **Claim**: What the spec says
+- **Reality**: What the code does
+- **Location**: File and line reference
+- **Impact**: Minor (implementation detail) or Major (user-facing change)
+
+## Phase 5: Report and Confirm
+
+Present verification results before updating permanent docs.
+
+### Verification Report Format:
+
+```
+================================================================================
+VERIFICATION REPORT: [Feature Name]
+================================================================================
+
+VERIFIED MATCHES (Spec = Code)
+------------------------------
+[x] Behavior A: Implemented as specified
+    Location: src/features/[feature]/index.ts:45
+[x] Decision X: Code follows documented approach
+    Location: src/services/[service].ts:120
+[x] Config option Y: Present with correct defaults
+    Location: src/config/defaults.ts:78
+
+DIVERGENCES FOUND
+-----------------
+
+## Modified Behaviors (Implementation differs from spec)
+
+1. [Behavior Name]
+   Spec says: "[Quote from spec]"
+   Code does: "[Actual implementation]"
+   Location: src/features/[feature]/handler.ts:89
+   Impact: [Minor/Major]
+
+## Missing from Implementation
+
+2. [Feature Name]
+   Spec describes: "[Quote]"
+   Not found in codebase
+   Likely: [Deferred/Dropped/Different location]
+
+## Added Beyond Spec
+
+3. [Feature Name]
+   Not in spec
+   Implementation adds: "[Description]"
+   Location: src/features/[feature]/extras.ts:34
+   Likely: [Implementation detail/Undocumented feature]
+
+RECOMMENDED ACTIONS
+-------------------
+
+For Modified Behaviors:
+  → Document ACTUAL behavior (recommended)
+  → Use --spec-authority to document spec instead
+
+For Missing:
+  → Omit from permanent docs (recommended)
+  → Note as "Planned but not implemented"
+
+For Added:
+  → Document in permanent docs (recommended)
+  → Omit as implementation detail
+
+================================================================================
+```
+
+### Decision Points:
+
+**Auto-Continue** when:
+- All behaviors verified as matching
+- Only minor divergences or additions
+- No missing core functionality
+
+**Halt and Confirm** when:
+- More than 3 Modified behaviors with Major impact
+- Core feature behavior is missing
+- User specified `--confirm-each` flag
+
+If halted, ask:
+
+```
+Significant divergences found. How to proceed?
+
+1. Continue with ACTUAL implementation state (recommended)
+2. Stop and review divergences manually
+3. Use --spec-authority to trust spec over code
+```
+
+## Phase 6: Update Permanent Documentation
+
+Based on verification, update permanent docs using **ACTUAL implementation state** by default.
+
+### SPECIFICATION.md
+
+Add new section:
 
 ```markdown
 ## [Feature Name]
 
 *Added: YYYY-MM-DD*
+*Verified against implementation: YYYY-MM-DD*
 
 ### Overview
-[Brief description of feature]
+
+[Description based on ACTUAL implementation, not spec]
 
 ### Behaviors
-- [Behavior 1]
-- [Behavior 2]
+
+- [Behavior 1 - as actually implemented]
+- [Behavior 2 - as actually implemented]
 
 ### Constraints
-- [Constraint 1]
-- [Constraint 2]
+
+- [Constraint from actual implementation]
+- [Limitation discovered during verification]
 
 ### Configuration
-- `CONFIG_KEY`: [Description and default]
 
-### Related
-- [Links to other spec sections if related]
+- `CONFIG_KEY`: [Actual default and behavior from code]
+
+### API
+
+[Actual interface/endpoint signatures from code]
+
+### Implementation Notes
+
+[Any notable divergences from original spec worth documenting]
 ```
 
-### 4. Synthesize to CHANGELOG.md
+### CHANGELOG.md
 
-Extract from plans and task lists:
-- What was built
-- Key changes made
-- Notable implementation details
-
-Add entry to CHANGELOG.md (newest first):
+Add entry (newest first):
 
 ```markdown
 ## [Feature Name] - YYYY-MM-DD
 
 ### Added
-- [New functionality 1]
-- [New functionality 2]
+
+- [Based on actual code, not spec]
+- [Verified functionality]
 
 ### Changed
-- [Modification 1]
+
+- [Actual modifications made]
 
 ### Technical Notes
-- [Implementation detail worth noting]
+
+- [Notable implementation details from codebase]
+- Verified against spec: [X] matches, [Y] divergences documented
 ```
 
-### 5. Synthesize to DECISIONS.md
+### DECISIONS.md
 
-Extract from research documents:
-- Architectural decisions made
-- Alternatives considered
-- Rationale for choices
-
-Add ADR entry to DECISIONS.md:
+Add ADR entry:
 
 ```markdown
 ## ADR-NNN: [Decision Title] - YYYY-MM-DD
 
+*Status: Implemented and verified*
+
 ### Context
-[What prompted this decision]
+
+[From research - verified as still accurate]
 
 ### Decision
-[What was decided]
+
+[What was actually implemented, not just planned]
 
 ### Alternatives Considered
-- [Option 1]: [Why rejected]
-- [Option 2]: [Why rejected]
+
+- [From research - verified these were NOT used in code]
 
 ### Consequences
-- [Positive consequence]
-- [Trade-off or risk]
 
-### Related
-- [Feature Name] in SPECIFICATION.md
+- [Actual consequences observed in implementation]
+
+### Implementation Evidence
+
+- `src/path/to/file.ts:45` - [How decision is reflected]
+- `src/path/to/other.ts:120` - [Supporting implementation]
 ```
 
-### 6. Commit Permanent Docs
+## Phase 7: Delete Working Artifacts
 
-Commit all permanent documentation updates:
-
-```bash
-git add SPECIFICATION.md CHANGELOG.md DECISIONS.md
-git commit -m "docs: graduate [feature-name] to permanent documentation
-
-Synthesized from:
-- thoughts/specs/spec-[feature].md
-- thoughts/plans/tasks-*-[feature].md
-- thoughts/research/*-[feature].md
-
-This captures feature behaviors, changelog entry, and architectural decisions."
-```
-
-### 7. Delete Working Artifacts
-
-Remove all `thoughts/` artifacts for this feature:
+Remove all artifacts (both verifiable and removable):
 
 ```bash
-# Remove spec
+# Verifiable artifacts (specs, research) - now verified
 rm thoughts/specs/spec-[feature].md
-
-# Remove plans
-rm thoughts/plans/prd-[feature].md
-rm thoughts/plans/tasks-*-[feature].md
-
-# Remove research
 rm thoughts/research/*-[feature].md
 
-# Remove handoffs
+# Removable artifacts (no review needed)
+rm thoughts/plans/prd-[feature].md
+rm thoughts/plans/tasks-*-[feature].md
 rm -rf thoughts/handoffs/[feature]/
-
-# Remove validation/debug
 rm thoughts/validation/*-[feature].md
 rm thoughts/debug/*-[feature].md
 ```
 
-### 8. Commit Artifact Removal
+## Phase 8: Commit Changes
+
+### Commit 1: Permanent Documentation Update
+
+```bash
+git add SPECIFICATION.md CHANGELOG.md DECISIONS.md
+git commit -m "docs: graduate [feature-name] with verified implementation
+
+Verification summary:
+- Behaviors: [X] verified, [Y] divergences (documented actual)
+- Decisions: [A] verified, [B] divergences
+- Added items: [Z] undocumented features now documented
+
+Sources verified:
+- thoughts/specs/spec-[feature].md
+- thoughts/research/*-[feature].md
+
+Implementation files checked:
+- src/features/[feature]/*
+- [other relevant paths]"
+```
+
+### Commit 2: Artifact Cleanup
 
 ```bash
 git add -A
 git commit -m "chore: clean up [feature-name] working artifacts
 
 Artifacts graduated to permanent documentation.
-Original files preserved in git history."
+Original files preserved in git history.
+Verification report in previous commit."
 ```
 
-### 9. Report Completion
+## Completion Report
 
 ```
-Feature Graduated Successfully!
-================================
+================================================================================
+FEATURE GRADUATED SUCCESSFULLY
+================================================================================
+
+Verification Summary:
+  Behaviors Verified:  [X]/[Y] matched spec
+  Divergences Found:   [Z] (documented as actual)
+  Decisions Verified:  [A]/[B] reflected in code
+  Added to Docs:       [C] undocumented features
 
 Permanent Documentation Updated:
-  ✓ SPECIFICATION.md - Feature behaviors and constraints
-  ✓ CHANGELOG.md     - Implementation summary
-  ✓ DECISIONS.md     - Architectural decisions
+  [x] SPECIFICATION.md - Verified behaviors and constraints
+  [x] CHANGELOG.md     - Actual implementation summary
+  [x] DECISIONS.md     - Verified architectural decisions
 
 Artifacts Cleaned Up:
   - thoughts/specs/spec-[feature].md
@@ -191,33 +403,102 @@ Artifacts Cleaned Up:
 
 Git History:
   All original artifacts preserved in git history.
-  To recover: git show [commit]:[path]
+  To recover: git show [commit]:thoughts/specs/spec-[feature].md
+
+================================================================================
 ```
+
+## Options
+
+### `--dry-run`
+
+Preview without making changes:
+- Show artifacts found
+- Show extracted claims
+- Show verification results
+- Show what would be added to permanent docs
+- Show files that would be deleted
+
+No files modified, no commits created.
+
+### `--spec-authority`
+
+Trust spec over implementation when divergences found:
+- Document spec content even when code diverges
+- Useful when implementation is known to be incomplete/incorrect
+- Adds warning to permanent docs about divergence
+
+```markdown
+> **Note**: This behavior is documented from specification.
+> Implementation may differ - see git history for details.
+```
+
+### `--confirm-each`
+
+Interactive mode with confirmations:
+- Pause after verification report
+- Ask for confirmation before each permanent doc update
+- Allow selective inclusion/exclusion of divergences
+- Allow selective artifact removal
+
+### `--skip-verify`
+
+Skip verification (legacy behavior):
+- Synthesize directly from specs without checking codebase
+- Faster but may document planned rather than actual behavior
+- Use only when confident spec matches implementation
 
 ## Guidelines
 
-- **Verify completion first** - Don't graduate incomplete work
-- **Synthesize, don't copy** - Permanent docs should be concise summaries
+- **Verify before documenting** - Always confirm spec matches reality
+- **Document actual state** - Users encounter the implementation, not the spec
+- **Report divergences clearly** - Help catch implementation drift
 - **Preserve in git** - Original artifacts recoverable from history
 - **Commit separately** - Docs update and cleanup are separate commits
 
-## Dry Run
+## Error Handling
 
-To preview what would be graduated without making changes:
+### No Artifacts Found
 
 ```
-/cmd:graduate [feature] --dry-run
+Error: No artifacts found for feature "[feature]"
+
+Searched:
+- thoughts/specs/spec-[feature].md
+- thoughts/plans/*-[feature].md
+- thoughts/research/*-[feature].md
+
+Did you mean one of these?
+- [similar-feature-1]
+- [similar-feature-2]
 ```
 
-This will show:
-- Artifacts found
-- What would be added to each permanent doc
-- Files that would be deleted
+### No Codebase Files Found
 
-## Output
+```
+Warning: No implementation files found for feature "[feature]"
 
-- SPECIFICATION.md updated with feature behaviors
-- CHANGELOG.md updated with implementation summary
-- DECISIONS.md updated with architectural decisions (if applicable)
-- All `thoughts/` artifacts for feature deleted
-- Two commits: docs update + cleanup
+This could mean:
+- Feature was not implemented
+- Feature uses unexpected file naming
+- Feature is in a different location
+
+Options:
+1. Specify implementation paths manually
+2. Skip verification (--skip-verify)
+3. Abort graduation
+```
+
+### Verification Failed
+
+```
+Error: Verification found critical issues
+
+- [X] core behaviors missing from implementation
+- [Y] major divergences that change user-facing behavior
+
+Cannot graduate without resolution. Options:
+1. Fix implementation to match spec
+2. Update spec to match implementation
+3. Force graduation with --spec-authority (not recommended)
+```

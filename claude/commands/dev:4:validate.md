@@ -56,6 +56,33 @@ For each top-level task in the list:
    - Did the implementation stay within the scope of the task?
    - Are there unrequested changes?
 
+### Parallel Verification Strategy
+
+Use the Task tool to spawn parallel verification subagents for efficient task-by-task validation.
+
+#### Subagent Delegation
+
+For each major task/phase, spawn a Task agent with `subagent_type=Explore`:
+
+```
+Task: Verify Phase [N] - [Phase Name]
+- Check all subtasks marked complete
+- Verify code changes exist for specified files
+- Run relevant tests for this phase
+- Confirm implementation matches spec requirements
+- Report: status, evidence, issues found
+```
+
+#### Orchestrator Responsibilities
+
+The parent agent (you) handles:
+- Running global verification commands (build, lint)
+- Coordinating per-phase verification subagents  
+- Synthesizing individual reports into final validation
+- Generating the validation report document
+
+Wait for ALL verification subagents to complete before synthesizing the final report.
+
 ### 4. Generate Validation Report
 
 Create document at: `thoughts/validation/YYYY-MM-DD-validation.md`

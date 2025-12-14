@@ -218,3 +218,12 @@ As the orchestrator, you must:
 9. **CRITICAL CHECKPOINT:** After each subtask, immediately declare completion, update markdown, confirm the update, and request permission to continue
 
 **Remember: You orchestrate, sub-agents implement. Never write code directly.**
+
+---
+
+## ➡️ Next Command
+
+When all tasks are complete, run:
+```
+/dev:4:validate [path-to-tasks]
+```

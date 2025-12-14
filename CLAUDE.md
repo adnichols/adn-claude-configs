@@ -104,7 +104,7 @@ Important slash commands:
 - `/cmd:local-review`: Isolated code review in separate worktree
 
 ### Graduation Commands
-- `/cmd:graduate`: Synthesize completed artifacts into permanent documentation
+- `/cmd:graduate`: Synthesize completed artifacts to permanent docs with codebase verification
 
 ### Git Utility Commands
 - `/cmd:commit-push`: Commit all changes in the repo and push to GitHub
@@ -234,13 +234,18 @@ After completing a feature, graduate artifacts to permanent documentation:
 
 1. **Verify Completion**: Ensure all tasks checked, tests pass
 2. **Graduate**: Use `/cmd:graduate [feature]`
-   - Synthesizes spec → SPECIFICATION.md
-   - Synthesizes plan → CHANGELOG.md
-   - Synthesizes research → DECISIONS.md
+   - **Verifies** spec/research claims against actual codebase
+   - **Reports** divergences (spec vs implementation)
+   - **Documents** ACTUAL implementation state (not just what spec planned)
+   - Synthesizes verified spec → SPECIFICATION.md
+   - Synthesizes actual changes → CHANGELOG.md
+   - Synthesizes verified research → DECISIONS.md
    - Deletes working artifacts (preserved in git history)
 3. **Commit**: Two commits created automatically
-   - Permanent doc updates
+   - Permanent doc updates (with verification summary)
    - Artifact removal
+
+Options: `--dry-run`, `--spec-authority`, `--confirm-each`, `--skip-verify`
 
 ### Batch Documentation Workflow
 

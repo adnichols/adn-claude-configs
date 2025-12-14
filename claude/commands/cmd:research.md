@@ -152,4 +152,13 @@ If user has follow-up questions:
 
 `thoughts/research/YYYY-MM-DD-description.md`
 
-This document can later be referenced by `/spec:1:create-spec` or `/prd:1:create-prd` if implementation is decided.
+This document can later be referenced by `/dev:1:create-spec` or `/dev:0:create-prd` if implementation is decided.
+
+---
+
+## ➡️ Next Command
+
+When ready to proceed with implementation, run:
+```
+/dev:1:create-spec
+```

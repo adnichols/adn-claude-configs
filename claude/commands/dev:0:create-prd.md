@@ -220,3 +220,12 @@ This command serves teams that need:
 - Clear boundaries between what's included and excluded
 - Fidelity guarantees throughout the development process
 - Simple, predictable PRD creation without complexity overhead
+
+---
+
+## ➡️ Next Command
+
+When the PRD is complete and approved, run:
+```
+/dev:1:create-spec [path-to-prd]
+```
