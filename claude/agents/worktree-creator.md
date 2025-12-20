@@ -1,6 +1,6 @@
 ---
 name: worktree-creator
-description: Creates git worktrees for Linear issues with environment propagation
+description: Creates git worktrees for Linear issues
 model: sonnet
 ---
 
@@ -69,21 +69,7 @@ git branch --set-upstream-to=origin/main
 git status
 ```
 
-## Step 4: Copy .env Files
-
-Find and copy git-ignored `.env*` files from the main repo to the worktree:
-
-```bash
-cd "$REPO_ROOT"
-for f in .env*; do
-  if [ -f "$f" ] && git check-ignore -q "$f" 2>/dev/null; then
-    cp "$f" "$WORKTREE_PATH/"
-    echo "Copied: $f"
-  fi
-done
-```
-
-## Step 5: Create Linear Context Note
+## Step 4: Create Linear Context Note
 
 Create `thoughts/linear/<issue-key-lower>.md` in the worktree:
 
@@ -102,7 +88,7 @@ Create `thoughts/linear/<issue-key-lower>.md` in the worktree:
 <description from Linear>
 ```
 
-## Step 6: Report Success
+## Step 5: Report Success
 
 Output a summary:
 
@@ -112,9 +98,6 @@ Worktree created successfully!
 Location: <worktree-path>
 Branch: <issue-key-lower>
 Linear: <issue-url>
-
-.env files copied:
-- <list of copied files, or "none">
 
 Next steps:
 - cd <worktree-path>

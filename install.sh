@@ -769,7 +769,8 @@ install_skills() {
             if [ -d "$skill_path" ]; then
                 local skill_name=$(basename "$skill_path")
                 echo "    - Installing skill: $skill_name"
-                cp -r "$skill_path" "$skills_dir/"
+                # Remove trailing slash to copy the directory itself, not just its contents
+                cp -r "${skill_path%/}" "$skills_dir/"
             fi
         done
 

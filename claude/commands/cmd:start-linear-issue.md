@@ -1,5 +1,5 @@
 ---
-description: Bootstrap a dedicated worktree and branch for a Linear issue with local config parity
+description: Bootstrap a dedicated worktree and branch for a Linear issue
 argument-hint: ISSUE_KEY [BASE_BRANCH]
 ---
 
