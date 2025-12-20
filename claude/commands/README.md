@@ -222,9 +222,10 @@ All working artifacts are stored in the `thoughts/` directory:
 - **Linear Notes**: `thoughts/linear/[ISSUE-KEY].md`
 
 Completed features are graduated to permanent documentation:
-- **SPECIFICATION.md**: Feature behaviors and constraints
+- **spec/architecture/[feature].md**: Feature architecture documents
+- **spec/architecture/README.md**: Architecture index table
+- **spec/adr-log.md**: Architectural decision records
 - **CHANGELOG.md**: Implementation summaries
-- **DECISIONS.md**: Architectural decision records
 
 ## Integration Notes
 

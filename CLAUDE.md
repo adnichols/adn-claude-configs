@@ -156,9 +156,10 @@ thoughts/
 
 Completed features are graduated from `thoughts/` to permanent documentation:
 
-- **SPECIFICATION.md**: Feature behaviors, constraints, and API contracts
+- **spec/architecture/**: Feature architecture documents (one per feature)
+- **spec/architecture/README.md**: Architecture index table
+- **spec/adr-log.md**: Architectural Decision Records (ADRs)
 - **CHANGELOG.md**: Running log of implemented changes
-- **DECISIONS.md**: Architectural Decision Records (ADRs)
 
 Use `/cmd:graduate [feature]` to synthesize artifacts and clean up working files.
 
@@ -237,9 +238,9 @@ After completing a feature, graduate artifacts to permanent documentation:
    - **Verifies** spec/research claims against actual codebase
    - **Reports** divergences (spec vs implementation)
    - **Documents** ACTUAL implementation state (not just what spec planned)
-   - Synthesizes verified spec → SPECIFICATION.md
+   - Synthesizes verified spec → spec/architecture/[feature].md
    - Synthesizes actual changes → CHANGELOG.md
-   - Synthesizes verified research → DECISIONS.md
+   - Synthesizes verified research → spec/adr-log.md
    - Deletes working artifacts (preserved in git history)
 3. **Commit**: Two commits created automatically
    - Permanent doc updates (with verification summary)

@@ -376,42 +376,49 @@ EOF
         echo "  - Created CHANGELOG.md template"
     fi
 
-    # SPECIFICATION.md
-    if [ ! -f "$target_dir/SPECIFICATION.md" ]; then
-        cat > "$target_dir/SPECIFICATION.md" << 'EOF'
-# Specification
-
-This document describes the features, behaviors, and constraints of the system.
-
-<!--
-Entries are added by /cmd:graduate after completing features.
-Each section describes a feature's behaviors and constraints as implemented.
--->
-
-## Features
-
-<!-- Feature sections will be added here -->
-EOF
-        echo "  - Created SPECIFICATION.md template"
+    # spec/ directory structure
+    if [ ! -d "$target_dir/spec" ]; then
+        mkdir -p "$target_dir/spec/architecture"
+        echo "  - Created spec/ directory structure"
     fi
 
-    # DECISIONS.md
-    if [ ! -f "$target_dir/DECISIONS.md" ]; then
-        cat > "$target_dir/DECISIONS.md" << 'EOF'
+    # spec/architecture/README.md
+    if [ ! -f "$target_dir/spec/architecture/README.md" ]; then
+        cat > "$target_dir/spec/architecture/README.md" << 'EOF'
+# Architecture Documentation
+
+This directory contains architecture documents for implemented features.
+
+## Architecture Docs
+
+| Feature | Document | Status | Description |
+|---------|----------|--------|-------------|
+<!-- Rows added by /cmd:graduate after completing features -->
+EOF
+        echo "  - Created spec/architecture/README.md template"
+    fi
+
+    # spec/adr-log.md
+    if [ ! -f "$target_dir/spec/adr-log.md" ]; then
+        cat > "$target_dir/spec/adr-log.md" << 'EOF'
 # Architectural Decision Records
 
 This document captures key architectural decisions and their rationale.
 
 <!--
-Entries are added by /cmd:graduate after completing features.
+Entries are prepended by /cmd:graduate after completing features.
 Format:
-## ADR-NNN: [Decision Title] - YYYY-MM-DD
-### Context
-### Decision
-### Consequences
+## ADR NNNN: [Decision Title]
+**Status:** Accepted
+**Date:** YYYY-MM
+
+**Context:** ...
+**Decision:** ...
+**Alternatives considered:** ...
+**Current state:** ...
 -->
 EOF
-        echo "  - Created DECISIONS.md template"
+        echo "  - Created spec/adr-log.md template"
     fi
 }
 
