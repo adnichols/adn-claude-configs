@@ -1,5 +1,6 @@
-description = "Resume work from handoff document with context analysis and validation"
-prompt = """
+---
+description: Resume work from handoff document with context analysis and validation
+---
 
 # Resume work from a handoff document
 
@@ -12,7 +13,7 @@ When this command is invoked:
 1. **If the path to a handoff document was provided**:
    - If a handoff document path was provided as a parameter, skip the default message
    - Immediately read the handoff document FULLY
-   - Immediately read any research or plan documents that it links to under `thoughts/plans` or `thoughts/research`. do NOT use a sub-agent to read these critical files.
+   - Immediately read any research or plan documents that it links to under `thoughts/plans` or `thoughts/research`
    - Begin the analysis process by ingesting relevant context from the handoff document, reading additional files it mentions
    - Then propose a course of action to the user and confirm, or ask for clarification on direction.
 
@@ -24,7 +25,7 @@ When this command is invoked:
    - **If there is only one file in the directory**: proceed with that handoff
    - **If there are multiple files in the directory**: using the date and time specified in the file name (it will be in the format `YYYY-MM-DD_HH-MM-SS` in 24-hour time format), proceed with the _most recent_ handoff document.
    - Immediately read the handoff document FULLY
-   - Immediately read any research or plan documents that it links to under `thoughts/plans` or `thoughts/research`; do NOT use a sub-agent to read these critical files.
+   - Immediately read any research or plan documents that it links to under `thoughts/plans` or `thoughts/research`
    - Begin the analysis process by ingesting relevant context from the handoff document, reading additional files it mentions
    - Then propose a course of action to the user and confirm, or ask for clarification on direction.
 
@@ -34,9 +35,9 @@ I'll help you resume work from a handoff document. Let me find the available han
 
 Which handoff would you like to resume from?
 
-Tip: You can invoke this command directly with a handoff path: `/resume_handoff thoughts/handoffs/<TICKET>/YYYY-MM-DD_HH-MM-SS_<TICKET>_description.md`
+Tip: You can invoke this command directly with a handoff path: `/cmd:resume-handoff thoughts/handoffs/<TICKET>/YYYY-MM-DD_HH-MM-SS_<TICKET>_description.md`
 
-or using a ticket number to resume from the most recent handoff for that ticket: `/resume_handoff <TICKET>-XXXX`
+or using a ticket number to resume from the most recent handoff for that ticket: `/cmd:resume-handoff <TICKET>-XXXX`
 ```
 
 Then wait for the user's input.
@@ -46,7 +47,6 @@ Then wait for the user's input.
 ### Step 1: Read and Analyze Handoff
 
 1. **Read handoff document completely**:
-   - Use the Read tool WITHOUT limit/offset parameters
    - Extract all sections:
      - Task(s) and their statuses
      - Recent changes
@@ -55,23 +55,14 @@ Then wait for the user's input.
      - Action items and next steps
      - Other notes
 
-2. **Spawn focused research tasks**:
-   Based on the handoff content, spawn parallel research tasks to verify current state:
+2. **Gather artifact context**:
+   - Read all artifacts mentioned in the handoff
+   - Read feature documents listed in "Artifacts"
+   - Read implementation plans referenced
+   - Read any research documents mentioned
+   - Extract key requirements and decisions
 
-   ```
-   Task 1 - Gather artifact context:
-   Read all artifacts mentioned in the handoff.
-   1. Read feature documents listed in "Artifacts"
-   2. Read implementation plans referenced
-   3. Read any research documents mentioned
-   4. Extract key requirements and decisions
-   Use tools: Read
-   Return: Summary of artifact contents and key decisions
-   ```
-
-3. **Wait for ALL sub-tasks to complete** before proceeding
-
-4. **Read critical files identified**:
+3. **Read critical files identified**:
    - Read files from "Learnings" section completely
    - Read files from "Recent changes" to understand modifications
    - Read any new related files discovered during research
@@ -115,7 +106,7 @@ Then wait for the user's input.
 
 ### Step 3: Create Action Plan
 
-1. **Use TodoWrite to create task list**:
+1. **Create task list**:
    - Convert action items from handoff into todos
    - Add any new tasks discovered during analysis
    - Prioritize based on dependencies and handoff guidance
@@ -157,7 +148,7 @@ Then wait for the user's input.
    - Build on discovered solutions
 
 4. **Track Continuity**:
-   - Use TodoWrite to maintain task continuity
+   - Maintain task continuity
    - Reference the handoff document in commits
    - Document any deviations from original plan
    - Consider creating a new handoff when done
@@ -193,25 +184,3 @@ Then wait for the user's input.
 - Major refactoring has occurred
 - Original approach may no longer apply
 - Need to re-evaluate strategy
-
-## Example Interaction Flow
-
-```
-User: /resume_handoff specification/feature/handoffs/handoff-0.md
-Assistant: Let me read and analyze that handoff document...
-
-[Reads handoff completely]
-[Spawns research tasks]
-[Waits for completion]
-[Reads identified files]
-
-I've analyzed the handoff from [date]. Here's the current situation...
-
-[Presents analysis]
-
-Shall I proceed with implementing the webhook validation fix, or would you like to adjust the approach?
-
-User: Yes, proceed with the webhook validation
-Assistant: [Creates todo list and begins implementation]
-```
-"""

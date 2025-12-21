@@ -1,5 +1,6 @@
-description = "Create handoff document for transferring work to another session"
-prompt = """
+---
+description: Create handoff document for transferring work to another session
+---
 
 # Create Handoff
 
@@ -18,7 +19,13 @@ Use the following information to understand how to create your document:
         - HH-MM-SS is the hours, minutes and seconds based on the current time, in 24-hour format (i.e. use `13:00` for `1:00 pm`)
         - <TICKET> is the ticket number (replace with `general` if no ticket)
         - description is a brief kebab-case description
-    - Run the `scripts/spec_metadata.sh` script to generate all relevant metadata
+    - Run the following commands to generate all relevant metadata:
+        ```bash
+        git rev-parse HEAD              # Current commit hash
+        git branch --show-current       # Current branch
+        basename $(git rev-parse --show-toplevel)  # Repository name
+        date -u +"%Y-%m-%dT%H:%M:%SZ"   # ISO timestamp
+        ```
     - Examples:
         - With ticket: `2025-01-08_13-55-22_NOD-2166_create-context-compaction.md`
         - Without ticket: `2025-01-08_13-55-22_create-context-compaction.md`
@@ -69,29 +76,16 @@ type: implementation_strategy
 
 ### 3. Approve and Sync
 
-Once this is completed, you should respond to the user with the template between <template_response></template_response> XML tags. do NOT include the tags in your response.
+Once this is completed, you should respond to the user with:
 
-<template_response>
+```
 Handoff created and synced! You can resume from this handoff in a new session with the following command:
 
-```bash
-/resume_handoff path/to/handoff.md
+/cmd:resume-handoff path/to/handoff.md
 ```
-</template_response>
-
-for example (between <example_response></example_response> XML tags - do NOT include these tags in your actual response to the user)
-
-<example_response>
-Handoff created and synced! You can resume from this handoff in a new session with the following command:
-
-```bash
-/resume_handoff thoughts/handoffs/NOD-2166/2025-01-08_13-44-55_NOD-2166_create-context-compaction.md
-```
-</example_response>
 
 ---
-##.  Additional Notes & Instructions
+## Additional Notes & Instructions
 - **more information, not less**. This is a guideline that defines the minimum of what a handoff should be. Always feel free to include more information if necessary.
 - **be thorough and precise**. include both top-level objectives, and lower-level details as necessary.
 - **avoid excessive code snippets**. While a brief snippet to describe some key change is important, avoid large code blocks or diffs; do not include one unless it's necessary (e.g. pertains to an error you're debugging). Prefer using `/path/to/file.ext:line` references that an agent can follow later when it's ready, e.g. `packages/dashboard/src/app/dashboard/page.tsx:12-24`
-"""

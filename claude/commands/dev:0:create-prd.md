@@ -37,53 +37,78 @@ The user will provide:
 
 ## Clarifying Questions for Scope Definition
 
-Ask targeted questions to define precise boundaries:
+Use the **AskUserQuestion tool** to gather precise requirements through structured questions. This provides a better user experience than plain text questions.
+
+### Question Strategy
+
+Ask 1-4 targeted questions at a time using AskUserQuestion. Group related questions logically:
 
 ### Core Scope Questions
 
-**For problem clarity:**
-"What specific problem does this feature solve?
-A) [Suggested interpretation 1]
-B) [Suggested interpretation 2]
-C) [Suggested interpretation 3]
-D) Other (please describe)"
+Use AskUserQuestion with questions like:
 
-**For user identification:**
-"Who is the primary user of this feature?
-A) End users (customers/clients)
-B) Internal team members
-C) Developers/technical users  
-D) System administrators"
+```
+Question 1: "What specific problem does this feature solve?"
+Header: "Problem"
+Options:
+- [Suggested interpretation 1]
+- [Suggested interpretation 2]
+- [Suggested interpretation 3]
+(Users can always select "Other" for custom input)
+
+Question 2: "Who is the primary user of this feature?"
+Header: "User type"
+Options:
+- End users (customers/clients)
+- Internal team members
+- Developers/technical users
+- System administrators
+```
 
 ### Boundary Definition Questions
 
-**For explicit inclusions:**
-"What specific functionality should this feature include?
-A) [Core functionality option 1]
-B) [Core functionality option 2]
-C) [Core functionality option 3]
-D) Other (please specify)"
+```
+Question 1: "What specific functionality should this feature include?"
+Header: "Scope"
+Options:
+- [Core functionality option 1]
+- [Core functionality option 2]
+- [Core functionality option 3]
 
-**For explicit exclusions:**
-"Are there specific things this feature should NOT do?
-A) No restrictions - implement all related functionality
-B) Keep minimal - exclude complex features
-C) Exclude certain capabilities (please specify which)
-D) Exclude integration with other systems"
+Question 2: "Are there things this feature should NOT do?"
+Header: "Exclusions"
+Options:
+- No restrictions - implement all related functionality
+- Keep minimal - exclude complex features
+- Exclude certain capabilities (specify in Other)
+- Exclude integration with other systems
+```
 
-**For testing scope:**
-"What level of testing is expected?
-A) Basic functionality validation only
-B) Comprehensive testing including edge cases
-C) No specific testing requirements mentioned
-D) Testing scope to be determined later"
+### Testing and Security Scope
 
-**For security scope:**
-"Are there specific security requirements?
-A) Standard security practices
-B) Enhanced security measures needed
-C) No specific security requirements mentioned  
-D) Security scope to be determined later"
+```
+Question 1: "What level of testing is expected?"
+Header: "Testing"
+Options:
+- Basic functionality validation only
+- Comprehensive testing including edge cases
+- Testing scope to be determined later
+
+Question 2: "Are there specific security requirements?"
+Header: "Security"
+Options:
+- Standard security practices
+- Enhanced security measures needed
+- Security scope to be determined later
+```
+
+### AskUserQuestion Usage Notes
+
+- Use `multiSelect: true` when choices aren't mutually exclusive
+- Keep headers short (max 12 chars) - they appear as chips/tags
+- Provide clear descriptions for each option to explain trade-offs
+- Users always have an "Other" option for custom responses
+- Ask follow-up questions if initial answers need clarification
 
 ## PRD Template Structure
 
@@ -223,9 +248,29 @@ This command serves teams that need:
 
 ---
 
-## ➡️ Next Command
+## ➡️ Next Steps
+
+### 1. Generate Specification
 
 When the PRD is complete and approved, run:
 ```
-/dev:1:create-spec [path-to-prd]
+/dev:1:create-spec thoughts/plans/prd-[feature-name].md
+```
+
+### 2. Review Specification (Recommended)
+
+After the spec is generated, consider multi-model review before task generation:
+
+```bash
+# Run in each tool (Claude, Gemini, Codex) to gather diverse perspectives
+/review:spec thoughts/specs/spec-[feature-name].md
+
+# After all reviews complete, integrate feedback
+/review:integrate thoughts/specs/spec-[feature-name].md
+```
+
+### 3. Generate Tasks
+
+```
+/dev:2:gen-tasks thoughts/specs/spec-[feature-name].md
 ```

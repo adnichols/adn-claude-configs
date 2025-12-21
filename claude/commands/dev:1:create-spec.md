@@ -119,28 +119,58 @@ The research should comprehensively cover:
 
 ## Clarifying Questions (Only When Needed)
 
-Ask questions using letter/number lists for easy selection. Examples:
+Use the **AskUserQuestion tool** when critical information is missing. This provides a better user experience than plain text questions.
+
+### When to Ask
+
+Only ask clarifying questions when:
+- Research cannot proceed without the information
+- The scope is fundamentally ambiguous
+- Critical technical decisions need user input
+
+### Example Questions
+
+Use AskUserQuestion with structured options:
 
 **If problem scope is unclear:**
-"To better research this idea, I need to understand the scope. Which best describes your vision?
-A) A simple feature addition to existing system  
-B) An enhancement to current functionality
-C) A complete standalone application
-D) A developer tool or utility"
+```
+Question: "Which best describes your vision for this feature?"
+Header: "Scope"
+Options:
+- A simple feature addition to existing system
+- An enhancement to current functionality
+- A complete standalone application
+- A developer tool or utility
+```
 
 **If target users are ambiguous:**
-"Who is the primary user for this feature?
-A) End users (customers/clients)
-B) Internal team members
-C) Developers/technical users
-D) System administrators"
+```
+Question: "Who is the primary user for this feature?"
+Header: "User type"
+Options:
+- End users (customers/clients)
+- Internal team members
+- Developers/technical users
+- System administrators
+```
 
 **If backward compatibility might be relevant:**
-"Are there backward compatibility requirements?
-A) No - can break existing interfaces
-B) Yes - must maintain existing API compatibility
-C) Partial - some breaking changes acceptable
-D) Not applicable"
+```
+Question: "Are there backward compatibility requirements?"
+Header: "Compat"
+Options:
+- No - can break existing interfaces
+- Yes - must maintain existing API compatibility
+- Partial - some breaking changes acceptable
+```
+
+### AskUserQuestion Usage Notes
+
+- Keep headers short (max 12 chars) - they appear as chips/tags
+- Use `multiSelect: true` when choices aren't mutually exclusive
+- Provide clear descriptions for each option
+- Users always have an "Other" option for custom responses
+- Ask 1-4 questions at a time, grouped logically
 
 ## Specification Template
 
@@ -313,9 +343,29 @@ A well-researched specification should:
 
 ---
 
-## ➡️ Next Command
+## ➡️ Next Steps
 
-When the specification is complete and approved, run:
+### Recommended: Multi-Model Review
+
+Before generating tasks, consider having multiple AI models review the specification for critical feedback:
+
+```bash
+# Run in each tool (Claude, Gemini, Codex) to gather diverse perspectives
+/review:spec thoughts/specs/spec-[idea-name].md
 ```
-/dev:2:gen-tasks [path-to-spec]
+
+Each reviewer adds inline HTML comments with their identity (e.g., `<!-- [Claude] ... -->`). Reviews can respond to each other's feedback.
+
+After all reviews complete, integrate the feedback:
+```bash
+/review:integrate thoughts/specs/spec-[idea-name].md
+```
+
+This resolves all comments, asks for user decisions on ambiguous items, and produces a refined specification.
+
+### Generate Tasks
+
+When the specification is complete (and optionally reviewed), run:
+```
+/dev:2:gen-tasks thoughts/specs/spec-[idea-name].md
 ```

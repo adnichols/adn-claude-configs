@@ -7,7 +7,7 @@ argument-hint: [Idea/Feature Description]
 
 ## Goal
 
-To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter. This document will serve as input to downstream task generation commands. Think harder.
+To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter. This document will serve as input to downstream task generation commands.
 
 ## Research Approach
 
@@ -49,8 +49,8 @@ The AI will need to:
    - Performance considerations and reliability features
    - Implementation planning and dependencies
 4. **Generate Specification:** Create complete document with all necessary sections
-5. **Save Specification:** Save as `research-spec-[idea-name].md` in `/tasks/` directory
-6. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
+5. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
+6. **End Command:** The command completes after saving the specification.
 
 ## Research Areas
 
@@ -84,11 +84,11 @@ The research should comprehensively cover:
 
 ## Clarifying Questions (Only When Needed)
 
-Ask questions using letter/number lists for easy selection. Examples:
+Ask questions when critical information is missing:
 
 **If problem scope is unclear:**
-"To better research this idea, I need to understand the scope. Which best describes your vision?
-A) A simple feature addition to existing system  
+"Which best describes your vision?
+A) A simple feature addition to existing system
 B) An enhancement to current functionality
 C) A complete standalone application
 D) A developer tool or utility"
@@ -100,16 +100,7 @@ B) Internal team members
 C) Developers/technical users
 D) System administrators"
 
-**If backward compatibility might be relevant:**
-"Are there backward compatibility requirements?
-A) No - can break existing interfaces
-B) Yes - must maintain existing API compatibility
-C) Partial - some breaking changes acceptable
-D) Not applicable"
-
 ## Specification Template
-
-The specification document uses this comprehensive structure:
 
 ```markdown
 # [Idea Name] - Research Specification
@@ -160,59 +151,11 @@ The specification document uses this comprehensive structure:
 
 [Security best practices, reliability features, and compliance requirements]
 
-## 🎨 User Interface
-
-### User Flow
-
-[Detailed user journeys and interaction patterns]
-
-### Interface Needs
-
-[Comprehensive UI/UX requirements and design considerations]
-
 ## 🧪 Testing Approach
 
 ### Test Strategy
 
 [Comprehensive testing including unit, integration, e2e, and performance tests]
-
-### Quality Assurance
-
-[Quality gates, validation processes, and acceptance testing]
-
-## ⚡ Performance & Reliability
-
-### Performance Requirements
-
-[Performance targets, monitoring, and optimization strategies]
-
-### Error Handling
-
-[Comprehensive error handling strategy and resilience patterns]
-
-### Monitoring & Observability
-
-[Logging, monitoring, metrics, and debugging considerations]
-
-## 🔒 Security & Compliance
-
-### Security Architecture
-
-[Security framework, authentication, authorization, and data protection]
-
-### Compliance Requirements
-
-[Regulatory compliance, industry standards, and security policies]
-
-## 🔄 Compatibility & Migration
-
-### Backward Compatibility
-
-[Breaking changes analysis and migration strategy (if applicable)]
-
-### Integration Requirements
-
-[API compatibility, data migration, and system integration needs]
 
 ## 📈 Implementation Plan
 
@@ -228,16 +171,6 @@ The specification document uses this comprehensive structure:
 
 [Risk assessment, mitigation strategies, and contingency planning]
 
-## 📚 Research References
-
-### Technical References
-
-[Documentation, frameworks, libraries, and technical resources]
-
-### Standards & Best Practices
-
-[Industry standards, patterns, and recommended practices]
-
 ## 📋 Specification Complete
 
 [This specification contains all necessary information for task generation and implementation]
@@ -246,8 +179,8 @@ The specification document uses this comprehensive structure:
 ## Output
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/`
-- **Filename:** `research-spec-[idea-name].md`
+- **Location:** `thoughts/specs/`
+- **Filename:** `spec-[idea-name].md`
 
 ## Key Principles
 
@@ -257,21 +190,29 @@ The specification document uses this comprehensive structure:
 4. **Codebase Integration:** Prioritize existing patterns and conventions in implementation recommendations
 5. **Production-Ready:** Focus on creating specifications suitable for reliable production systems
 
-## Target Audience
+---
 
-This command is designed for standard feature development requiring:
+## ➡️ Next Steps
 
-- Production-ready quality with reliability and performance considerations
-- Comprehensive technical planning and risk assessment
-- Integration with existing systems and codebases
-- Full testing, security, and monitoring coverage
+### Recommended: Multi-Model Review
 
-## Success Indicators
+Before generating tasks, consider having multiple AI models review the specification for critical feedback:
 
-A well-researched specification should:
+```bash
+# Run in each tool (Claude, Gemini, Codex) to gather diverse perspectives
+/review:spec thoughts/specs/spec-[idea-name].md
+```
 
-- **Comprehensive Coverage:** Contain all sections needed for production implementation
-- **Solve Core Problem:** Address the user's stated problem with thorough analysis
-- **Enable Execution:** Provide sufficient context for downstream task generation commands
-- **Technical Depth:** Include all necessary technical, security, and performance considerations
-- **Follow Template:** Use the standardized comprehensive template structure
+Each reviewer adds inline HTML comments with their identity (e.g., `<!-- [Codex] ... -->`). Reviews can respond to each other's feedback.
+
+After all reviews complete, integrate the feedback in Claude Code:
+```bash
+/review:integrate thoughts/specs/spec-[idea-name].md
+```
+
+### Generate Tasks
+
+When the specification is complete (and optionally reviewed), run:
+```
+/dev:2:gen-tasks thoughts/specs/spec-[idea-name].md
+```

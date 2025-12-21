@@ -223,14 +223,15 @@ For Added:
 - Core feature behavior is missing
 - User specified `--confirm-each` flag
 
-If halted, ask:
+If halted, use the **AskUserQuestion tool** to ask:
 
 ```
-Significant divergences found. How to proceed?
-
-1. Continue with ACTUAL implementation state (recommended)
-2. Stop and review divergences manually
-3. Use --spec-authority to trust spec over code
+Question: "Significant divergences found. How should we proceed?"
+Header: "Proceed"
+Options:
+- Continue with ACTUAL implementation state (Recommended)
+- Stop and review divergences manually
+- Use --spec-authority to trust spec over code
 ```
 
 ## Phase 6: Update Permanent Documentation
