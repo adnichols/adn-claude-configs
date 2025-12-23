@@ -1,5 +1,5 @@
 ---
-description: Integrate all reviewer comments into a specification
+description: Integrate spec review comments into the specification
 argument-hint: <path to specification>
 ---
 

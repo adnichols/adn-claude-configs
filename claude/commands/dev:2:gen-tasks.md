@@ -37,6 +37,8 @@ The user will provide:
    - Implementation timeline and phases
    - Resource constraints
    - Explicit scope boundaries (what's included/excluded)
+   - **Dependency compatibility notes** (convert advisory notes to verification tasks)
+   - **Infrastructure prerequisites** (client/server pairs, protocol dependencies)
 
 2. **Extract Task Structure:** Identify natural implementation phases from the specification:
 
@@ -75,6 +77,8 @@ Task 2: Codebase Analysis
 - Locate relevant patterns and conventions
 - Identify integration points and dependencies
 - Document available utilities and shared components
+- **Identify paired dependencies requiring version alignment** (client/server packages, protocol pairs)
+- **Flag infrastructure that needs smoke testing** before feature work
 ```
 
 ### Orchestrator Responsibilities
@@ -86,6 +90,38 @@ The parent agent (you) handles:
 - User communication for ambiguities or issues
 
 Wait for ALL subagents to complete before synthesizing into the task list.
+
+## Converting Advisory Notes to Verification Tasks
+
+**CRITICAL:** Specifications often contain advisory notes like "Ensure X", "Verify Y", or "Make sure Z matches". These are NOT documentation—they are **implicit requirements** that must become explicit, checkable tasks.
+
+### Common Advisory Patterns to Convert
+
+| Spec Note Pattern | Task Conversion |
+|-------------------|-----------------|
+| "Ensure versions are compatible" | "Verify @pkg/client and @pkg/server are same major version" |
+| "Make sure X is configured" | "Configure X and validate configuration works" |
+| "Use compatible versions" | "Check package.json versions match, run smoke test" |
+| "Verify before proceeding" | Add blocking task before dependent work |
+
+### Infrastructure Verification Rule
+
+When a specification introduces **paired dependencies** (client/server libraries, protocol-based packages, WebSocket connections):
+
+1. **Create explicit verification task** before any feature work
+2. **Add smoke test task** to confirm basic connectivity
+3. **Block feature tasks** until verification passes
+
+Example:
+```
+- [ ] 1.0 Infrastructure Verification (MUST PASS before 1.1+)
+  - [ ] 1.0.1 Verify @hocuspocus/server and @hocuspocus/provider versions match
+  - [ ] 1.0.2 Smoke test: client connects to server successfully
+  - [ ] 1.0.3 Document verified versions
+- [ ] 1.1 Implement presence features (blocked by 1.0)
+```
+
+**Why this exists:** A spec note saying "ensure compatibility" is guidance that gets skipped. A task saying "verify versions match" is a checkbox that blocks progress.
 
 ## Final Task File Format
 
@@ -114,6 +150,14 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 ## 🗂️ Implementation Files
 
 [List of files that will need creation/modification based on specification analysis]
+
+### Paired Dependencies (Version Alignment Required)
+
+[List any client/server packages, protocol pairs, or infrastructure dependencies that MUST have matching versions]
+
+| Package Pair | Required Alignment | Verification Method |
+|--------------|-------------------|---------------------|
+| @example/client ↔ @example/server | Same major version | Check package.json, run connectivity test |
 
 ### Development Notes
 
@@ -152,10 +196,28 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 
 [Extract phases directly from specification structure]
 
+### Phase 0: Infrastructure Verification (if paired dependencies exist)
+
+**Objective:** Validate infrastructure prerequisites before feature implementation
+**Blocking:** All subsequent phases are blocked until Phase 0 passes
+
+**Tasks:**
+
+- [ ] 0.1 Verify paired package versions match
+  - [ ] 0.1.1 Check client package version in package.json
+  - [ ] 0.1.2 Check server package version in package.json
+  - [ ] 0.1.3 Confirm versions are compatible (same major version)
+- [ ] 0.2 Smoke test infrastructure connectivity
+  - [ ] 0.2.1 Basic connection test (client → server)
+  - [ ] 0.2.2 Verify protocol handshake succeeds
+- [ ] 0.3 Document verified configuration
+  - [ ] 0.3.1 Record working versions in implementation notes
+
 ### Phase 1: [Phase Name from Specification]
 
 **Objective:** [Exact objective from specification]
 **Timeline:** [As specified in original document]
+**Prerequisites:** Phase 0 complete (if applicable)
 
 **Specification Requirements:**
 [List requirements exactly as written in specification]
@@ -217,6 +279,8 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 - [ ] Success criteria from specification met
 - [ ] No testing beyond what specification requires
 - [ ] No security measures beyond specification requirements
+- [ ] **Paired dependencies verified compatible** (versions match)
+- [ ] **Infrastructure smoke tested** before feature implementation
 
 ## 📊 Completion Criteria
 
@@ -246,6 +310,8 @@ Examples requiring this protocol:
 2. **Zero Additions:** No requirements, tests, or features beyond specification
 3. **Preserve Constraints:** Maintain all limitations and boundaries from specification
 4. **Context Preservation:** Include necessary specification context in task file
+5. **Notes → Tasks:** Advisory notes ("ensure X", "verify Y") become explicit verification tasks
+6. **Infrastructure First:** Paired dependencies get Phase 0 verification before feature work
 
 ## Success Indicators
 

@@ -131,7 +131,7 @@ Be constructive but critical. The goal is to improve the specification before im
 
 After all reviewers (Claude, Gemini, Codex, etc.) have completed their reviews, run:
 ```
-/review:integrate <path to specification>
+/review:spec-integrate <path to specification>
 ```
 
 This command integrates all feedback into the specification, resolves open questions, and prepares the spec for implementation.

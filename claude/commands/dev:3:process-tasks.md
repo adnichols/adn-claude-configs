@@ -23,10 +23,14 @@ Your job is to coordinate, track progress, run validations, and manage git—NOT
 Before starting task implementation:
 
 1. **Parse Task File Metadata:** Extract fidelity information from task file YAML front-matter
-2. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
+2. **Check for Phase 0 (Infrastructure Verification):** If the task file contains a Phase 0:
+   - **Phase 0 is BLOCKING** - no other phases can start until Phase 0 passes
+   - Complete all Phase 0 subtasks (version checks, smoke tests, documentation)
+   - Only proceed to Phase 1+ after Phase 0 is fully validated and committed
+3. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
    - Developer agent: `@developer-fidelity`
    - Quality reviewer: `@quality-reviewer-fidelity`
-3. **Apply Only Specified Validation:** Include only the testing and validation explicitly specified in the source document:
+4. **Apply Only Specified Validation:** Include only the testing and validation explicitly specified in the source document:
    - Review source document for testing requirements
    - Implement only specified security measures
    - Do not add tests or validation beyond what's explicitly required
@@ -198,6 +202,8 @@ Examples of discoveries requiring this protocol:
 - A technical constraint makes a phase impossible or unnecessary
 - New information suggests a different approach would be better
 - The plan conflicts with existing code patterns
+- **Phase 0 infrastructure verification fails** (version mismatch, connectivity issues)
+- **Paired dependencies are incompatible** (client/server version conflict)
 
 **Do not** silently adjust the plan or continue with an approach you know is suboptimal. The plan is a guide, not a contract—but changes require explicit approval.
 

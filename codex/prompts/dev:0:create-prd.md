@@ -170,7 +170,7 @@ After the spec is generated, consider multi-model review before task generation:
 /review:spec thoughts/specs/spec-[feature-name].md
 
 # After all reviews complete, integrate feedback in Claude Code
-/review:integrate thoughts/specs/spec-[feature-name].md
+/review:spec-integrate thoughts/specs/spec-[feature-name].md
 ```
 
 ### 3. Generate Tasks

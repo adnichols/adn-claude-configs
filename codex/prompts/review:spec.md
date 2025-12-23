@@ -1,17 +1,21 @@
 ---
-description: Provide critical feedback on a specification as inline comments
-argument-hint: <path to specification>
+description: Provide critical feedback on a specification (inline comments or file output)
+argument-hint: <path to specification> [--output <output-path>]
 ---
 
 # Multi-Model Specification Review
 
-Review the specification document and provide critical feedback as HTML comments annotated with your identity.
+Review the specification document and provide critical feedback.
 
-**Specification to review:** $ARGUMENTS
+**Arguments:** $ARGUMENTS
+
+Parse the arguments to determine:
+- **Specification path**: The path to the spec file to review
+- **Output mode**: If `--output <path>` is provided, write structured review to that file. Otherwise, add inline HTML comments.
 
 ## Your Identity
 
-You are **Codex** reviewing this specification. All comments you add must be clearly attributed to you.
+You are **Codex** reviewing this specification. All feedback must be clearly attributed to you.
 
 ## Process
 
@@ -33,19 +37,68 @@ Before providing feedback, explore the codebase to understand:
 
 Use search and file reading tools to efficiently gather codebase context.
 
-### 3. Ask Clarifying Questions
+### 3. Analyze Critically
 
-Before adding extensive comments, ask the user clarifying questions. This minimizes back-and-forth in the document and drives clarity in the specification itself.
+Your role is to find problems, not validate the specification. Look for:
+- Gaps in requirements
+- Unrealistic assumptions
+- Technical debt creation
+- Integration challenges
+- Security or performance risks
+- Unclear success criteria
+- Missing error handling
+- Scope creep or scope gaps
 
-Ask about:
-- Unclear requirements or scope
-- Ambiguous technical decisions
-- Missing constraints or assumptions
-- Conflicting requirements
+---
 
-### 4. Add Critical Feedback as Comments
+## Output Mode: File (when --output is provided)
 
-Insert HTML comments directly into the specification document. Format each comment as:
+Write a structured review file using this exact format:
+
+```markdown
+# Specification Review: {spec-name}
+
+**Reviewer:** Codex
+**Date:** {YYYY-MM-DD}
+**Spec Path:** {original-path}
+
+## Summary
+- Total concerns: {N}
+- Critical: {N}
+- Major: {N}
+- Minor: {N}
+
+## Concerns
+
+### 1. [Section: {section-name}] {Brief title}
+**Severity:** Critical | Major | Minor
+**Type:** Missing requirement | Feasibility | Ambiguity | Integration | Security | Performance
+
+{Detailed concern description with specific references to the spec}
+
+**Suggestion:** {Optional recommendation}
+
+### 2. ...
+(continue for all concerns)
+
+## Questions for User
+- {Question that needs stakeholder input}
+- {Question about scope or priority}
+
+## Cross-Cutting Concerns
+{Any document-wide issues that don't fit a specific section}
+```
+
+**Severity Guidelines:**
+- **Critical**: Would cause production failures, security breaches, or data loss
+- **Major**: Significant gaps that would require rework if not addressed
+- **Minor**: Improvements that would enhance clarity or quality
+
+---
+
+## Output Mode: Inline Comments (default, no --output)
+
+Insert HTML comments directly into the specification document:
 
 ```html
 <!-- [Codex] Your critical feedback here. Be specific and actionable. -->
@@ -68,35 +121,24 @@ Insert HTML comments directly into the specification document. Format each comme
 - Add praise or validation (focus on critical feedback)
 - Rewrite sections (comment on what needs fixing)
 
-### 5. Respond to Other Reviewers
+### Respond to Other Reviewers
 
-If you see comments from other reviewers (Claude, Gemini, GPT, etc.), you may:
-- Add your own comment agreeing or disagreeing with their feedback
-- Provide additional context that supports or refutes their points
-- Offer alternative perspectives on their concerns
-
-Format responses to other reviewers:
+If you see comments from other reviewers (Claude, Gemini, GPT, etc.):
 
 ```html
 <!-- [Codex] RE: [OtherReviewer] - Your response to their comment -->
 ```
 
-### 6. Summary
-
-After adding all comments, provide a brief summary to the user:
-- Number of comments added
-- Major concerns identified
-- Key questions that need resolution
-- Recommended next steps
-
-## Comment Placement
+### Comment Placement
 
 Place comments:
 - **Inline** - immediately after the content they reference
 - **At section headers** - for section-level concerns
 - **At the end** - for document-wide or cross-cutting concerns
 
-## Example Comments
+---
+
+## Example Comments (Inline Mode)
 
 ```html
 <!-- [Codex] This success criteria is not measurable. Consider adding specific
@@ -111,27 +153,25 @@ existing codebase in src/services/ follows this same pattern for similar
 complexity features. -->
 ```
 
-## Critical Mindset
+---
 
-Your role is to find problems, not validate the specification. Assume the spec has issues and look for:
-- Gaps in requirements
-- Unrealistic assumptions
-- Technical debt creation
-- Integration challenges
-- Security or performance risks
-- Unclear success criteria
-- Missing error handling
-- Scope creep or scope gaps
+## Summary
 
-Be constructive but critical. The goal is to improve the specification before implementation begins.
+After completing your review, provide a brief summary:
+- Number of concerns identified
+- Major concerns identified
+- Key questions that need resolution
+- Recommended next steps
 
 ---
 
 ## ➡️ Next Command
 
-After all reviewers (Claude, Gemini, Codex, etc.) have completed their reviews, run in Claude Code:
+After all reviewers complete, run in Claude Code:
 ```
-/review:integrate <path to specification>
+/review:spec-integrate <path to specification>
 ```
-
-This command integrates all feedback into the specification, resolves open questions, and prepares the spec for implementation.
+or
+```
+/review:multi-integrate <path to specification>
+```

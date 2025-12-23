@@ -66,10 +66,12 @@ Task 1: Core Functionality Research
 - Locate relevant utilities and shared components
 - Document integration points with existing systems
 
-Task 2: Technical Research  
+Task 2: Technical Research
 - Analyze data modeling requirements
 - Review security patterns used in codebase
 - Identify testing approaches from existing tests
+- **Identify paired dependencies requiring version alignment** (client/server packages, protocol pairs)
+- **Flag infrastructure that may need smoke testing** before feature work
 
 Task 3: Production Readiness Research
 - Find performance patterns and optimization examples
@@ -289,6 +291,14 @@ The specification document uses this comprehensive structure:
 
 [Technical dependencies, external systems, and critical requirements]
 
+### Paired Dependencies (Version Alignment Required)
+
+[List any client/server packages, protocol pairs, or infrastructure dependencies that MUST have matching versions]
+
+| Package Pair | Required Alignment | Verification Notes |
+|--------------|-------------------|-------------------|
+| (e.g., @hocuspocus/provider ↔ @hocuspocus/server) | Same major version | Smoke test connectivity before feature work |
+
 ### Risk Analysis
 
 [Risk assessment, mitigation strategies, and contingency planning]
@@ -358,7 +368,7 @@ Each reviewer adds inline HTML comments with their identity (e.g., `<!-- [Claude
 
 After all reviews complete, integrate the feedback:
 ```bash
-/review:integrate thoughts/specs/spec-[idea-name].md
+/review:spec-integrate thoughts/specs/spec-[idea-name].md
 ```
 
 This resolves all comments, asks for user decisions on ambiguous items, and produces a refined specification.

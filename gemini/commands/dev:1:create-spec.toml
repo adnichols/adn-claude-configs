@@ -70,6 +70,8 @@ The research should comprehensively cover:
 - Testing approaches (unit, integration, e2e tests)
 - Error handling patterns and edge cases
 - Configuration and environment requirements
+- **Identify paired dependencies requiring version alignment** (client/server packages, protocol pairs)
+- **Flag infrastructure that may need smoke testing** before feature work
 
 ### Production Readiness Research
 
@@ -165,6 +167,14 @@ D) System administrators"
 
 [Technical dependencies, external systems, and critical requirements]
 
+### Paired Dependencies (Version Alignment Required)
+
+[List any client/server packages, protocol pairs, or infrastructure dependencies that MUST have matching versions]
+
+| Package Pair | Required Alignment | Verification Notes |
+|--------------|-------------------|-------------------|
+| (e.g., @hocuspocus/provider ↔ @hocuspocus/server) | Same major version | Smoke test connectivity before feature work |
+
 ### Risk Analysis
 
 [Risk assessment, mitigation strategies, and contingency planning]
@@ -205,7 +215,7 @@ Each reviewer adds inline HTML comments with their identity (e.g., `<!-- [Gemini
 
 After all reviews complete, integrate the feedback in Claude Code:
 ```bash
-/review:integrate thoughts/specs/spec-[idea-name].md
+/review:spec-integrate thoughts/specs/spec-[idea-name].md
 ```
 
 ### Generate Tasks

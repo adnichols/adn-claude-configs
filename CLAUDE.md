@@ -103,7 +103,9 @@ Important slash commands:
 ### Code Review Commands
 - `/cmd:local-review`: Isolated code review in separate worktree
 - `/review:spec`: Multi-model specification review with inline comments (works across Claude, Gemini, Codex)
-- `/review:integrate`: Integrate all reviewer comments into spec, resolving questions (Claude only)
+- `/review:tasks`: Multi-model task list review for accuracy against source spec (works across Claude, Gemini, Codex)
+- `/review:spec-integrate`: Integrate spec review comments into the specification (Claude only)
+- `/review:tasks-integrate`: Integrate task review comments by fixing inaccuracies (Claude only)
 
 ### Graduation Commands
 - `/cmd:graduate`: Synthesize completed artifacts to permanent docs with codebase verification
