@@ -195,6 +195,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
 2. **Report** - Explain what you discovered and how you found it
 3. **Assess Impact** - Identify which phases/tasks are affected
 4. **Ask** - Present options and ask me how to proceed before continuing
+5. **Log the Deviation** - After user decision, append to the Deviations Log (see below)
 
 Examples of discoveries requiring this protocol:
 - A dependency doesn't work as documented
@@ -206,6 +207,58 @@ Examples of discoveries requiring this protocol:
 - **Paired dependencies are incompatible** (client/server version conflict)
 
 **Do not** silently adjust the plan or continue with an approach you know is suboptimal. The plan is a guide, not a contract—but changes require explicit approval.
+
+## Deviations Log Protocol
+
+**MANDATORY:** When a discovery leads to a decision that differs from the original spec/plan, you MUST log it in the task file for downstream propagation to future phases.
+
+### When to Log
+
+Log a deviation when:
+- The spec was ambiguous and you chose a specific implementation path
+- A planned approach was changed due to discovered constraints
+- Scope was adjusted (feature deferred, modified, or dropped)
+- An API contract or pattern was established that future phases depend on
+- A technical constraint was discovered that affects future work
+
+### How to Log
+
+After user approval for a deviation, append to the task file's `## Deviations Log` section (create if it doesn't exist):
+
+```markdown
+## Deviations Log
+
+### D[N]: [Brief Decision Title] - [YYYY-MM-DD]
+- **Category:** [Uncertainty Resolved | Scope Adjusted | Pattern Discovered | Constraint Identified | API Contract Defined]
+- **Discovery:** [What was found that differed from spec/plan]
+- **Spec/Plan Said:** [Quote or summary of original requirement]
+- **Decision Made:** [What was actually implemented]
+- **Rationale:** [Why this choice was made]
+- **User Approved:** [Yes | No - autonomous decision]
+- **Future Phases Affected:** [Phase 2, Phase 3, etc. | None | Unknown]
+```
+
+### Example Entry
+
+```markdown
+### D1: Use Partial Unique Index Instead of Trigger - 2025-12-27
+- **Category:** Uncertainty Resolved
+- **Discovery:** PostgreSQL partial unique indexes are more performant than triggers for conditional uniqueness
+- **Spec/Plan Said:** "Ensure unique workspace slugs per user" (implementation unspecified)
+- **Decision Made:** Used `CREATE UNIQUE INDEX ... WHERE deleted_at IS NULL` instead of trigger-based approach
+- **Rationale:** Partial indexes are database-native, faster, and require less maintenance
+- **User Approved:** Yes
+- **Future Phases Affected:** Phase 3 (migration must preserve index), Phase 5 (cleanup can remove old trigger code)
+```
+
+### Logging Autonomous Decisions
+
+For high-confidence decisions made without user input (e.g., obvious technical choices), still log them but mark as:
+```
+- **User Approved:** No - autonomous decision (high confidence)
+```
+
+This ensures `dev:5:phase-review` can still propagate these decisions to future phases.
 
 ## AI Instructions
 

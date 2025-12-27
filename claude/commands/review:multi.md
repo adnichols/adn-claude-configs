@@ -69,6 +69,17 @@ After all reviewers complete, provide a summary:
 | Codex    | {OK/Failed} | thoughts/reviews/{spec-name}-codex.md |
 | Gemini   | {OK/Failed} | thoughts/reviews/{spec-name}-gemini.md |
 
+### Summary of Findings
+Read each review file and extract the concern counts:
+
+| Reviewer | Critical | Major | Minor | Total |
+|----------|----------|-------|-------|-------|
+| Claude   | N | N | N | N |
+| Codex    | N | N | N | N |
+| Gemini   | N | N | N | N |
+
+Also list key consensus issues (concerns flagged by multiple reviewers).
+
 ### Next Steps
 Run `/review:multi-integrate {spec-path}` to:
 - Synthesize all feedback
