@@ -282,7 +282,22 @@ All agents reference CLAUDE.md for:
 MCP servers are pre-configured in `claude/mcp-servers.json` and `codex/mcp-servers.toml`:
 
 - **Playwright**: Browser automation and testing
-- Add more servers as needed for your project
+- **Context7**: Up-to-date library documentation fetching (used by `/doc:fetch` and spec creation)
+
+### Context7 MCP Server
+
+Context7 provides real-time, version-specific documentation for libraries directly into Claude's context. This avoids hallucinated APIs and outdated code patterns.
+
+**Tools provided:**
+- `resolve-library-id`: Resolves a library name to a Context7-compatible ID
+- `get-library-docs`: Fetches documentation for a specific library and topic
+
+**Usage in workflows:**
+- Automatically used by `/doc:fetch` command
+- Integrated into `/dev:1:create-spec` documentation discovery phase
+- Can be invoked directly with "use context7" in prompts
+
+**Requirements:** Node.js 18+
 
 After installation, merge MCP server configurations:
 - **Claude Desktop**: Add to `~/Library/Application Support/Claude/claude_desktop_config.json`

@@ -38,13 +38,13 @@ Prompt: "Review the specification at {spec-path} and write your structured revie
 **Codex (shell wrapper):**
 ```
 Use Bash tool with run_in_background=true
-Command: bash claude/scripts/codex-review.sh "{spec-path}" "thoughts/reviews/{spec-name}-codex.md"
+Command: bash .claude/scripts/codex-review.sh "{spec-path}" "thoughts/reviews/{spec-name}-codex.md"
 ```
 
 **Gemini (shell wrapper):**
 ```
 Use Bash tool with run_in_background=true
-Command: bash claude/scripts/gemini-review.sh "{spec-path}" "thoughts/reviews/{spec-name}-gemini.md"
+Command: bash .claude/scripts/gemini-review.sh "{spec-path}" "thoughts/reviews/{spec-name}-gemini.md"
 ```
 
 ### 4. Wait for Completion

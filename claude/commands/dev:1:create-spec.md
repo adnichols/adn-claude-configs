@@ -38,19 +38,20 @@ The AI will need to:
 ## Process
 
 1. **Initial Research:** Conduct preliminary research to understand the idea's scope and characteristics
-2. **Requirements Analysis:** Based on research findings:
+2. **Documentation Discovery:** Identify and optionally fetch documentation for key technologies (see Documentation Discovery section below)
+3. **Requirements Analysis:** Based on research findings:
    - Analyze impact scope and integration needs
    - Identify functional requirements
    - Assess technical constraints and decisions
    - Evaluate integration complexity
-3. **Deep Research Phase:** Conduct comprehensive research covering:
+4. **Deep Research Phase:** Conduct comprehensive research covering:
    - Core functionality and integration patterns
    - Testing approaches and security considerations
    - Performance considerations and reliability features
    - Implementation planning and dependencies
-4. **Generate Specification:** Create complete document with all necessary sections
-5. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
-6. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
+5. **Generate Specification:** Create complete document with all necessary sections
+6. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
+7. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
 ## Parallel Research Strategy
 
@@ -88,6 +89,130 @@ The parent agent (you) handles:
 - User communication and clarifications
 
 Wait for ALL subagents to complete before synthesizing findings into the specification.
+
+## Documentation Discovery
+
+After Initial Research identifies the technologies involved, proactively evaluate documentation needs before proceeding with deep research.
+
+### Step 1: Identify Key Technologies
+
+From Initial Research findings, extract:
+- **Frameworks**: React, Vue, Next.js, Express, FastAPI, etc.
+- **Libraries**: Lodash, Axios, Zod, Prisma, etc.
+- **Languages/Runtimes**: TypeScript, Python, Rust, Node.js, etc.
+- **Infrastructure**: PostgreSQL, Redis, Docker, Kubernetes, etc.
+
+Focus on technologies that are:
+- Core to the feature implementation
+- Not already well-understood from codebase patterns
+- Likely to require API reference during implementation
+
+### Step 2: Check Existing Documentation
+
+Check the `docs/` directory for existing documentation:
+
+```bash
+# Check what documentation is already available
+ls -la docs/
+```
+
+Also check CLAUDE.md's "Available Documentation" section for reference.
+
+### Step 3: Assess Documentation Needs
+
+For each identified technology, determine:
+1. **Already Available**: Documentation exists in `docs/` - no action needed
+2. **Codebase Sufficient**: Existing code provides enough patterns - no action needed
+3. **Should Fetch**: Would benefit from official documentation - offer to fetch
+4. **Manual Required**: Documentation source not supported - guide user
+
+### Step 4: Request User Permission
+
+Use **AskUserQuestion** to present documentation options:
+
+```
+Question: "Should I fetch documentation for the following libraries to improve implementation guidance?"
+Header: "Fetch docs"
+multiSelect: true
+Options:
+- [Library 1] - Available via Context7 MCP
+- [Library 2] - Available via Context7 MCP
+- [Library 3] - Requires manual URL (not in Context7)
+- Skip documentation fetching for now
+```
+
+**Checking Context7 Availability:**
+
+Before presenting options, verify which libraries are available in Context7:
+```
+Use mcp__context7__resolve-library-id for each library
+- If successful: Library is available via Context7
+- If fails: Library requires manual URL or is not available
+```
+
+**Important Notes:**
+- Always make documentation fetching optional
+- The user may prefer to proceed without it
+- Some documentation may require manual fetching
+
+### Step 5: Fetch or Guide
+
+**If user approves fetching:**
+
+For libraries available in Context7, fetch directly using MCP tools:
+
+```
+1. mcp__context7__resolve-library-id(library_name)
+2. mcp__context7__get-library-docs(resolved_id, topic="getting started")
+3. Save to docs/libraries/[library-name]/
+4. Update CLAUDE.md references
+```
+
+Alternatively, use the `/doc:fetch` command which handles this automatically:
+
+```bash
+/doc:fetch [library-name]
+# or with version/topic
+/doc:fetch [library-name] --version [version] --topic [topic]
+```
+
+Example:
+```bash
+/doc:fetch react --topic hooks
+/doc:fetch prisma --version 5
+/doc:fetch zod
+```
+
+**If documentation source is not available in Context7:**
+
+Guide the user to fetch documentation manually:
+
+```
+The documentation for [library] is not available in Context7.
+
+To add it manually:
+1. Find the official documentation URL
+2. Run: /doc:fetch [library] --url [documentation-url]
+
+Or provide the URL and I can attempt to fetch it.
+```
+
+**Note:** Even without local documentation, you can still use Context7 directly during implementation by adding "use context7" to prompts.
+
+### Step 6: Continue with Research
+
+After documentation is fetched (or skipped), proceed to Requirements Analysis with enhanced context from:
+- Newly fetched documentation in `docs/`
+- Updated CLAUDE.md references
+- Better API understanding for implementation decisions
+
+### Documentation Discovery Best Practices
+
+1. **Be Selective**: Only suggest fetching documentation that will meaningfully improve the specification
+2. **Respect User Time**: Don't block on documentation - make it optional
+3. **Batch Requests**: If multiple libraries need fetching, present them together
+4. **Version Awareness**: Fetch documentation for the versions used in the project
+5. **Fallback Gracefully**: If fetching fails, continue with codebase research
 
 ## Research Areas
 
