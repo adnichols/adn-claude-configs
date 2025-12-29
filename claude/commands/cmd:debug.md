@@ -81,6 +81,52 @@ Wait for all agents to complete, then compile:
 - Related code paths
 - Potential fixes
 
+### 4.5. User Engagement for Hypothesis Selection
+
+When multiple viable hypotheses exist, use **AskUserQuestion** to engage the user before deep-diving into a fix.
+
+**Trade-off Questions (when hypotheses have different implications):**
+```
+Question: "I've identified [N] possible root causes. Which should I investigate first?"
+Header: "Root cause"
+Options:
+- Hypothesis A: [description] - likely if [condition]
+- Hypothesis B: [description] - likely if [condition]
+- Investigate both in parallel
+- Let me share more evidence first
+```
+
+**Validation Questions (confirm understanding before proceeding):**
+```
+Question: "Based on evidence, I believe the issue is [X]. Does this match what you're seeing?"
+Header: "Validate"
+Options:
+- Yes, that matches the symptoms
+- Partially - but also seeing [Y]
+- No, the issue is different than that
+```
+
+**Scope Questions (clarify investigation depth):**
+```
+Question: "Should I focus on [quick fix] or [thorough investigation]?"
+Header: "Approach"
+Options:
+- Quick fix - get it working, investigate later
+- Thorough - understand root cause fully first
+- Both - quick fix now, then investigate
+```
+
+**When to Engage:**
+- Multiple hypotheses have similar confidence levels
+- Evidence is ambiguous or incomplete
+- The fix approach depends on user priorities (speed vs thoroughness)
+- Investigation would require significant time/resources
+
+**When to Proceed Without Asking:**
+- Single clear hypothesis with strong evidence (high confidence)
+- User already indicated preference for investigation depth
+- Issue is straightforward with obvious fix
+
 ### 5. Generate Debug Report
 
 Create document at: `thoughts/debug/YYYY-MM-DD-description.md`

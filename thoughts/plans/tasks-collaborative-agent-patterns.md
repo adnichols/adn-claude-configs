@@ -49,20 +49,20 @@
 
 ### Phase 2: MEDIUM Priority Commands
 
-- [ ] 3.0 Update `cmd:debug.md`
-  - [ ] 3.1 Add user engagement section after synthesizing findings
-  - [ ] 3.2 Add trade-off questions when multiple root cause hypotheses exist
-  - [ ] 3.3 Add proactive hypothesis engagement before deep-diving
+- [x] 3.0 Update `cmd:debug.md`
+  - [x] 3.1 Add user engagement section after synthesizing findings
+  - [x] 3.2 Add trade-off questions when multiple root cause hypotheses exist
+  - [x] 3.3 Add proactive hypothesis engagement before deep-diving
 
-- [ ] 4.0 Update `cmd:graduate.md`
-  - [ ] 4.1 Enhance divergence resolution with collaborative options
-  - [ ] 4.2 Add challenge questions when spec-vs-implementation conflicts are significant
-  - [ ] 4.3 Expand AskUserQuestion usage for low-confidence decisions
+- [x] 4.0 Update `cmd:graduate.md`
+  - [x] 4.1 Enhance divergence resolution with collaborative options
+  - [x] 4.2 Add challenge questions when spec-vs-implementation conflicts are significant
+  - [x] 4.3 Expand AskUserQuestion usage for low-confidence decisions
 
-- [ ] 5.0 Update `dev:3:process-tasks.md`
-  - [ ] 5.1 Strengthen "Handling Discoveries" section with proactive flagging guidance
-  - [ ] 5.2 Add examples of when to surface concerns vs proceed autonomously
-  - [ ] 5.3 Add validation/trade-off question patterns for discovery handling
+- [x] 5.0 Update `dev:3:process-tasks.md`
+  - [x] 5.1 Strengthen "Handling Discoveries" section with proactive flagging guidance
+  - [x] 5.2 Add examples of when to surface concerns vs proceed autonomously
+  - [x] 5.3 Add validation/trade-off question patterns for discovery handling
 
 ### Phase 3: LOW Priority Commands
 
