@@ -110,6 +110,43 @@ Options:
 - Users always have an "Other" option for custom responses
 - Ask follow-up questions if initial answers need clarification
 
+## Collaborative Refinement
+
+While user requirements are the primary source, the agent should proactively flag concerns during requirement gathering.
+
+### When to Challenge Requirements
+
+Challenge (with AskUserQuestion) when:
+- **Stated requirements conflict with each other**
+- **Requirements would cause technical issues** based on domain knowledge
+- **Scope seems mismatched with stated problem** (too broad or too narrow)
+- **Missing considerations** that are typically critical (security, performance, edge cases)
+- **Requirements seem to describe symptoms rather than root problems**
+
+### How to Challenge
+
+1. Document the concern clearly
+2. Explain potential impact
+3. Present alternatives with trade-offs
+4. Use AskUserQuestion to get user's decision
+5. Proceed with user's chosen direction
+
+Example challenge question:
+```
+Question: "You mentioned [X] and [Y], but these may conflict. Which should take priority?"
+Header: "Conflict"
+Options:
+- Prioritize [X] (impact: [describe])
+- Prioritize [Y] (impact: [describe])
+- Let me explain both in more detail
+```
+
+### Key Principle
+
+**Fidelity to user intent ≠ blindly transcribing potentially problematic requirements.**
+
+The goal is to capture what the user truly needs, which may require dialogue to uncover.
+
 ## PRD Template Structure
 
 ### Unified Fidelity-Preserving Template
