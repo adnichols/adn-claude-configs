@@ -225,6 +225,90 @@ When all steps in a phase are marked `[x]`:
    - Record deviations from original plan
    - Note any functionality concerns discovered
 
+## Handling Issues During Execution
+
+When discoveries arise during simplification that affect the plan's validity or safety:
+
+### Stop/Report/Ask Protocol
+
+1. **Stop** - Pause execution immediately when you encounter something unexpected
+2. **Report** - Explain what you discovered and how it affects the plan
+3. **Ask** - Present options and get user guidance before continuing
+
+### Examples Requiring This Protocol
+
+- Simplification would break a dependency you didn't know existed
+- The "unused" code turns out to have hidden side effects
+- Test coverage is insufficient to safely validate the change
+- Performance is worse after simplification (regression)
+- The planned approach doesn't work as expected
+- New complexity discovered that makes the simplification risky
+
+### User Engagement for Discoveries
+
+Use **AskUserQuestion** when discoveries warrant user input.
+
+**Risk Escalation Question (when danger is higher than expected):**
+```
+Question: "I discovered [risk] during simplification. This is more complex than the plan anticipated. How should we proceed?"
+Header: "Risk"
+Options:
+- Continue with caution (I accept the risk)
+- Pause and investigate further
+- Abort this step and move to next
+- Stop the simplification entirely
+```
+
+**Scope Question (when simplification reveals more work):**
+```
+Question: "Simplifying [X] would require also changing [Y, Z]. Should I expand the scope?"
+Header: "Scope"
+Options:
+- Yes, include related changes
+- No, keep original scope only
+- Defer expanded changes to follow-up task
+```
+
+**Alternative Approach Question (when a better way is found):**
+```
+Question: "I found a better approach to simplify this: [description]. Should I deviate from the plan?"
+Header: "Approach"
+Options:
+- Yes, use the better approach
+- No, stick to the original plan
+- Let me evaluate both options first
+```
+
+**Uncertainty Question (when you're unsure about safety):**
+```
+Question: "I'm uncertain whether [change] preserves functionality. How should I validate this?"
+Header: "Validate"
+Options:
+- Proceed with existing tests (sufficient)
+- Add targeted tests before proceeding
+- Manual verification needed first
+- Skip this change (too risky)
+```
+
+### When to Engage vs Proceed
+
+**Always Engage:**
+- Any risk of functionality loss
+- Scope would expand beyond original plan
+- Test failures or regressions detected
+- Significant deviation from planned approach needed
+- Uncertainty about safety implications
+
+**Proceed Autonomously (with logging):**
+- Minor adjustments to implementation approach
+- Obvious improvements within safe boundaries
+- Following established patterns in codebase
+- Changes clearly within existing test coverage
+
+### Key Principle
+
+**Safety over speed.** When in doubt, stop and ask. The cost of a brief pause is far lower than breaking functionality or introducing subtle bugs.
+
 ## Error Handling and Recovery
 
 ### Test Failure Response

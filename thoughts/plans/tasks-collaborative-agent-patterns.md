@@ -66,15 +66,15 @@
 
 ### Phase 3: LOW Priority Commands
 
-- [ ] 6.0 Update `dev:4:validate.md`
-  - [ ] 6.1 Add user engagement section for concerning validation patterns
-  - [ ] 6.2 Add AskUserQuestion when validation reveals unexpected issues
-  - [ ] 6.3 Add trade-off questions for ambiguous validation results
+- [x] 6.0 Update `dev:4:validate.md`
+  - [x] 6.1 Add user engagement section for concerning validation patterns
+  - [x] 6.2 Add AskUserQuestion when validation reveals unexpected issues
+  - [x] 6.3 Add trade-off questions for ambiguous validation results
 
-- [ ] 7.0 Update `simplify:2:process-plan.md`
-  - [ ] 7.1 Add "Handling Issues During Execution" protocol
-  - [ ] 7.2 Add stop/report/ask pattern for discoveries during simplification
-  - [ ] 7.3 Add user engagement for unexpected complexity or risks found
+- [x] 7.0 Update `simplify:2:process-plan.md`
+  - [x] 7.1 Add "Handling Issues During Execution" protocol
+  - [x] 7.2 Add stop/report/ask pattern for discoveries during simplification
+  - [x] 7.3 Add user engagement for unexpected complexity or risks found
 
 ## Detailed Implementation Guidance
 
@@ -222,14 +222,14 @@ Apply similar patterns scaled to each command's purpose:
 
 ## Validation Checklist
 
-- [ ] Each command update preserves existing functionality
-- [ ] "Think harder" directive preserved where it exists
-- [ ] AskUserQuestion patterns are natural, not forced
-- [ ] User engagement adds value (not bureaucratic gates)
-- [ ] Commands work well together as a workflow
+- [x] Each command update preserves existing functionality
+- [x] "Think harder" directive preserved where it exists
+- [x] AskUserQuestion patterns are natural, not forced
+- [x] User engagement adds value (not bureaucratic gates)
+- [x] Commands work well together as a workflow
 
 ## Completion Criteria
 
-- [ ] All 7 commands updated with collaborative patterns
-- [ ] Patterns are consistent across commands (same philosophy)
-- [ ] Changes tested by reviewing the updated commands
+- [x] All 7 commands updated with collaborative patterns
+- [x] Patterns are consistent across commands (same philosophy)
+- [x] Changes tested by reviewing the updated commands

@@ -143,9 +143,67 @@ task_file: [Path to validated task file]
 [Next steps]
 ```
 
-### 5. Present Report
+### 5. User Engagement for Concerning Patterns
+
+When validation reveals issues that require user input, use **AskUserQuestion** before finalizing the report.
+
+**Failure Resolution Question (when validation fails):**
+```
+Question: "Validation found [N] issues. How should we proceed?"
+Header: "Issues"
+Options:
+- Fix issues before finalizing (return to implementation)
+- Mark as known issues and proceed
+- Let me explain the issues in detail first
+```
+
+**Ambiguous Results Question (when evidence is unclear):**
+```
+Question: "I found [behavior] but I'm uncertain if it meets the requirement. Can you clarify?"
+Header: "Clarify"
+Options:
+- Yes, this meets the requirement
+- No, this needs to be fixed
+- Show me more details
+```
+
+**Scope Deviation Question (when implementation differs from plan):**
+```
+Question: "The implementation includes [unexpected change]. Should this be documented as intentional?"
+Header: "Deviation"
+Options:
+- Yes, it's an intentional improvement
+- No, it should be reverted
+- Mark for follow-up review
+```
+
+**Missing Evidence Question (when deliverables can't be verified):**
+```
+Question: "I can't find evidence for [task]. Help me locate it or confirm status?"
+Header: "Missing"
+Options:
+- Point me to the right location
+- The task was completed differently
+- The task wasn't completed (reopen it)
+```
+
+### When to Engage During Validation
+
+**Always Engage:**
+- Validation status is FAIL or PARTIAL
+- Major deviations from spec found
+- Evidence is ambiguous or missing
+- User decisions are needed to classify findings
+
+**Present Report Without Blocking:**
+- All validations pass cleanly
+- Minor deviations documented in Deviations Log
+- Clear evidence exists for all completed tasks
+
+### 6. Present Report
 
 Present findings to user:
 - Overall pass/fail status
 - Key deviations found
 - Manual tests needed
+- Any engagement questions from step 5
