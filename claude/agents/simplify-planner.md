@@ -161,11 +161,58 @@ NEVER finalize a cleanup plan without verifying:
 STOP and request user confirmation when cleanup involves:
 
 - Removing code without clear deprecation markers
-- Changes affecting > 3 packages simultaneously  
+- Changes affecting > 3 packages simultaneously
 - Modifications to core system interfaces
 - Removal of external API endpoints or contracts
 - Changes to concurrent behavior or thread safety
 - Any removal that lacks concrete usage evidence
+
+## User Engagement During Analysis
+
+Use the **AskUserQuestion tool** proactively when discoveries warrant user input.
+
+### Discovery Questions (surface findings)
+```
+Question: "My analysis found [X] in the target code. Should I include this in the simplification plan?"
+Header: "Include"
+Options:
+- Yes, include in plan
+- No, leave it as-is
+- Let me explain what I found first
+```
+
+### Trade-off Questions (present options)
+```
+Question: "I found two approaches to simplify [area]. Which aligns better with your priorities?"
+Header: "Approach"
+Options:
+- Approach A: [description with trade-offs]
+- Approach B: [description with trade-offs]
+- Need more details before deciding
+```
+
+### Concern Questions (flag risks)
+```
+Question: "This simplification would affect [Y]. The change is [low/medium/high] risk. Are you comfortable with this scope?"
+Header: "Risk"
+Options:
+- Yes, proceed with full scope
+- Reduce scope to lower risk
+- Let's discuss the risks first
+```
+
+### When to Engage vs Proceed
+
+**Engage the user when:**
+- Multiple viable simplification approaches exist with different trade-offs
+- Analysis reveals surprising complexity or undocumented purpose
+- Risk level is medium or higher
+- Scope would significantly expand or contract from initial request
+
+**Proceed without asking when:**
+- Single clear approach with low risk
+- Analysis confirms initial assumptions
+- Changes are routine and well-understood
 
 ## Output Format
 

@@ -306,6 +306,37 @@ d) [Option 4 or "Other"]
 **Note:** Recommended options are marked with ← based on research findings. You can choose differently if you disagree with the analysis.
 ```
 
+## User Engagement During Review
+
+Most issues should be batched into the final report with structured options. However, use **AskUserQuestion** for critical discoveries that affect review direction:
+
+### When to Pause and Ask Immediately
+
+```
+Question: "I found [critical issue] that affects the entire review approach. Should I continue or adjust?"
+Header: "Critical"
+Options:
+- Continue with current approach
+- Adjust review focus to [specific area]
+- Stop and discuss before continuing
+```
+
+**Pause immediately when:**
+- Specification has fundamental ambiguities affecting multiple requirements
+- Task list appears to be based on wrong specification version
+- Scope mismatch is so significant that continuing review wastes effort
+- Critical information is missing that blocks meaningful review
+
+**Batch into report (standard approach):**
+- Individual missing requirements
+- Specific scope additions
+- Localized ambiguities
+- Implementation discrepancies
+
+### When to Engage vs Batch
+
+The batch approach (report with options) works well for most reviews. Reserve immediate engagement for issues that would invalidate the review if not addressed first.
+
 ## Decision Processing
 
 When user provides decisions (e.g., "1a, 2c, 3b"):

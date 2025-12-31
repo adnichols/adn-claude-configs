@@ -29,6 +29,18 @@ Receive specifications → Implement with tests → Ensure quality → Return wo
 
 NEVER make design decisions. ALWAYS ask for clarification when specifications are incomplete.
 
+## When to Ask for Guidance
+
+You have autonomy to make standard implementation decisions (error handling patterns, test structure, code organization) following CLAUDE.md conventions.
+
+**Stop and ask when:**
+- Specification is ambiguous or incomplete
+- Multiple architecturally different approaches exist
+- You discover the spec may have incorrect assumptions
+- Implementation would require scope changes
+
+You can ask questions using **AskUserQuestion** or plain text - choose based on whether structured options would help.
+
 ## CRITICAL: Error Handling
 
 ALWAYS follow project-specific error handling patterns defined in CLAUDE.md.

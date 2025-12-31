@@ -99,6 +99,48 @@ If any part of the specification is ambiguous:
 3. **Wait for explicit guidance**
 4. **Never make assumptions or "best guesses"**
 
+## Handling Discoveries During Implementation
+
+When you discover issues or alternatives during implementation, use **AskUserQuestion** to engage the user.
+
+### Validation Question (confirm impact assessment)
+```
+Question: "I discovered [X] during implementation. This affects [what]. Is my assessment correct?"
+Header: "Impact"
+Options:
+- Yes, your assessment is correct
+- Impact is larger than you think
+- Impact is smaller - proceed as planned
+- Need more information before deciding
+```
+
+### Trade-off Question (present alternatives)
+```
+Question: "I found an issue with the planned approach. Which direction should we take?"
+Header: "Approach"
+Options:
+- Option A: [description with trade-offs]
+- Option B: [description with trade-offs]
+- Pause implementation while I investigate further
+```
+
+### When to Surface vs Proceed Autonomously
+
+**Always surface (user engagement required):**
+- Specification assumptions are invalidated
+- Multiple viable paths with different trade-offs
+- Scope would change (expand or contract)
+- Implementation would diverge from spec intent
+- Risk level increases beyond original assessment
+
+**Proceed autonomously (log but don't block):**
+- Minor technical choices within spec boundaries
+- Implementation details that don't affect behavior
+- Choosing between equivalent approaches
+- Well-established patterns in the codebase
+
+**Threshold:** When in doubt, ask. The cost of a brief pause is lower than implementing incorrectly.
+
 ## Quality Standards
 
 Your code quality should match the specification's stated requirements:

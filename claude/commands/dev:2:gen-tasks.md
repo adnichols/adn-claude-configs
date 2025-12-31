@@ -1,23 +1,33 @@
 ---
-description: Convert detailed specification directly to executable task list with full fidelity preservation
+description: Convert specification to executable task list with collaborative fidelity
 argument-hint: [Specification File Path]
 ---
 
-# Rule: Direct Specification to Task Conversion with Full Fidelity
+# Rule: Specification to Task Conversion with Collaborative Fidelity
 
 ## Goal
 
-To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while preserving 100% fidelity to the original specification. This command bypasses complexity systems and PRD conversion to maintain exact scope boundaries and requirements as specified. Think harder.
+To guide an AI assistant in converting a detailed specification document (created through collaborative planning) directly into executable task lists while faithfully implementing the agreed-upon solution. The specification represents the outcome of collaborative dialogue and should be implemented as agreed, with proactive user engagement when issues arise. Think harder.
 
-## Core Principle: Specification Fidelity
+## Core Principle: Faithful Implementation
 
-**The specification is the absolute authority.** This command:
+**The specification represents the agreed-upon solution** from collaborative planning. This command:
 
-- Adds ZERO requirements beyond the specification
-- Makes NO scope expansions or "improvements"
-- Preserves ALL original decisions and constraints
-- Creates tasks that implement EXACTLY what's written
-- Uses fidelity-preserving agents that cannot modify scope
+- Implements what was agreed upon in the specification
+- Avoids unilateral scope additions or modifications
+- Preserves the decisions and constraints established through collaboration
+- Creates tasks that implement the specified solution
+- Engages the user proactively when issues, gaps, or better alternatives are discovered
+
+## Collaborative Context
+
+The specification arriving at this command was created through `/dev:1:create-spec`, which involves:
+- Research and analysis of the user's idea
+- Proactive course corrections when issues were discovered
+- User engagement and feedback throughout the process
+- Potential deviation from the original request based on findings
+
+**This means:** The spec already represents refined, agreed-upon requirements—not a rigid contract. Your role is to implement this solution faithfully while continuing the collaborative spirit. If you discover issues during task generation, engage the user rather than making assumptions.
 
 ## Input
 
@@ -49,11 +59,11 @@ The user will provide:
 
 3. **Create and Save Task List:** Generate and save tasks that implement:
 
-   - ONLY what's explicitly stated in the specification
-   - Testing ONLY as specified (not more, not less)
-   - Security ONLY as specified (not more, not less)
-   - Performance measures ONLY as specified
-   - Documentation ONLY as specified
+   - What's specified in the document (engage user if gaps are found)
+   - Testing as specified (propose additions only if critical gaps exist)
+   - Security as specified (flag concerns but don't add unilaterally)
+   - Performance measures as specified
+   - Documentation as specified
    - Save tasks to `thoughts/plans/tasks-fidelity-[spec-name].md`
    - Inform user of draft location for review
 
@@ -128,12 +138,12 @@ Example:
 The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 
 ```markdown
-# [Specification Title] - Fidelity Implementation Tasks
+# [Specification Title] - Implementation Tasks
 
-## 🎯 Implementation Authority
+## 🎯 Implementation Context
 
 **Source Specification:** [path to spec file]
-**Implementation Scope:** Exactly as specified, no additions or modifications
+**Implementation Scope:** As agreed in collaborative specification
 
 ### Specification Summary
 
@@ -141,11 +151,11 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 
 ### Implementation Boundaries
 
-**Included:** [What specification explicitly includes]
-**Excluded:** [What specification explicitly excludes]  
-**Testing Level:** [As specified in original document]
-**Security Level:** [As specified in original document]
-**Documentation Level:** [As specified in original document]
+**Included:** [What specification includes]
+**Excluded:** [What specification excludes]
+**Testing Level:** [As specified]
+**Security Level:** [As specified]
+**Documentation Level:** [As specified]
 
 ## 🗂️ Implementation Files
 
@@ -161,15 +171,15 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 
 ### Development Notes
 
-- Follow specification requirements exactly as written
-- Do not add testing beyond what's specified
-- Do not add security measures beyond what's specified
-- Do not expand scope or "improve" requirements without user approval
-- Question any ambiguity rather than assuming
+- Implement the specification as the agreed-upon solution
+- Avoid unilateral additions to testing, security, or scope
+- Engage the user when gaps, issues, or better alternatives are discovered
+- Question ambiguity rather than assuming
+- The goal is faithful implementation with collaborative refinement when needed
 
 ### Approval & Clarification Protocol
 
-**When implementing agents encounter any of the following, they MUST stop and ask for user approval:**
+**When implementing agents encounter any of the following, they should engage the user for guidance:**
 
 1. **Scope Adjustments** - Any addition, removal, or modification to specified requirements
 2. **Ambiguity** - Specification is unclear about implementation details
@@ -252,30 +262,31 @@ The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
 
 ## 🚨 Implementation Requirements
 
-### Fidelity Requirements (MANDATORY)
+### Implementation Guidelines
 
-- Implement ONLY what's explicitly specified
-- Do not add features, tests, or security beyond specification
+- Implement the agreed-upon solution from the specification
+- Avoid unilateral additions; engage user if gaps are discovered
 - Question ambiguities rather than making assumptions
-- Preserve all specification constraints and limitations
+- Preserve specification constraints and limitations
+- Continue the collaborative spirit from spec creation
 
 ### Success Criteria
 
-[Extract success criteria exactly from specification]
+[Extract success criteria from specification]
 
 ### Testing Requirements
 
-[Extract testing requirements exactly as specified - do not add more]
+[Extract testing requirements as specified - flag concerns if gaps exist]
 
 ### Security Requirements
 
-[Extract security requirements exactly as specified - do not add more]
+[Extract security requirements as specified - flag concerns if gaps exist]
 
 ## ✅ Validation Checklist
 
-- [ ] Implementation matches specification exactly
-- [ ] No scope additions or "improvements" made
-- [ ] All specification constraints preserved
+- [ ] Implementation reflects the agreed-upon solution
+- [ ] User engaged on any discovered issues or gaps
+- [ ] Specification constraints and intent preserved
 - [ ] Success criteria from specification met
 - [ ] No testing beyond what specification requires
 - [ ] No security measures beyond specification requirements
@@ -306,10 +317,10 @@ Examples requiring this protocol:
 
 ## Key Principles
 
-1. **Absolute Fidelity:** The specification is the complete and sole authority
-2. **Zero Additions:** No requirements, tests, or features beyond specification
-3. **Preserve Constraints:** Maintain all limitations and boundaries from specification
-4. **Context Preservation:** Include necessary specification context in task file
+1. **Collaborative Implementation:** Implement the agreed solution faithfully, engaging the user when issues arise
+2. **Specification Respect:** The spec represents shared understanding from dialogue, not sacred text
+3. **Proactive Communication:** Surface issues early rather than waiting until blocked
+4. **Preserve Intent:** Maintain the spirit of decisions; adapt details collaboratively when needed
 5. **Notes → Tasks:** Advisory notes ("ensure X", "verify Y") become explicit verification tasks
 6. **Infrastructure First:** Paired dependencies get Phase 0 verification before feature work
 
@@ -317,21 +328,22 @@ Examples requiring this protocol:
 
 A well-converted task list should:
 
-- **100% Specification Match:** Every task maps directly to specification requirements
-- **Zero Scope Creep:** No additions, improvements, or expansions beyond spec
+- **Faithful Implementation:** Tasks implement the agreed-upon solution from collaborative planning
+- **User Engagement:** Issues, gaps, or concerns surfaced proactively during task generation
 - **Complete Context:** Implementer has all necessary information from specification
 - **Clear Boundaries:** Explicit documentation of what's included/excluded
 - **Validation Criteria:** Clear success measures extracted from specification
+- **Collaborative Spirit:** Continues the dialogue-based approach from spec creation
 
 ## Target Audience
 
 This command serves teams that have:
 
 - Detailed specifications from collaborative planning
-- Need exact scope preservation
-- Want direct specification-to-implementation workflow
-- Require fidelity guarantees throughout implementation
-- Must avoid scope creep or complexity-based additions
+- Want faithful implementation of agreed solutions
+- Value proactive communication over rigid compliance
+- Need clear task structure with appropriate context
+- Prefer engagement over assumptions when issues arise
 
 ---
 
