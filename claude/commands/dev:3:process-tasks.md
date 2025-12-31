@@ -208,6 +208,70 @@ Examples of discoveries requiring this protocol:
 
 **Do not** silently adjust the plan or continue with an approach you know is suboptimal. The plan is a guide, not a contract—but changes require explicit approval.
 
+### Proactive User Engagement for Discoveries
+
+Use **AskUserQuestion** to engage the user when discoveries warrant input.
+
+**Validation Question (confirm impact assessment):**
+```
+Question: "I discovered [X] during implementation. This affects [phases/tasks]. Is my assessment correct?"
+Header: "Impact"
+Options:
+- Yes, your assessment is correct
+- Impact is larger than you think
+- Impact is smaller - proceed as planned
+- Need more information before deciding
+```
+
+**Trade-off Question (present alternatives):**
+```
+Question: "I found an issue with the planned approach. Which direction should we take?"
+Header: "Approach"
+Options:
+- Option A: [description with trade-offs]
+- Option B: [description with trade-offs]
+- Pause implementation while I investigate further
+```
+
+**Scope Question (adjust plan boundaries):**
+```
+Question: "This discovery means [feature] would require [significantly more work/different approach]. How should we adjust?"
+Header: "Scope"
+Options:
+- Expand scope to handle this properly
+- Defer this aspect to a follow-up task
+- Simplify the approach (describe what changes)
+- Let's discuss before deciding
+```
+
+### When to Surface vs Proceed Autonomously
+
+**Always Surface (user engagement required):**
+- Plan assumptions are invalidated (blocker discovered)
+- Multiple viable paths with different trade-offs
+- Scope would change (expand or contract)
+- Risk level increases beyond original assessment
+- Decisions affect future phases
+- Implementation would diverge from spec intent
+
+**Proceed Autonomously (log in Deviations, don't block):**
+- Minor technical choices within spec boundaries
+- Implementation details that don't affect behavior
+- Choosing between equivalent approaches
+- Obvious error corrections in the plan
+- Well-established patterns in the codebase
+
+**Threshold Guidance:** When in doubt, err toward engaging the user. The cost of a brief pause is lower than implementing the wrong thing.
+
+### User Engagement During Sub-Agent Work
+
+If a sub-agent reports an issue during implementation:
+
+1. **Sub-agent reports issue** - Agent describes what they found
+2. **You (orchestrator) evaluate** - Is this a blocker or solvable within scope?
+3. **If blocker or scope question**: Use AskUserQuestion before spawning more agents
+4. **If solvable within spec**: Guide the sub-agent, log decision if it deviates from plan
+
 ## Deviations Log Protocol
 
 **MANDATORY:** When a discovery leads to a decision that differs from the original spec/plan, you MUST log it in the task file for downstream propagation to future phases.

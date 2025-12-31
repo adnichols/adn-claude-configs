@@ -223,16 +223,77 @@ For Added:
 - Core feature behavior is missing
 - User specified `--confirm-each` flag
 
-If halted, use the **AskUserQuestion tool** to ask:
+## Collaborative Divergence Resolution
+
+When divergences are found, use **AskUserQuestion** proactively to determine the right approach.
+
+### Initial Triage Question
 
 ```
-Question: "Significant divergences found. How should we proceed?"
+Question: "Significant divergences found between spec and implementation. How should we proceed?"
 Header: "Proceed"
 Options:
 - Continue with ACTUAL implementation state (Recommended)
 - Stop and review divergences manually
 - Use --spec-authority to trust spec over code
 ```
+
+### Per-Divergence Questions (for Major impacts)
+
+When a divergence has Major impact, engage the user before deciding:
+
+**Challenge Question (spec vs implementation conflict):**
+```
+Question: "Spec says [X] but code does [Y]. Which is correct?"
+Header: "Conflict"
+Options:
+- Code is correct (document actual behavior)
+- Spec is correct (this is a bug in implementation)
+- Both are partly right (explain further)
+```
+
+**Scope Question (missing functionality):**
+```
+Question: "Spec describes [feature] but it's not in the codebase. What happened?"
+Header: "Missing"
+Options:
+- Feature was intentionally deferred
+- Feature was dropped from scope
+- It's implemented elsewhere (help me find it)
+- This is a gap that should be addressed
+```
+
+**Discovery Question (undocumented additions):**
+```
+Question: "Code includes [feature] not mentioned in spec. Should we document it?"
+Header: "Added"
+Options:
+- Yes, document as implemented feature
+- No, it's an implementation detail
+- It's temporary/experimental (omit)
+```
+
+### When to Engage Per-Divergence
+
+- **Always ask** for Major impact divergences on core functionality
+- **Batch similar** Minor divergences into a summary question
+- **Skip asking** for clearly additive implementation details
+- **Escalate** when divergences suggest the feature may be incomplete
+
+### Low-Confidence Decisions
+
+When you're uncertain about how to categorize or resolve a divergence:
+
+```
+Question: "I'm unsure how to handle this divergence. Can you clarify?"
+Header: "Clarify"
+Options:
+- [Option based on your interpretation]
+- [Alternative interpretation]
+- Let me explain the context first
+```
+
+**Key Principle:** When spec and implementation significantly diverge, the user should decide which represents intent. Don't guess—ask.
 
 ## Phase 6: Update Permanent Documentation
 

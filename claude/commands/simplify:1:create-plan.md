@@ -58,6 +58,90 @@ Before generating any simplification plan, ensure comprehensive safety requireme
    - Map integration points and API contracts
    - Document concurrent behavior and thread safety requirements
 
+## Parallel Research Strategy
+
+Use Task tool to spawn parallel research subagents for efficient codebase exploration. This accelerates analysis while preserving orchestrator context for synthesis.
+
+### Subagent Delegation
+
+Spawn parallel Task agents with `subagent_type=Explore`:
+
+Task 1: Complexity Analysis
+- Find code patterns indicating complexity accumulation
+- Locate deprecated or unused code with git history evidence
+- Document dead code evidence
+- Identify consolidation opportunities
+
+Task 2: Dependency Analysis
+- Map all external dependencies on target code
+- Identify integration points and API contracts
+- Document concurrent behavior requirements
+- Find all callers of functions/methods being simplified
+
+Task 3: Test Coverage Analysis
+- Find existing test coverage for target area
+- Identify gaps in test coverage for core functionality
+- Locate performance benchmarks
+- Document test patterns used in this codebase
+
+### Orchestrator Responsibilities
+
+The parent agent (you) handles:
+- Initial scope analysis and question formulation
+- Synthesizing findings from all subagents
+- Generating the simplification plan
+- User communication and clarifications
+
+Wait for ALL subagents to complete before synthesizing findings.
+
+## User Engagement During Analysis
+
+Use the **AskUserQuestion tool** proactively when discoveries warrant user input.
+
+### Discovery Questions (surface findings)
+```
+Question: "My analysis found [X] in the target code. Should I include this in the simplification plan?"
+Header: "Include"
+Options:
+- Yes, include in plan
+- No, leave it as-is
+- Let me explain what I found first
+```
+
+### Trade-off Questions (present options)
+```
+Question: "I found two approaches to simplify [area]. Which aligns better with your priorities?"
+Header: "Approach"
+Options:
+- Approach A: [description with trade-offs]
+- Approach B: [description with trade-offs]
+- Need more details before deciding
+```
+
+### Concern Questions (flag risks)
+```
+Question: "This simplification would affect [Y]. The change is [low/medium/high] risk. Are you comfortable with this scope?"
+Header: "Risk"
+Options:
+- Yes, proceed with full scope
+- Reduce scope to lower risk
+- Let's discuss the risks first
+```
+
+## Handling Issues Protocol
+
+When analysis reveals problems that affect plan viability:
+
+1. **Stop** - Do not finalize plan based on incomplete analysis
+2. **Report** - Explain what you discovered and its impact
+3. **Ask** - Present options and get user guidance before continuing
+
+Examples requiring this protocol:
+- Test coverage is insufficient to safely simplify (< 60%)
+- Target code has undocumented external dependencies
+- Simplification would require breaking API changes
+- Analysis reveals the "complexity" serves an undocumented purpose
+
 ## Simplification Plan Structure
 
 The generated plan should include the following sections as a checklist:
