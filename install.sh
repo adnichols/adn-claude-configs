@@ -899,12 +899,6 @@ install_opencode() {
     fi
     cp -r "$REPO_ROOT/opencode/commands" "$target/"
 
-    # Copy MCP servers configuration
-    echo "  - Installing mcp-servers.json..."
-    if [ -f "$REPO_ROOT/claude/mcp-servers.json" ]; then
-        cp "$REPO_ROOT/claude/mcp-servers.json" "$target/"
-    fi
-
     if [ "$is_update" = true ]; then
         echo -e "${GREEN}✓ OpenCode update complete${NC}"
     else
