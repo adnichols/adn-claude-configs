@@ -1,6 +1,6 @@
 ---
 description: Isolated code review in separate worktree
-argument-hint: [username:branch]
+argument-hint: "[username:branch]"
 ---
 
 # Local Code Review
