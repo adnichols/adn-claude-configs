@@ -1,11 +1,13 @@
-description = "Fetch and convert documentation for libraries, frameworks, and languages into AI-friendly Markdown format"
-prompt = """
+---
+description: "Fetch and convert documentation for libraries, frameworks, and languages into AI-friendly Markdown format"
+argument-hint: "[library_name] [--version VERSION] [--topic TOPIC] [--url URL]"
+---
 
 # Documentation Fetch Command
 
-Fetch documentation for programming libraries, frameworks, languages, and toolsets. This command uses **Context7 MCP** as the primary source for up-to-date, version-specific documentation, with fallback to direct URL fetching.
+Fetch documentation for programming libraries, frameworks, languages, and toolsets. This command uses **Context7 MCP** as the primary source for up-to-date, version-specific documentation, with fallback to direct URL fetching. Think harder.
 
-The package name will be provided via {{args}}
+The package name will be provided via $ARGUMENTS
 
 ## Usage
 
@@ -27,7 +29,7 @@ The package name will be provided via {{args}}
 
 ### Step 1: Parse Arguments
 
-Extract from {{args}}:
+Extract from $ARGUMENTS:
 - Library name (required)
 - Version (optional)
 - Topic (optional)
@@ -38,12 +40,17 @@ Extract from {{args}}:
 Context7 provides up-to-date documentation directly in the prompt context. Use the MCP tools:
 
 1. **Resolve the library ID:**
-   - Use resolve-library-id with the library name
+   ```
+   Use mcp__context7__resolve-library-id with the library name
+   ```
 
 2. **Fetch documentation:**
-   - Use get-library-docs with the resolved ID
-   - Include topic if provided
-   - Paginate if needed (start with page 1)
+   ```
+   Use mcp__context7__get-library-docs with:
+   - context7CompatibleLibraryID: The resolved ID
+   - topic: The specific topic if provided
+   - page: Start with 1, paginate if needed
+   ```
 
 3. **Process and save:**
    - Save the fetched documentation to `docs/libraries/[library-name]/`
@@ -59,7 +66,7 @@ If Context7 doesn't have the library (resolve fails), fall back to URL-based fet
 
 Run the fallback script:
 ```bash
-python .gemini/scripts/docs-fetch.py [library_name] [options]
+python .claude/scripts/docs-fetch.py [library_name] [options]
 ```
 
 ### Step 4: Update References
@@ -71,7 +78,7 @@ After successful fetch, update CLAUDE.md's "Available Documentation" section to 
 
 ## Context7 Integration
 
-Context7 MCP provides:
+Context7 MCP is pre-configured in this repository. It provides:
 
 - **Real-time documentation**: Fetches current docs, not stale training data
 - **Version-specific**: Can target specific library versions
@@ -82,9 +89,11 @@ Context7 MCP provides:
 
 Context7 supports most popular libraries. To check if a library is available:
 
+```
 1. Try resolve-library-id with the library name
 2. If it returns a valid ID, the library is supported
 3. If not, use the --url fallback method
+```
 
 ### Example Context7 Workflow
 
@@ -116,14 +125,14 @@ docs/
 - **Spec creation**: Use via `/dev:1:create-spec` documentation discovery
 - **Manual fetch**: When you need documentation for a specific library
 - **Updates**: Refresh documentation for libraries already in `docs/`
-- **Unknown libraries**: Fetch docs for libraries not in training data
+- **Unknown libraries**: Fetch docs for libraries not in Claude's training data
 
 ## Troubleshooting
 
 ### Context7 Not Available
 
 If Context7 MCP tools are not responding:
-1. Check that the MCP server is configured
+1. Check that the MCP server is configured in your Claude Code settings
 2. Verify Node.js 18+ is installed
 3. Try: `npx @upstash/context7-mcp` to test the server
 
@@ -145,4 +154,3 @@ If fetching fails:
 
 - `/doc:fetch-batch`: Batch fetch documentation from markdown lists
 - `/dev:1:create-spec`: Uses documentation discovery during spec creation
-"""

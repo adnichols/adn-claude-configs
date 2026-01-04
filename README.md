@@ -95,9 +95,7 @@ adn-claude-configs/
 │   ├── config.toml          # Codex configuration template
 │   └── mcp-servers.toml     # MCP server definitions
 ├── opencode/                 # OpenCode configuration
-│   ├── agents/              # OpenCode agent definitions
-│   ├── commands/            # OpenCode slash commands
-│   └── scripts/             # OpenCode utility scripts
+│   └── commands/            # OpenCode slash commands
 ├── tools/                    # Distributable CLI tools
 │   └── ltui/                # Linear CLI for AI agents
 ├── skills/                   # Claude Code skills

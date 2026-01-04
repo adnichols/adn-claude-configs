@@ -892,13 +892,6 @@ install_opencode() {
         mkdir -p "$target"
     fi
 
-    # Install agents (remove first to ensure clean state)
-    echo "  - Installing agents..."
-    if [ -d "$target/agents" ]; then
-        rm -rf "$target/agents"
-    fi
-    cp -r "$REPO_ROOT/opencode/agents" "$target/"
-
     # Install commands (remove first to ensure clean state)
     echo "  - Installing commands..."
     if [ -d "$target/commands" ]; then
@@ -906,41 +899,16 @@ install_opencode() {
     fi
     cp -r "$REPO_ROOT/opencode/commands" "$target/"
 
-    # Install scripts (remove first to ensure clean state)
-    echo "  - Installing scripts..."
-    if [ -d "$target/scripts" ]; then
-        rm -rf "$target/scripts"
-    fi
-    cp -r "$REPO_ROOT/opencode/scripts" "$target/"
-
-    # Handle settings.local.json (preserve if exists)
-    if [ -f "$target/settings.local.json" ]; then
-        echo -e "  ${YELLOW}✓ Preserved existing settings.local.json${NC}"
-    else
-        echo "  - Installing settings.local.json..."
-        cp "$REPO_ROOT/claude/settings.local.json" "$target/"
-    fi
-
     # Copy MCP servers configuration
     echo "  - Installing mcp-servers.json..."
-    cp "$REPO_ROOT/claude/mcp-servers.json" "$target/"
-
-    # Setup thoughts directory structure
-    if [ ! -d "$target_root/thoughts" ]; then
-        setup_thoughts_structure "$target_root"
+    if [ -f "$REPO_ROOT/claude/mcp-servers.json" ]; then
+        cp "$REPO_ROOT/claude/mcp-servers.json" "$target/"
     fi
-    create_permanent_docs "$target_root"
 
     if [ "$is_update" = true ]; then
         echo -e "${GREEN}✓ OpenCode update complete${NC}"
     else
         echo -e "${GREEN}✓ OpenCode installation complete${NC}"
-    fi
-    echo ""
-    if [ "$APPEND_AGENTS" = true ]; then
-        echo "Note: Project AGENTS.md was created or updated; review it to tailor project-specific rules."
-    else
-        echo "Note: To ensure a project-level AGENTS.md with Fidelity & Execution rules, re-run with --append-agents."
     fi
 }
 
