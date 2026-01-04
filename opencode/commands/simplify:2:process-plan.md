@@ -1,6 +1,6 @@
 ---
 description: Process and execute a code simplification plan created by simplify:create-plan.md
-argument-hint: [Plan file path] [Options: NOSUBCONF]
+argument-hint: "[Plan file path] [Options: NOSUBCONF]"
 ---
 
 # Instructions
