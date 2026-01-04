@@ -1,0 +1,111 @@
+{
+  "react.dev": {
+    "selectors": {
+      "main_content": "main[role='main'], .main-content, article",
+      "navigation": "nav[role='navigation'], .nav, .sidebar",
+      "title": "h1, .title",
+      "code_blocks": "pre, code, .highlight"
+    },
+    "base_urls": ["https://react.dev/"],
+    "sections": ["learn", "reference", "community"],
+    "exclude_patterns": ["/blog/", "/community/"]
+  },
+  "docs.python.org": {
+    "selectors": {
+      "main_content": ".body-content, .document, .rst-content",
+      "navigation": ".toctree-wrapper, .nav, .sidebar",
+      "title": "h1, .title",
+      "code_blocks": "pre, .highlight, .code-block"
+    },
+    "base_urls": ["https://docs.python.org/3/"],
+    "sections": ["tutorial", "library", "reference", "howto"],
+    "exclude_patterns": ["/bugs.html", "/download.html"]
+  },
+  "developer.mozilla.org": {
+    "selectors": {
+      "main_content": ".main-page-content, .article, .document-body",
+      "navigation": ".document-toc, .nav, .sidebar",
+      "title": "h1, .title, .page-title",
+      "code_blocks": "pre, .brush, .code-example"
+    },
+    "base_urls": ["https://developer.mozilla.org/en-US/docs/"],
+    "sections": ["Web", "JavaScript", "CSS", "HTML"],
+    "exclude_patterns": ["/Games/", "/Archive/"]
+  },
+  "vuejs.org": {
+    "selectors": {
+      "main_content": ".content, .guide, .main",
+      "navigation": ".sidebar, .nav",
+      "title": "h1, .title",
+      "code_blocks": "pre, .language-, .highlight"
+    },
+    "base_urls": ["https://vuejs.org/guide/", "https://vuejs.org/api/"],
+    "sections": ["guide", "api", "examples"],
+    "exclude_patterns": ["/about/", "/sponsor/"]
+  },
+  "angular.dev": {
+    "selectors": {
+      "main_content": ".docs-content, .content, .guide-content",
+      "navigation": ".docs-navigation, .nav, .sidebar",
+      "title": "h1, .docs-header-title",
+      "code_blocks": "pre, .docs-code, .highlight"
+    },
+    "base_urls": ["https://angular.dev/guide", "https://angular.dev/api"],
+    "sections": ["guide", "api", "tutorial"],
+    "exclude_patterns": ["/cli/", "/devkit/"]
+  },
+  "typescriptlang.org": {
+    "selectors": {
+      "main_content": ".whitespace, .container, .main-content",
+      "navigation": ".sidebar, .nav",
+      "title": "h1, .title",
+      "code_blocks": "pre, .highlight, .shiki"
+    },
+    "base_urls": ["https://www.typescriptlang.org/docs/"],
+    "sections": ["handbook", "reference", "tutorials"],
+    "exclude_patterns": ["/play/", "/community/"]
+  },
+  "lodash.com": {
+    "selectors": {
+      "main_content": ".container, .content, .doc-container",
+      "navigation": ".nav, .toc",
+      "title": "h1, .title",
+      "code_blocks": "pre, .highlight, .brush"
+    },
+    "base_urls": ["https://lodash.com/docs/"],
+    "sections": ["docs"],
+    "exclude_patterns": ["/custom-builds", "/fp-guide"]
+  },
+  "expressjs.com": {
+    "selectors": {
+      "main_content": "#content, .content, .main",
+      "navigation": "#menu, .nav",
+      "title": "h1, .title",
+      "code_blocks": "pre, .highlight, .js"
+    },
+    "base_urls": ["https://expressjs.com/en/api.html", "https://expressjs.com/en/guide/"],
+    "sections": ["api", "guide", "advanced"],
+    "exclude_patterns": ["/resources/", "/community/"]
+  },
+  "nextjs.org": {
+    "selectors": {
+      "main_content": ".docs-content, .content, main",
+      "navigation": ".docs-navigation, .sidebar",
+      "title": "h1, .title",
+      "code_blocks": "pre, .highlight, .language-"
+    },
+    "base_urls": ["https://nextjs.org/docs"],
+    "sections": ["app", "pages", "api-reference"],
+    "exclude_patterns": ["/blog/", "/showcase/"]
+  },
+  "default": {
+    "selectors": {
+      "main_content": "main, .main, .content, .container, article, .document",
+      "navigation": "nav, .nav, .sidebar, .toc",
+      "title": "h1, .title, .page-title",
+      "code_blocks": "pre, code, .highlight, .code, .language-, .brush"
+    },
+    "sections": ["docs", "guide", "api", "reference", "tutorial"],
+    "exclude_patterns": ["/blog/", "/news/", "/download/", "/community/"]
+  }
+}

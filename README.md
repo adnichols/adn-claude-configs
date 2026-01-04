@@ -1,12 +1,12 @@
-# Claude Code & Gemini CLI Configuration
+# Claude Code, Codex, Gemini CLI & OpenCode Configuration
 
-A comprehensive configuration system for Claude Code, Codex, and Gemini CLI that provides specialized agents, custom commands, and complete development workflows for building software with AI assistance.
+A comprehensive configuration system for Claude Code, Codex, Gemini CLI, and OpenCode that provides specialized agents, custom commands, and complete development workflows for building software with AI assistance.
 
 ## 🚀 Quick Start
 
 ### Installation
 
-This repository supports installation for **Claude Code**, **Codex**, and **Gemini CLI**.
+This repository supports installation for **Claude Code**, **Codex**, **Gemini CLI**, and **OpenCode**.
 
 #### Option 1: Install to a Project
 
@@ -30,14 +30,17 @@ bash /path/to/adn-claude-configs/install.sh --gemini
 # Install Codex only
 bash /path/to/adn-claude-configs/install.sh --codex
 
-# Install everything (Claude, Gemini, Codex, tools, skills)
+# Install OpenCode only
+bash /path/to/adn-claude-configs/install.sh --opencode
+
+# Install everything (Claude, Gemini, Codex, OpenCode, tools, skills)
 bash /path/to/adn-claude-configs/install.sh --all
 ```
 
 #### Option 2: Install Globally (to Home Directory)
 
 ```bash
-# Install to ~/.claude, ~/.gemini, and ~/.codex for global access
+# Install to ~/.claude, ~/.gemini, ~/.codex, and ~/.opencode for global access
 bash /path/to/adn-claude-configs/install.sh --all ~
 ```
 
@@ -91,6 +94,10 @@ adn-claude-configs/
 │   ├── prompts/             # Codex prompts
 │   ├── config.toml          # Codex configuration template
 │   └── mcp-servers.toml     # MCP server definitions
+├── opencode/                 # OpenCode configuration
+│   ├── agents/              # OpenCode agent definitions
+│   ├── commands/            # OpenCode slash commands
+│   └── scripts/             # OpenCode utility scripts
 ├── tools/                    # Distributable CLI tools
 │   └── ltui/                # Linear CLI for AI agents
 ├── skills/                   # Claude Code skills
@@ -103,7 +110,7 @@ adn-claude-configs/
 **Key Directories:**
 
 - **claude/agents/** - Source of truth for all agents
-- **claude/**, **gemini/**, **codex/** - Installable configurations for each tool
+- **claude/**, **gemini/**, **codex/**, **opencode/** - Installable configurations for each tool
 - **tools/** - Distributable CLI tools (installed globally via `--tools`)
 - **install.sh** - Single script for installation and updates
 
@@ -420,4 +427,4 @@ args = ["-y", "@playwright/mcp@latest"]
 
 ---
 
-**Need help?** Check the documentation files above, review `commands/README.md` for detailed workflow guidance, or use the specialized agents for specific tasks.
+**Need help?** Check the documentation files above, review `claude/commands/README.md` or `opencode/commands/README.md` for detailed workflow guidance, or use the specialized agents for specific tasks.
