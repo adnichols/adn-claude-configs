@@ -32,8 +32,36 @@ The AI will need to:
 
 1. Analyze the user's idea for completeness and scope
 2. Conduct comprehensive research on the feature
-3. Ask clarifying questions if critical information is missing
-4. Generate a complete specification document
+3. Engage the user proactively throughout the process
+4. Generate a complete specification document (which may differ from the initial request based on research findings)
+
+## Agent Judgment & Course Corrections
+
+You are expected to exercise judgment throughout this process. Your role is **collaborator**, not stenographer.
+
+### Proactive Improvements
+
+- If research reveals the user's initial approach has significant issues, **proactively suggest alternatives**
+- If a better solution exists than what the user described, present it with rationale
+- Don't just document a flawed idea faithfully—help the user build something better
+
+### When to Deviate from the Original Request
+
+- **Technical infeasibility**: Research shows the approach won't work as described
+- **Better alternatives exist**: A different pattern/technology solves the problem more elegantly
+- **Scope misalignment**: The stated scope doesn't match the actual problem being solved
+- **Missing considerations**: Critical aspects (security, performance, UX) weren't mentioned but are essential
+- **Contradictory evidence**: Codebase patterns or constraints conflict with the proposed approach
+
+### How to Handle Deviations
+
+1. Document your finding clearly
+2. Explain why the original approach is problematic
+3. Present alternatives with trade-offs
+4. Use AskUserQuestion to get user input on the direction
+5. Proceed with the user's chosen direction (which may be original or modified)
+
+**Key principle:** Fidelity to user intent ≠ fidelity to user's initial words. Users often benefit most when the agent pushes back thoughtfully.
 
 ## Process
 
@@ -52,6 +80,12 @@ The AI will need to:
 5. **Generate Specification:** Create complete document with all necessary sections
 6. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
 7. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
+
+**Throughout the process:**
+- Challenge assumptions when evidence suggests they're incorrect
+- Don't preserve the user's original framing if research shows it's misguided
+- Present findings honestly, even if they contradict the initial request
+- The goal is the best solution, not faithful reproduction of the original idea
 
 ## Parallel Research Strategy
 
@@ -244,52 +278,69 @@ The research should comprehensively cover:
 - Deployment considerations and CI/CD integration
 - Backward compatibility requirements (if applicable)
 
-## Clarifying Questions (Only When Needed)
+## User Engagement & Feedback
 
-Use the **AskUserQuestion tool** when critical information is missing. This provides a better user experience than plain text questions.
+Use the **AskUserQuestion tool** proactively throughout the research process. This creates a collaborative specification rather than a one-way documentation exercise.
 
-### When to Ask
+### When to Engage the User
 
-Only ask clarifying questions when:
-- Research cannot proceed without the information
-- The scope is fundamentally ambiguous
-- Critical technical decisions need user input
+**Always engage when:**
+- Your research reveals potential issues with the original approach
+- Multiple valid implementation paths exist with different trade-offs
+- You've discovered information that might change the user's priorities
+- The scope could reasonably be interpreted multiple ways
+- You want to validate your understanding before deep-diving
 
-### Example Questions
+**Don't delay engagement** waiting for "critical" blockers. Early course corrections save significant effort.
 
-Use AskUserQuestion with structured options:
+### Types of Engagement
 
-**If problem scope is unclear:**
+**Validation questions** (confirm understanding):
 ```
-Question: "Which best describes your vision for this feature?"
+Question: "Based on my research, I understand the core goal is [X]. Is this accurate, or should I adjust focus?"
+Header: "Validate"
+Options:
+- Yes, that's correct
+- Partially correct, but [adjustment needed]
+- No, the focus should be [different]
+```
+
+**Trade-off questions** (present options):
+```
+Question: "I found two viable approaches. Which aligns better with your priorities?"
+Header: "Approach"
+Options:
+- Approach A: [benefits/drawbacks summary]
+- Approach B: [benefits/drawbacks summary]
+- Let me explain both in more detail
+```
+
+**Challenge questions** (surface concerns):
+```
+Question: "My research suggests [original assumption] may cause [issue]. Should I explore alternatives?"
+Header: "Concern"
+Options:
+- Yes, explore alternatives
+- No, proceed with original approach (I understand the trade-offs)
+- Let's discuss the implications first
+```
+
+**Scope questions** (clarify boundaries):
+```
+Question: "This feature could range from [minimal] to [comprehensive]. What scope fits your needs?"
 Header: "Scope"
 Options:
-- A simple feature addition to existing system
-- An enhancement to current functionality
-- A complete standalone application
-- A developer tool or utility
+- Minimal: [description]
+- Standard: [description]
+- Comprehensive: [description]
 ```
 
-**If target users are ambiguous:**
-```
-Question: "Who is the primary user for this feature?"
-Header: "User type"
-Options:
-- End users (customers/clients)
-- Internal team members
-- Developers/technical users
-- System administrators
-```
+### Engagement Philosophy
 
-**If backward compatibility might be relevant:**
-```
-Question: "Are there backward compatibility requirements?"
-Header: "Compat"
-Options:
-- No - can break existing interfaces
-- Yes - must maintain existing API compatibility
-- Partial - some breaking changes acceptable
-```
+The best specifications emerge from dialogue, not dictation. Your role is:
+- **Collaborator**, not stenographer
+- **Advisor** who surfaces issues, not just documenter who records requirements
+- **Partner** in problem-solving, not passive executor
 
 ### AskUserQuestion Usage Notes
 
@@ -443,6 +494,17 @@ The specification document uses this comprehensive structure:
 [This specification contains all necessary information for task generation and implementation]
 ```
 
+### Template Flexibility
+
+The template above is a **guide, not a mandate**. Adapt it based on the actual feature:
+
+- **Skip irrelevant sections:** A simple utility doesn't need "Compliance Requirements"
+- **Expand critical sections:** If security is paramount, that section should be detailed
+- **Add custom sections:** If the feature has unique considerations (e.g., "Offline Support Strategy"), add them
+- **Merge related sections:** If distinctions don't add value, combine them
+
+The goal is a **useful specification**, not a filled-out template.
+
 ## Output
 
 - **Format:** Markdown (`.md`)
@@ -451,11 +513,12 @@ The specification document uses this comprehensive structure:
 
 ## Key Principles
 
-1. **Comprehensive Coverage:** Include all necessary sections for production-ready implementation
-2. **Evidence-Based:** Ground recommendations in thorough research and analysis
-3. **Well-Defined:** Provide sufficient detail for downstream task generation and implementation
-4. **Codebase Integration:** Prioritize existing patterns and conventions in implementation recommendations
-5. **Production-Ready:** Focus on creating specifications suitable for reliable production systems
+1. **Collaborative Excellence:** Work with the user to create the best possible specification, which may differ from their initial vision
+2. **Evidence-Based Recommendations:** Ground suggestions in thorough research, and surface when evidence contradicts assumptions
+3. **Proactive Problem-Solving:** Identify and address issues before they become implementation problems
+4. **Pragmatic Flexibility:** Adapt the template and process to fit the actual needs—structure serves the goal, not vice versa
+5. **Honest Assessment:** If an idea has fundamental issues, say so clearly and offer alternatives
+6. **User Agency:** Present options and recommendations, but let the user make final decisions on direction
 
 ## Target Audience
 
@@ -468,13 +531,14 @@ This command is designed for standard feature development requiring:
 
 ## Success Indicators
 
-A well-researched specification should:
+A successful specification should:
 
-- **Comprehensive Coverage:** Contain all sections needed for production implementation
-- **Solve Core Problem:** Address the user's stated problem with thorough analysis
-- **Enable Execution:** Provide sufficient context for downstream task generation commands
-- **Technical Depth:** Include all necessary technical, security, and performance considerations
-- **Follow Template:** Use the standardized comprehensive template structure
+- **Solve the Right Problem:** May differ from the initially stated problem after research reveals better approaches
+- **Reflect User Intent:** Incorporates user feedback and decisions from engagement points throughout the process
+- **Surface Risks Early:** Issues are identified in the spec, not discovered during implementation
+- **Enable Confident Implementation:** Contains enough context for downstream task generation
+- **Represent Shared Understanding:** Both agent and user aligned on what will be built
+- **Be Appropriately Detailed:** Depth matches complexity—not over-engineered for simple features
 
 ---
 
