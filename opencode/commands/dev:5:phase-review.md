@@ -1,6 +1,6 @@
 ---
 description: Propagate decisions from completed phases to future phases
-argument-hint: <completed phase path> [future phases...]
+argument-hint: "<completed phase path> [future phases...]"
 ---
 
 # Phase Review and Decision Propagation

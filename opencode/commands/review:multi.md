@@ -1,6 +1,6 @@
 ---
 description: Launch parallel multi-agent specification review (Claude, Codex, Gemini)
-argument-hint: <path to specification>
+argument-hint: "<path to specification>"
 ---
 
 # Multi-Agent Specification Review

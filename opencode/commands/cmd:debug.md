@@ -1,6 +1,6 @@
 ---
 description: Context-preserving investigation for debugging
-argument-hint: [issue description or ticket]
+argument-hint: "[issue description or ticket]"
 ---
 
 # Debug Investigation

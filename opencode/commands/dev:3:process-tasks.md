@@ -1,6 +1,6 @@
 ---
 description: Process tasks in a task list with fidelity-preserving agent selection
-argument-hint: [Files]
+argument-hint: "[Files]"
 ---
 
 # Instructions

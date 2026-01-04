@@ -1,6 +1,6 @@
 ---
 description: Create a code simplification plan with analysis and agent selection
-argument-hint: [Target directory/files to analyze]
+argument-hint: "[Target directory/files to analyze]"
 ---
 
 # Rule: Generating a Code Simplification Plan

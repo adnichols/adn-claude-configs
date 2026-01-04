@@ -1,6 +1,6 @@
 ---
 description: Synthesize completed artifacts into permanent documentation with codebase verification
-argument-hint: [feature name or spec/plan path]
+argument-hint: "[feature name or spec/plan path]"
 ---
 
 # Graduate Feature (with Verification)

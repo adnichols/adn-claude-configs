@@ -1,6 +1,6 @@
 ---
 description: Run Playwright e2e tests using dedicated test runner subagent
-argument-hint: [test pattern, grep filter, or empty for full suite]
+argument-hint: "[test pattern, grep filter, or empty for full suite]"
 ---
 
 # Run Playwright E2E Tests

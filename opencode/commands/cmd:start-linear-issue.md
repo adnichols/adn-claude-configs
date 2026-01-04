@@ -1,6 +1,6 @@
 ---
 description: Bootstrap a dedicated worktree and branch for a Linear issue
-argument-hint: ISSUE_KEY [BASE_BRANCH]
+argument-hint: "ISSUE_KEY [BASE_BRANCH]"
 ---
 
 Create a worktree for a Linear issue. Uses the @worktree-creator agent (haiku model) for fast, cost-effective execution.

@@ -1,6 +1,6 @@
 ---
 description: Integrate task review comments by fixing inaccuracies
-argument-hint: <path to task list>
+argument-hint: "<path to task list>"
 ---
 
 # Integrate Task List Review Comments

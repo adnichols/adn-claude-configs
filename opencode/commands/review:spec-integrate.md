@@ -1,6 +1,6 @@
 ---
 description: Integrate spec review comments into the specification
-argument-hint: <path to specification>
+argument-hint: "<path to specification>"
 ---
 
 # Integrate Specification Review Comments
