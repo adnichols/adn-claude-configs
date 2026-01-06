@@ -1,11 +1,17 @@
 ---
 description: Propagate decisions from completed phases to future phases
-argument-hint: <completed phase path> [future phases...]
+argument-hint: "<completed phase path> [future phases...]"
 ---
 
 # Phase Review and Decision Propagation
 
 After completing a phase of work, analyze what was implemented versus what was specified, extract decisions made during implementation, and propagate those decisions forward to future phase specs via inline annotations.
+
+## Input
+
+Phase paths: $ARGUMENTS
+
+First argument is the completed phase. Remaining arguments (or auto-discovered) are future phases.
 
 **Completed phase:** First argument in $ARGUMENTS
 **Future phases:** Remaining arguments (or auto-discovered from parent spec)

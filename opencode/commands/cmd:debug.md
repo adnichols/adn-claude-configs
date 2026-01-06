@@ -7,6 +7,10 @@ argument-hint: "[issue description or ticket]"
 
 Investigate issues without burning main context. Uses parallel Task agents to gather evidence while preserving your working context.
 
+## Input
+
+Issue description or ticket: $ARGUMENTS
+
 Issue context: $ARGUMENTS
 
 ## Process

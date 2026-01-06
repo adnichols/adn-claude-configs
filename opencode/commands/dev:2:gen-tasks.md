@@ -31,9 +31,11 @@ The specification arriving at this command was created through `/dev:1:create-sp
 
 ## Input
 
+Specification file path: $ARGUMENTS
+
 The user will provide:
 
-1. **Specification File Path:** Path to the detailed specification document. This may be provided in $ARGUMENTS
+1. **Specification File Path:** Path to the detailed specification document
 
 ## Process
 

@@ -43,9 +43,13 @@ The command intelligently handles various markdown patterns:
 - Uses URLs for `--url` parameter when auto-discovery fails
 - Skips non-library items (Perfect Lighthouse score, etc.)
 
-## Implementation
+## Input
 
-$ARGUMENTS
+Markdown content and options: $ARGUMENTS
+
+The user will provide:
+
+## Implementation
 
 I'll help you batch process documentation fetching from your markdown content. Let me parse the libraries and process each one:
 

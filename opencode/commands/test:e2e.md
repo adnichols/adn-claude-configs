@@ -7,7 +7,11 @@ argument-hint: "[test pattern, grep filter, or empty for full suite]"
 
 Execute Playwright tests using a dedicated **read-only subagent** that captures full output and provides detailed results.
 
-$ARGUMENTS
+## Input
+
+Test pattern or grep filter: $ARGUMENTS
+
+The user may provide test pattern, grep filter, or empty for full suite.
 
 ## Process
 

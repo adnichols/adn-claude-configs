@@ -1,6 +1,6 @@
 ---
 description: Generate a Product Requirements Document (PRD) with strict scope preservation and fidelity focus
-argument-hint: [Feature Description]
+argument-hint: "[Feature Description]"
 ---
 
 # Rule: Generating a Product Requirements Document (PRD) with Fidelity Preservation
@@ -21,7 +21,7 @@ To guide an AI assistant in creating a Product Requirements Document (PRD) in Ma
 
 ## Input
 
-Some input may be provided via $ARGUMENTS
+Feature description: $ARGUMENTS
 
 The user will provide:
 

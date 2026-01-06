@@ -7,6 +7,10 @@ argument-hint: "[feature name or spec/plan path]"
 
 Graduate completed feature artifacts to permanent documentation. This command VERIFIES that specs/research match actual implementation before documenting, ensuring permanent docs reflect what was actually built.
 
+## Input
+
+Feature name or spec/plan path: $ARGUMENTS
+
 Feature or path: $ARGUMENTS
 
 ## Process Overview

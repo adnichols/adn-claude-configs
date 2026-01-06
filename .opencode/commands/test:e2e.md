@@ -1,13 +1,17 @@
 ---
 description: Run Playwright e2e tests using dedicated test runner subagent
-argument-hint: [test pattern, grep filter, or empty for full suite]
+argument-hint: "[test pattern, grep filter, or empty for full suite]"
 ---
 
 # Run Playwright E2E Tests
 
 Execute Playwright tests using a dedicated **read-only subagent** that captures full output and provides detailed results.
 
-$ARGUMENTS
+## Input
+
+Test pattern or grep filter: $ARGUMENTS
+
+The user may provide test pattern, grep filter, or empty for full suite.
 
 ## Process
 

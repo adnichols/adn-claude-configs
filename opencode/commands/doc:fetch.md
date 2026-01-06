@@ -7,7 +7,11 @@ argument-hint: "[library_name] [--version VERSION] [--topic TOPIC] [--url URL]"
 
 Fetch documentation for programming libraries, frameworks, languages, and toolsets. This command uses **Context7 MCP** as the primary source for up-to-date, version-specific documentation, with fallback to direct URL fetching. Think harder.
 
-The package name will be provided via $ARGUMENTS
+## Input
+
+Library name and options: $ARGUMENTS
+
+The user will provide:
 
 ## Usage
 
