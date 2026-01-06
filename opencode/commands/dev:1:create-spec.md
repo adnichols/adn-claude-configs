@@ -1,6 +1,6 @@
 ---
 description: Research an idea and produce a specification document
-argument-hint: [Idea/Feature Description]
+argument-hint: "[Idea/Feature Description]"
 ---
 
 # Rule: Research and Generate Specification Document

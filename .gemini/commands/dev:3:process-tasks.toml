@@ -1,13 +1,11 @@
----
-description: Process tasks in a task list with fidelity-preserving approach
-argument-hint: [Files]
----
+description = "Process tasks in a task list with fidelity-preserving approach"
+prompt = """
 
 # Instructions
 
 Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. Implement only what's explicitly specified, without additions or scope expansions.
 
-$ARGUMENTS
+{{args}}
 
 ## CRITICAL: Orchestrator-Only Mode
 
@@ -37,10 +35,6 @@ When processing tasks:
    - Mark it as completed by changing `[ ]` to `[x]`
    - Confirm the update was successful
    - Request permission to proceed (unless NOSUBCONF specified)
-
-<skip_subtask_confirmation>
-If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implementation below
-</skip_subtask_confirmation>
 
 ## Critical Task Update Protocol
 
@@ -94,11 +88,6 @@ If $ARGUMENTS contains NOSUBCONF then ignore subtask confirmation in task implem
    - List every file created or modified during implementation
    - Update descriptions as implementation progresses
 
-3. **Context Validation (for rich execution plans):**
-   - Ensure implementation stays true to source document's technical specifications.
-   - Validate security requirements are being followed.
-   - Confirm performance benchmarks are being met.
-
 ## Handling Discoveries During Implementation
 
 **When you discover something that invalidates or significantly changes the plan:**
@@ -118,120 +107,6 @@ Examples of discoveries requiring this protocol:
 - **Paired dependencies are incompatible** (client/server version conflict)
 
 **Do not** silently adjust the plan or continue with an approach you know is suboptimal.
-
-### Proactive User Engagement for Discoveries
-
-Use **AskUserQuestion** to engage the user when discoveries warrant input.
-
-**Validation Question (confirm impact assessment):**
-```
-Question: "I discovered [X] during implementation. This affects [phases/tasks]. Is my assessment correct?"
-Header: "Impact"
-Options:
-- Yes, your assessment is correct
-- Impact is larger than you think
-- Impact is smaller - proceed as planned
-- Need more information before deciding
-```
-
-**Trade-off Question (present alternatives):**
-```
-Question: "I found an issue with the planned approach. Which direction should we take?"
-Header: "Approach"
-Options:
-- Option A: [description with trade-offs]
-- Option B: [description with trade-offs]
-- Pause implementation while I investigate further
-```
-
-**Scope Question (adjust plan boundaries):**
-```
-Question: "This discovery means [feature] would require [significantly more work/different approach]. How should we adjust?"
-Header: "Scope"
-Options:
-- Expand scope to handle this properly
-- Defer this aspect to a follow-up task
-- Simplify the approach (describe what changes)
-- Let's discuss before deciding
-```
-
-### When to Surface vs Proceed Autonomously
-
-**Always Surface (user engagement required):**
-- Plan assumptions are invalidated (blocker discovered)
-- Multiple viable paths with different trade-offs
-- Scope would change (expand or contract)
-- Risk level increases beyond original assessment
-- Decisions affect future phases
-- Implementation would diverge from spec intent
-
-**Proceed Autonomously (log in Deviations, don't block):**
-- Minor technical choices within spec boundaries
-- Implementation details that don't affect behavior
-- Choosing between equivalent approaches
-- Obvious error corrections in the plan
-- Well-established patterns in the codebase
-
-**Threshold Guidance:** When in doubt, err toward engaging the user. The cost of a brief pause is lower than implementing the wrong thing.
-
-### User Engagement During Implementation Work
-
-If implementation work reports an issue:
-
-1. **Issue surfaced** - Describe what was found
-2. **Evaluate impact** - Is this a blocker or solvable within scope?
-3. **If blocker or scope question**: Use AskUserQuestion before proceeding
-4. **If solvable within spec**: Proceed and log decision if it deviates from plan
-
-## Deviations Log Protocol
-
-**MANDATORY:** When a discovery leads to a decision that differs from the original spec/plan, you MUST log it in the task file for downstream propagation to future phases.
-
-### When to Log
-
-Log a deviation when:
-- The spec was ambiguous and you chose a specific implementation path
-- A planned approach was changed due to discovered constraints
-- Scope was adjusted (feature deferred, modified, or dropped)
-- An API contract or pattern was established that future phases depend on
-- A technical constraint was discovered that affects future work
-
-### How to Log
-
-After user approval for a deviation, append to the task file's `## Deviations Log` section (create if it doesn't exist):
-
-```markdown
-## Deviations Log
-
-### D[N]: [Brief Decision Title] - [YYYY-MM-DD]
-- **Category:** [Uncertainty Resolved | Scope Adjusted | Pattern Discovered | Constraint Identified | API Contract Defined]
-- **Discovery:** [What was found that differed from spec/plan]
-- **Spec/Plan Said:** [Quote or summary of original requirement]
-- **Decision Made:** [What was actually implemented]
-- **Rationale:** [Why this choice was made]
-- **User Approved:** [Yes | No - autonomous decision]
-- **Future Phases Affected:** [Phase 2, Phase 3, etc. | None | Unknown]
-```
-
-### Example Entry
-
-```markdown
-### D1: Use Partial Unique Index Instead of Trigger - 2025-12-27
-- **Category:** Uncertainty Resolved
-- **Discovery:** PostgreSQL partial unique indexes are more performant than triggers for conditional uniqueness
-- **Spec/Plan Said:** "Ensure unique workspace slugs per user" (implementation unspecified)
-- **Decision Made:** Used `CREATE UNIQUE INDEX ... WHERE deleted_at IS NULL` instead of trigger-based approach
-- **Rationale:** Partial indexes are database-native, faster, and require less maintenance
-- **User Approved:** Yes
-- **Future Phases Affected:** Phase 3 (migration must preserve index), Phase 5 (cleanup can remove old trigger code)
-```
-
-### Logging Autonomous Decisions
-
-For high-confidence decisions made without user input (e.g., obvious technical choices), still log them but mark as:
-```
-- **User Approved:** No - autonomous decision (high confidence)
-```
 
 ## Orchestrator Responsibilities
 
@@ -254,3 +129,4 @@ When all tasks are complete, run:
 ```
 /dev:4:validate [path-to-tasks]
 ```
+"""

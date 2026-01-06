@@ -23,15 +23,16 @@ BOLD='\033[1m'
 NC='\033[0m' # No Color
 
 print_usage() {
-    echo "Usage: $0 [--claude|--codex|--gemini|--tools|--skills|--all] [--append-agents] [target-directory]"
+    echo "Usage: $0 [--claude|--codex|--gemini|--opencode|--tools|--skills|--all] [--append-agents] [target-directory]"
     echo ""
     echo "Options:"
     echo "  --claude    Install Claude Code configuration only"
     echo "  --codex     Install Codex configuration only"
     echo "  --gemini    Install Gemini CLI configuration only"
+    echo "  --opencode  Install OpenCode configuration only"
     echo "  --tools     Install CLI tools only (e.g., ltui)"
     echo "  --skills    Install Claude skills only (to ~/.claude/skills/)"
-    echo "  --all       Install everything: Claude, Codex, Gemini, tools, and skills (default)"
+    echo "  --all       Install everything: Claude, Codex, Gemini, OpenCode, tools, and skills (default)"
     echo "  --append-agents"
     echo "             Ensure project-level context files (AGENTS.md, GEMINI.md) exist."
     echo "             If they exist but are missing core sections (Fidelity rules, Personas),"
@@ -41,6 +42,7 @@ print_usage() {
     echo "  $0 --claude                        # Install Claude to current directory"
     echo "  $0 --codex ~/my-project            # Install Codex to ~/my-project"
     echo "  $0 --gemini ~/my-project           # Install Gemini to ~/my-project"
+    echo "  $0 --opencode ~/my-project         # Install OpenCode to ~/my-project"
     echo "  $0 --tools                         # Install CLI tools globally"
     echo "  $0 --skills                        # Install Claude skills globally"
     echo "  $0 --codex --append-agents ~/proj  # Install Codex and ensure AGENTS.md in ~/proj"
@@ -865,6 +867,45 @@ install_codex() {
     fi
 }
 
+install_opencode() {
+    local target_root="$1"
+    local target="$target_root/.opencode"
+    local is_update=false
+
+    # Ensure project-level AGENTS.md / house rules if requested
+    ensure_project_agents "$target_root"
+
+    # Detect if this is an update
+    if [ -d "$target" ]; then
+        is_update=true
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Updating OpenCode Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Updating OpenCode configuration at $target${NC}"
+    else
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}  Installing OpenCode Configuration${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo -e "${GREEN}Installing OpenCode configuration to $target${NC}"
+        mkdir -p "$target"
+    fi
+
+    # Install commands (remove first to ensure clean state)
+    echo "  - Installing commands..."
+    if [ -d "$target/commands" ]; then
+        rm -rf "$target/commands"
+    fi
+    cp -r "$REPO_ROOT/opencode/commands" "$target/"
+
+    if [ "$is_update" = true ]; then
+        echo -e "${GREEN}✓ OpenCode update complete${NC}"
+    else
+        echo -e "${GREEN}✓ OpenCode installation complete${NC}"
+    fi
+}
+
 install_gemini() {
     local target_root="$1"
     local target="$target_root/.gemini"
@@ -920,7 +961,7 @@ install_gemini() {
 # Argument parsing
 while [ "$#" -gt 0 ]; do
     case "$1" in
-        --claude|--codex|--gemini|--tools|--skills|--all)
+        --claude|--codex|--gemini|--opencode|--tools|--skills|--all)
             INSTALL_MODE="$1"
             shift
             ;;
@@ -956,6 +997,9 @@ case "$INSTALL_MODE" in
     --gemini)
         install_gemini "$TARGET_DIR"
         ;;
+    --opencode)
+        install_opencode "$TARGET_DIR"
+        ;;
     --tools)
         install_tools
         ;;
@@ -968,6 +1012,8 @@ case "$INSTALL_MODE" in
         install_codex "$TARGET_DIR"
         echo ""
         install_gemini "$TARGET_DIR"
+        echo ""
+        install_opencode "$TARGET_DIR"
         echo ""
         install_tools
         echo ""
