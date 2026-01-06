@@ -899,6 +899,13 @@ install_opencode() {
     fi
     cp -r "$REPO_ROOT/opencode/commands" "$target/"
 
+    # Install agents (remove first to ensure clean state)
+    echo "  - Installing agents..."
+    if [ -d "$target/agents" ]; then
+        rm -rf "$target/agents"
+    fi
+    cp -r "$REPO_ROOT/opencode/agents" "$target/"
+
     if [ "$is_update" = true ]; then
         echo -e "${GREEN}✓ OpenCode update complete${NC}"
     else

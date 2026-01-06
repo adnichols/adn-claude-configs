@@ -1,6 +1,6 @@
 ---
 description: Post-implementation verification against task list
-argument-hint: [task file path]
+argument-hint: "[task file path]"
 ---
 
 # Validate Implementation

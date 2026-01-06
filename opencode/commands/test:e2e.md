@@ -5,7 +5,7 @@ argument-hint: "[test pattern, grep filter, or empty for full suite]"
 
 # Run Playwright E2E Tests
 
-Execute Playwright tests using a dedicated **read-only subagent** that captures full output and provides detailed results.
+Execute Playwright tests and provide detailed results.
 
 ## Input
 
@@ -15,29 +15,25 @@ The user may provide test pattern, grep filter, or empty for full suite.
 
 ## Process
 
-### Step 1: Spawn Test Runner Subagent
+### Step 1: Run Tests
 
-Use the Task tool to spawn a `@playwright-runner` subagent:
+Execute Playwright tests using the bash tool:
 
-```
-Task: Run Playwright e2e tests and report results.
-
-Arguments: $ARGUMENTS
-
-Execute the Playwright test suite with the given arguments (or full suite if none provided).
-Capture ALL output - do not truncate error messages or stack traces.
-Return a detailed report of results including:
-- Summary of pass/fail/skip counts
-- Complete error details for each failure
-- File:line locations for all failures
-- Analysis of any patterns in failures
-
-IMPORTANT: You are read-only. Do NOT attempt to fix any failures.
+```bash
+npx playwright test $ARGUMENTS
 ```
 
-### Step 2: Receive Results
+If that fails, try the project's test script:
 
-The subagent will return a structured test report. Review it for:
+```bash
+npm test $ARGUMENTS
+```
+
+Use a timeout of 300000ms (5 minutes) to allow full test suite completion.
+
+### Step 2: Capture and Analyze Results
+
+Review the output for:
 
 1. **Overall status** - Did tests pass or fail?
 2. **Failure details** - What specifically failed and why?
@@ -50,15 +46,6 @@ Summarize the test results for the user, including:
 - High-level pass/fail status
 - Key failures with context
 - Suggested next steps (if failures exist)
-
-## Why a Subagent?
-
-This command uses a dedicated subagent because:
-
-1. **Full Output Capture**: The subagent watches ALL Playwright output without shell piping issues
-2. **Isolation**: Test execution happens in a separate context, preserving parent context
-3. **Read-Only Safety**: The subagent cannot accidentally modify code while investigating
-4. **Structured Return**: Results come back in a parseable format, not raw console output
 
 ## Examples
 

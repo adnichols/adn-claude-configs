@@ -31,8 +31,25 @@ Launch ALL THREE reviewers in parallel using a single message with multiple tool
 
 **Claude (Task agent):**
 ```
-Use Task tool with subagent_type=multi-reviewer
-Prompt: "Review the specification at {spec-path} and write your structured review to thoughts/reviews/{spec-name}-claude.md"
+Use Task tool with agent specification:
+
+```
+Task(
+  subagent_type="multi-reviewer",
+  description="Review spec and write feedback",
+  prompt=f"""Read the specification at {spec_path}.
+
+Write a structured review to {output_path}.
+
+Your review must:
+- Be critical and identify problems, not validate
+- Explore codebase for context before providing feedback
+- Include severity levels (Critical/Major/Minor)
+- Provide specific file references in the spec
+- List questions that need stakeholder input
+
+Use the exact format from the multi-reviewer agent brief."""
+)
 ```
 
 **Codex (shell wrapper):**

@@ -1,6 +1,6 @@
 ---
 description: Integrate feedback from multi-agent review into specification
-argument-hint: <path to specification>
+argument-hint: "<path to specification>"
 ---
 
 # Integrate Multi-Agent Review Feedback

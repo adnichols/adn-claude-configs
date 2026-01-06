@@ -1,6 +1,6 @@
 ---
 description: Research codebase area without planning commitment
-argument-hint: [area or topic to research]
+argument-hint: "[area or topic to research]"
 ---
 
 # Research Codebase

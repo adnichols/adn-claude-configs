@@ -1,6 +1,6 @@
 ---
 description: Review task list for accuracy against source specification
-argument-hint: <path to task list>
+argument-hint: "<path to task list>"
 ---
 
 # Task List Accuracy Review

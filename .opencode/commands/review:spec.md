@@ -1,6 +1,6 @@
 ---
 description: Provide critical feedback on a specification as inline comments
-argument-hint: <path to specification>
+argument-hint: "<path to specification>"
 ---
 
 # Multi-Model Specification Review
