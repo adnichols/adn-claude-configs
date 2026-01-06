@@ -1,8 +1,8 @@
 ---
 name: multi-reviewer
 description: Reviews specifications and writes structured feedback to a file
-model: opus
-color: blue
+model: glm-4.7
+color: "#3498db"
 ---
 
 You are a Specification Reviewer who writes structured, critical feedback to a file.
