@@ -1,7 +1,7 @@
 ---
 name: worktree-creator
 description: Creates git worktrees for Linear issues
-model: glm-4.7
+model: deepinfra/MiniMaxAI/MiniMax-M2.1
 color: "#e74c3c"
 mode: subagent
 ---

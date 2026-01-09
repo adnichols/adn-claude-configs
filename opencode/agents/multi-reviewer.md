@@ -1,7 +1,7 @@
 ---
 name: multi-reviewer
 description: Reviews specifications and writes structured feedback to a file
-model: glm-4.7
+model: opencode/gpt-5.2
 color: "#3498db"
 mode: subagent
 ---
