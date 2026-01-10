@@ -5,7 +5,7 @@ argument-hint: "[Files]"
 
 # Instructions
 
-Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses developer-fidelity and quality-reviewer-fidelity agents to implement only what's explicitly specified, without additions or scope expansions.
+Process the task list using the fidelity-preserving approach to maintain exact scope as specified in the source document. This command uses `developer` and `quality-reviewer` agents to implement only what's explicitly specified, without additions or scope expansions.
 $ARGUMENTS. Think harder.
 
 ## CRITICAL: Orchestrator-Only Mode
@@ -28,8 +28,8 @@ Before starting task implementation:
    - Complete all Phase 0 subtasks (version checks, smoke tests, documentation)
    - Only proceed to Phase 1+ after Phase 0 is fully validated and committed
 3. **Use Fidelity Agents:** Always use fidelity-preserving agents for implementation:
-   - Developer agent: `@developer-fidelity`
-   - Quality reviewer: `@quality-reviewer-fidelity`
+    - Developer agent: `developer`
+    - Quality reviewer: `quality-reviewer`
 4. **Apply Only Specified Validation:** Include only the testing and validation explicitly specified in the source document:
    - Review source document for testing requirements
    - Implement only specified security measures
@@ -41,7 +41,7 @@ When processing tasks, use the Task tool to spawn specialized sub-agents for imp
 
 ### For Implementation Tasks
 
-Delegate actual code implementation to the **developer-fidelity** agent using the Task tool:
+Delegate actual code implementation to the **`developer`** agent using the Task tool:
 
 **Task prompt template:**
 ```
@@ -59,7 +59,7 @@ IMPORTANT: Implement ONLY what's specified above. No additional features, tests,
 
 ### For Quality Reviews
 
-When all subtasks under a parent are complete, spawn a **quality-reviewer-fidelity** agent via Task tool:
+When all subtasks under a parent are complete, spawn a **`quality-reviewer`** agent via Task tool:
 
 **Task prompt template:**
 ```
@@ -87,11 +87,11 @@ The parent agent (you) handles coordination tasks directly:
 ### What You MUST Delegate (NEVER Do Directly)
 
 **All code changes go to sub-agents.** This includes:
-- Creating new files (use developer-fidelity agent)
-- Editing existing code (use developer-fidelity agent)
-- Writing tests (use developer-fidelity agent)
-- Refactoring (use developer-fidelity agent)
-- Code review (use quality-reviewer-fidelity agent)
+- Creating new files (use `developer` agent)
+- Editing existing code (use `developer` agent)
+- Writing tests (use `developer` agent)
+- Refactoring (use `developer` agent)
+- Code review (use `quality-reviewer` agent)
 
 If you find yourself about to use Edit/Write/MultiEdit on a code file, STOP and spawn a sub-agent instead.
 
@@ -137,7 +137,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
 - Do not proceed with tasks unless you are on a git branch other than main
 - If needed, create a branch for the phase of work you are implementing
   - Parent agent (you) are responsible for git branch creation, not subagents
-- **One sub-task at a time:** Spawn a **developer-fidelity** sub-agent via Task tool for each subtask. Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
+- **One sub-task at a time:** Spawn a **`developer`** sub-agent via Task tool for each subtask. Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
 - **Completion protocol:**
 
   1. When a **sub-agent completes** a subtask, immediately mark it as completed by changing `[ ]` to `[x]`.
@@ -149,7 +149,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
   - **First**: Run standard validation checks:
     - Always: lint, build, secrets scan, unit tests
   - **Only if all validations pass**: Stage changes (`git add .`)
-  - **Quality Review**: Spawn a **quality-reviewer-fidelity** sub-agent via Task tool with the source specification and list of modified files for fidelity validation
+  - **Quality Review**: Spawn a **`quality-reviewer`** sub-agent via Task tool with the source specification and list of modified files for fidelity validation
   - **Clean up**: Remove any temporary files and temporary code before committing
   - **Commit**: Use a descriptive commit message that:
 
@@ -335,7 +335,7 @@ As the orchestrator, you must:
    - Mark the **parent task** `[x]` once **all** its subtasks are `[x]`
 4. **Manage git** - Handle branching, staging, and commits directly
 5. **Run validations** - Execute lint, build, and test commands directly via Bash
-6. **Coordinate quality reviews** - Spawn quality-reviewer-fidelity after phases complete
+6. **Coordinate quality reviews** - Spawn `quality-reviewer` after phases complete
 7. **Maintain context** - Keep "Relevant Files" section accurate based on sub-agent reports
 8. **Gate progress** - Pause for user approval unless NOSUBCONF is specified
 9. **CRITICAL CHECKPOINT:** After each subtask, immediately declare completion, update markdown, confirm the update, and request permission to continue
