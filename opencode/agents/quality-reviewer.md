@@ -1,7 +1,6 @@
 ---
 name: quality-reviewer
 description: Reviews code for real issues (security, data loss, performance)
-model: MiniMax-M2.1
 color: "#e74c3c"
 mode: subagent
 ---

@@ -1,7 +1,6 @@
 ---
 name: developer
 description: Implements your specifications with tests - delegate for writing code
-model: MiniMax-M2.1
 color: "#3498db"
 mode: subagent
 ---
