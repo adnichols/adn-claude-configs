@@ -22,10 +22,6 @@ This directory contains a comprehensive set of commands that support a complete 
 7. **`doc:fetch-batch.md`** - Batch fetch documentation from markdown lists
 8. **`doc:update.md`** - Post-implementation documentation generation
 
-### Simplification Commands
-9. **`simplify:1:create-plan.md`** - Generate code simplification plans
-10. **`simplify:2:process-plan.md`** - Execute approved simplification plans
-
 ### Git Utility Commands
 11. **`cmd:commit-push.md`** - Commit all changes and push to GitHub
 12. **`cmd:create-pr.md`** - Create a pull request
@@ -51,16 +47,7 @@ This directory contains a comprehensive set of commands that support a complete 
 - Process tasks using unified task processor with fidelity-preserving agents
 - Commit and create pull request
 
-### Workflow 3: Code Simplification
-```
-/simplify:1:create-plan → [Review/Approval] → /simplify:2:process-plan → /cmd:commit-push
-```
-- Analyze codebase for simplification opportunities
-- Get approval for changes from quality-reviewer or stakeholders
-- Execute the approved simplification plan
-- Commit changes
-
-### Workflow 4: Documentation Management
+### Workflow 3: Documentation Management
 ```
 /doc:fetch [library] → [Development] → /doc:update
 ```
@@ -73,7 +60,7 @@ This directory contains a comprehensive set of commands that support a complete 
 ### Unified Task Processing
 The **`/3:process-tasks`** command works for both PRD and spec workflows:
 - **Auto-detects** source type (PRD vs specification) from YAML front-matter
-- Uses fidelity-preserving agents (developer-fidelity, quality-reviewer-fidelity)
+- Uses fidelity-preserving agents (developer, quality-reviewer)
 - Supports complexity levels (simple/standard/comprehensive) for specs
 - Supports both "Relevant Files" (PRD) and "Implementation Files" (spec) sections
 - Validates based on source document requirements
@@ -82,7 +69,7 @@ The **`/3:process-tasks`** command works for both PRD and spec workflows:
 All workflow commands follow strict fidelity preservation:
 - **Exact Scope Implementation**: Build only what's specified in source documents
 - **No Scope Creep**: Zero additions beyond explicit requirements
-- **Fidelity Agents**: Always use developer-fidelity and quality-reviewer-fidelity
+- **Fidelity Agents**: Always use developer and quality-reviewer
 - **Question Ambiguity**: Ask for clarification rather than making assumptions
 - **Source Reference**: Constantly reference source document to prevent drift
 
@@ -141,12 +128,6 @@ All commands use consistent:
 - Generated after feature completion
 - Uses technical-writer agent
 
-**`/simplify:1:create-plan`** & `/simplify:2:process-plan`**:
-- Code complexity reduction
-- Technical debt management
-- Refactoring legacy systems
-- Performance optimization through simplification
-
 **`/cmd:commit-push`**:
 - Commit all changes with conventional commit format
 - Push to remote repository
@@ -162,20 +143,6 @@ All commands use consistent:
 - Creates dedicated branch and worktree for isolated development
 - Copies local config and MCP servers
 - Uses Linear CLI for issue metadata
-
-## Fidelity-Preserving Agents
-
-### developer-fidelity
-- Implements EXACTLY what's specified in source documents
-- Adds NO tests, security, or features beyond specification requirements
-- Questions ambiguity rather than making assumptions
-- Used by all task processing workflows
-
-### quality-reviewer-fidelity
-- Reviews implementation against specification requirements ONLY
-- Does NOT require additional security, testing, or compliance beyond specification
-- Validates fidelity preservation and prevents scope creep
-- Used by all task processing workflows
 
 ## Best Practices
 
@@ -199,8 +166,6 @@ commands/
 ├── doc:fetch.md
 ├── doc:fetch-batch.md
 ├── doc:update.md
-├── simplify:1:create-plan.md
-├── simplify:2:process-plan.md
 ├── cmd:commit-push.md
 ├── cmd:create-pr.md
 ├── cmd:start-linear-issue.md
@@ -242,7 +207,6 @@ Commands use colon-delimited namespacing:
 - `prd:[phase]:` - PRD workflow commands (e.g., `prd:1:create-prd`)
 - `spec:[phase]:` - Specification workflow commands (e.g., `spec:1:create-spec`)
 - `doc:` - Documentation commands
-- `simplify:[phase]:` - Code simplification commands (e.g., `simplify:1:create-plan`)
 - `cmd:` - Git and utility commands (e.g., `cmd:commit-push`, `cmd:start-linear-issue`)
 - `[number]:` - Cross-workflow phase commands (e.g., `3:process-tasks`)
 
