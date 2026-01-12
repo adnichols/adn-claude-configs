@@ -1,0 +1,70 @@
+{
+  "plugin": ["opencode-antigravity-auth@latest"],
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "@playwright/mcp@latest"],
+      "enabled": true
+    },
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena-mcp-server",
+        "--enable-web-dashboard",
+        "false"
+      ],
+      "enabled": true,
+      "environment": {
+        // Optional: add paths or variables Serena needs
+      },
+      "timeout": 10000
+    }
+  },
+  "provider": {
+    "synthetic": {
+      "models": {
+        "hf:zai-org/GLM-4.7": {
+          "variants": {
+            "thinking": {
+              "description": "Deep reasoning with Preserved Thinking",
+              "temperature": 1.0,
+              "extra_body": {
+                "thinking": {
+                  "reasoningEffort": "high",
+                  "type": "enabled",
+                  "clear_thinking": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "deepinfra": {
+      "models": {
+        "MiniMaxAI/MiniMax-M2.1": {
+          "name": "MiniMaxAI/MiniMax-M2.1"
+        },
+        "zai-org/GLM-4.7": {
+          "variants": {
+            "thinking": {
+              "description": "Deep reasoning with Preserved Thinking",
+              "temperature": 1.0,
+              "extra_body": {
+                "thinking": {
+                  "reasoningEffort": "high",
+                  "type": "enabled",
+                  "clear_thinking": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

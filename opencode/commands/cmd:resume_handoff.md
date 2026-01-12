@@ -8,6 +8,9 @@ You are tasked with resuming work from a handoff document through an interactive
 
 ## Initial Response
 
+If provided, the handoff document is below, along with any additional instructions:
+$ARGUMENTS
+
 When this command is invoked:
 
 1. **If the path to a handoff document was provided**:
