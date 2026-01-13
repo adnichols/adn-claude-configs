@@ -871,6 +871,7 @@ install_opencode() {
     local target_root="$1"
     local target="$target_root/.opencode"
     local is_update=false
+    local opencode_config_dir="$HOME/.config/opencode"
 
     # Ensure project-level AGENTS.md / house rules if requested
     ensure_project_agents "$target_root"
@@ -878,19 +879,45 @@ install_opencode() {
     # Detect if this is an update
     if [ -d "$target" ]; then
         is_update=true
-        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════════════════════════════${NC}"
         echo -e "${GREEN}  Updating OpenCode Configuration${NC}"
-        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════════════════════════════${NC}"
         echo ""
         echo -e "${GREEN}Updating OpenCode configuration at $target${NC}"
     else
-        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════════════════════════════${NC}"
         echo -e "${GREEN}  Installing OpenCode Configuration${NC}"
-        echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${GREEN}═══════════════════════════════════════════════════════════════════════════════${NC}"
         echo ""
         echo -e "${GREEN}Installing OpenCode configuration to $target${NC}"
         mkdir -p "$target"
     fi
+
+    # Create OpenCode config directory structure
+    echo "  - Creating OpenCode config directory structure..."
+    mkdir -p "$opencode_config_dir"
+    mkdir -p "$opencode_config_dir/prompts"
+    mkdir -p "$opencode_config_dir/skill/playwright-skill/lib"
+    mkdir -p "$opencode_config_dir/plugin"
+
+    # Install configuration file
+    echo "  - Installing OpenCode configuration..."
+    cp "$REPO_ROOT/opencode/config-template.json" "$opencode_config_dir/opencode.json"
+
+    # Install prompts
+    echo "  - Installing OpenCode prompts..."
+    if [ -d "$opencode_config_dir/prompts" ]; then
+        rm -rf "$opencode_config_dir/prompts"
+    fi
+    mkdir -p "$opencode_config_dir/prompts"
+    cp "$REPO_ROOT/opencode/prompts/glm-reasoning.md" "$opencode_config_dir/prompts/"
+
+    # Install skills
+    echo "  - Installing OpenCode skills..."
+    if [ -d "$opencode_config_dir/skill/playwright-skill" ]; then
+        rm -rf "$opencode_config_dir/skill/playwright-skill"
+    fi
+    cp -r "$REPO_ROOT/opencode/skill/playwright-skill" "$opencode_config_dir/skill/"
 
     # Install commands (remove first to ensure clean state)
     echo "  - Installing commands..."
@@ -906,11 +933,18 @@ install_opencode() {
     fi
     cp -r "$REPO_ROOT/opencode/agents" "$target/"
 
+    # Install documentation to target root
+    echo "  - Installing documentation..."
+    cp "$REPO_ROOT/opencode/OPENCODE_ONBOARDING.md" "$target_root/"
+
     if [ "$is_update" = true ]; then
         echo -e "${GREEN}✓ OpenCode update complete${NC}"
     else
         echo -e "${GREEN}✓ OpenCode installation complete${NC}"
     fi
+    echo ""
+    echo "Note: OpenCode configuration installed to $opencode_config_dir"
+    echo "      Documentation installed to $target_root/OPENCODE_ONBOARDING.md"
 }
 
 install_gemini() {
