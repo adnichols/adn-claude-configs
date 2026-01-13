@@ -38,6 +38,11 @@ print_usage() {
     echo "             If they exist but are missing core sections (Fidelity rules, Personas),"
     echo "             append them from templates. Also offers to append ltui guidance."
     echo ""
+    echo "Notes:"
+    echo "  - OpenCode installs opencode.json to the repo root (prompts/skills go to ~/.config/opencode)"
+    echo "  - Installation will prompt before overwriting existing config files (requires explicit permission)"
+    echo "  - In non-interactive mode, existing configs are preserved automatically"
+    echo ""
     echo "Examples:"
     echo "  $0 --claude                        # Install Claude to current directory"
     echo "  $0 --codex ~/my-project            # Install Codex to ~/my-project"
@@ -587,6 +592,53 @@ migrate_legacy_directories() {
     echo ""
 }
 
+ask_overwrite_permission() {
+    local target="$1"
+    local description="$2"
+
+    if [ -e "$target" ]; then
+        echo ""
+        echo -e "${YELLOW}  ═══════════════════════════════════════════════════════════════${NC}"
+        echo -e "${YELLOW}  ⚠️  Existing configuration found${NC}"
+        echo -e "${YELLOW}  ═══════════════════════════════════════════════════════════════${NC}"
+        echo "  Location: $target"
+        echo "  Type: $description"
+        echo ""
+        
+        if [ -t 0 ]; then
+            printf "  Overwrite existing configuration? [Y/n/skip] "
+            read -r reply
+            case "$reply" in
+                ""|"Y"|"y")
+                    echo -e "  ${GREEN}✓ Overwrite confirmed${NC}"
+                    echo -e "${YELLOW}  ═══════════════════════════════════════════════════════════════${NC}"
+                    echo ""
+                    return 0
+                    ;;
+                *"skip"*|"n")
+                    echo -e "  ${YELLOW}→ Skipping overwrite (preserving existing configuration)${NC}"
+                    echo -e "${YELLOW}  ═══════════════════════════════════════════════════════════════${NC}"
+                    echo ""
+                    return 1
+                    ;;
+                *)
+                    echo -e "  ${YELLOW}→ Skipping overwrite (preserving existing configuration)${NC}"
+                    echo -e "${YELLOW}  ═══════════════════════════════════════════════════════════════${NC}"
+                    echo ""
+                    return 1
+                    ;;
+            esac
+        else
+            echo -e "  ${YELLOW}→ Non-interactive mode: preserving existing configuration${NC}"
+            echo "  (Re-run with interactive shell to allow overwrite)"
+            echo -e "${YELLOW}  ═══════════════════════════════════════════════════════════════${NC}"
+            echo ""
+            return 1
+        fi
+    fi
+    return 0
+}
+
 sync_codex_prompts() {
     local destination="$1"
     local label="$2"
@@ -900,24 +952,39 @@ install_opencode() {
     mkdir -p "$opencode_config_dir/skill/playwright-skill/lib"
     mkdir -p "$opencode_config_dir/plugin"
 
-    # Install configuration file
+    # Install configuration file to repo root
     echo "  - Installing OpenCode configuration..."
-    cp "$REPO_ROOT/opencode/config-template.json" "$opencode_config_dir/opencode.json"
+    if ask_overwrite_permission "$target_root/opencode.json" "OpenCode configuration file"; then
+        cp "$REPO_ROOT/opencode/config-template.json" "$target_root/opencode.json"
+    else
+        echo "  - Preserved existing opencode.json"
+    fi
 
     # Install prompts
     echo "  - Installing OpenCode prompts..."
-    if [ -d "$opencode_config_dir/prompts" ]; then
-        rm -rf "$opencode_config_dir/prompts"
+    if [ -d "$opencode_config_dir/prompts" ] && [ "$(ls -A $opencode_config_dir/prompts 2>/dev/null)" ]; then
+        if ask_overwrite_permission "$opencode_config_dir/prompts" "OpenCode prompts directory"; then
+            rm -rf "$opencode_config_dir/prompts"
+        else
+            echo "  - Preserved existing prompts directory"
+        fi
     fi
     mkdir -p "$opencode_config_dir/prompts"
-    cp "$REPO_ROOT/opencode/prompts/glm-reasoning.md" "$opencode_config_dir/prompts/"
+    cp "$REPO_ROOT/opencode/prompts/glm-reasoning.md" "$opencode_config_dir/prompts/" 2>/dev/null || true
 
     # Install skills
     echo "  - Installing OpenCode skills..."
     if [ -d "$opencode_config_dir/skill/playwright-skill" ]; then
-        rm -rf "$opencode_config_dir/skill/playwright-skill"
+        if ask_overwrite_permission "$opencode_config_dir/skill/playwright-skill" "OpenCode playwright-skill directory"; then
+            rm -rf "$opencode_config_dir/skill/playwright-skill"
+        else
+            echo "  - Preserved existing playwright-skill directory"
+        fi
     fi
-    cp -r "$REPO_ROOT/opencode/skill/playwright-skill" "$opencode_config_dir/skill/"
+    mkdir -p "$opencode_config_dir/skill/playwright-skill"
+    if [ -d "$REPO_ROOT/opencode/skill/playwright-skill" ]; then
+        cp -r "$REPO_ROOT/opencode/skill/playwright-skill"/* "$opencode_config_dir/skill/playwright-skill/"
+    fi
 
     # Install commands (remove first to ensure clean state)
     echo "  - Installing commands..."
@@ -943,7 +1010,8 @@ install_opencode() {
         echo -e "${GREEN}✓ OpenCode installation complete${NC}"
     fi
     echo ""
-    echo "Note: OpenCode configuration installed to $opencode_config_dir"
+    echo "Note: OpenCode configuration installed to $target_root/opencode.json"
+    echo "      Prompts and skills remain in $HOME/.config/opencode"
     echo "      Documentation installed to $target_root/OPENCODE_ONBOARDING.md"
 }
 
