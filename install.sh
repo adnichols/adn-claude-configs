@@ -39,8 +39,8 @@ print_usage() {
     echo "             append them from templates. Also offers to append ltui guidance."
     echo ""
     echo "Notes:"
-    echo "  - OpenCode installs opencode.json to the repo root (prompts/skills go to ~/.config/opencode)"
-    echo "  - Installation will prompt before overwriting existing config files (requires explicit permission)"
+    echo "  - OpenCode does NOT auto-install opencode.json (copy config-template.json manually if needed)"
+    echo "  - Prompts and skills are installed to ~/.config/opencode with overwrite protection"
     echo "  - In non-interactive mode, existing configs are preserved automatically"
     echo ""
     echo "Examples:"
@@ -952,14 +952,6 @@ install_opencode() {
     mkdir -p "$opencode_config_dir/skill/playwright-skill/lib"
     mkdir -p "$opencode_config_dir/plugin"
 
-    # Install configuration file to repo root
-    echo "  - Installing OpenCode configuration..."
-    if ask_overwrite_permission "$target_root/opencode.json" "OpenCode configuration file"; then
-        cp "$REPO_ROOT/opencode/config-template.json" "$target_root/opencode.json"
-    else
-        echo "  - Preserved existing opencode.json"
-    fi
-
     # Install prompts
     echo "  - Installing OpenCode prompts..."
     if [ -d "$opencode_config_dir/prompts" ] && [ "$(ls -A $opencode_config_dir/prompts 2>/dev/null)" ]; then
@@ -1010,8 +1002,9 @@ install_opencode() {
         echo -e "${GREEN}✓ OpenCode installation complete${NC}"
     fi
     echo ""
-    echo "Note: OpenCode configuration installed to $target_root/opencode.json"
-    echo "      Prompts and skills remain in $HOME/.config/opencode"
+    echo "Note: OpenCode configuration file opencode.json is not auto-installed"
+    echo "      Copy opencode/config-template.json to your repo root and customize as needed"
+    echo "      Prompts and skills installed to $HOME/.config/opencode"
     echo "      Documentation installed to $target_root/OPENCODE_ONBOARDING.md"
 }
 
