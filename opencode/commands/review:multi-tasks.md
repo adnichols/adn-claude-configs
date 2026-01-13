@@ -1,11 +1,11 @@
 ---
-description: Launch parallel multi-agent task list review (GLM, Kimi, MiniMax)
+description: Launch parallel multi-agent task list review (Qwen, Kimi, DeepSeek)
 argument-hint: <path to task list>
 ---
 
 # Multi-Agent Task List Review
 
-Orchestrate parallel task list reviews from GLM 4.7, Kimi K2, and MiniMax M2.
+Orchestrate parallel task list reviews from Qwen3-Thinking, Kimi K2, and DeepSeek.
 
 **Task list to review:** $ARGUMENTS
 
@@ -18,9 +18,9 @@ First, verify the task list file exists:
 - Extract the **Source Specification** path from the task list header
 - Verify the source specification file exists and is readable
 - Generate unique comment file paths for each reviewer:
-  - `{task_path}.review-glm.md`
+  - `{task_path}.review-qwen.md`
   - `{task_path}.review-kimi.md`
-  - `{task_path}.review-minimax.md`
+  - `{task_path}.review-deepseek.md`
 
 ### 2. Check for Existing Review Files
 
@@ -33,16 +33,16 @@ Verify that no previous review session is in progress:
 
 Launch ALL THREE reviewers in parallel using a single message with multiple Task tool calls:
 
-**GLM 4.7 Reviewer:**
+**Qwen3-Thinking Reviewer:**
 ```
 Task(
-  subagent_type="reviewer-glm",
-  description="Review task list with GLM 4.7 thinking",
-  prompt=f"""You are [GLM Reviewer] reviewing a TASK LIST document.
+  subagent_type="reviewer-qwen",
+  description="Review task list with Qwen3-Thinking",
+  prompt=f"""You are [Qwen Reviewer] reviewing a TASK LIST document.
 
 **Task list to review:** {task_path}
 **Source specification:** {spec_path}
-**Comment file to write:** {glm_comment_file}
+**Comment file to write:** {qwen_comment_file}
 
 **Review Process:**
 1. Read the task list completely. Extract the source specification path from the task list header.
@@ -57,22 +57,22 @@ Task(
    - MISINTERPRETATION: Tasks misunderstanding the spec's intent
    - CONTRADICTION: Task conflicts with another part of the spec
    - WRONG REFERENCE: File path, API, or component reference is wrong
-4. Write critical feedback to the comment file at {glm_comment_file}.
+4. Write critical feedback to the comment file at {qwen_comment_file}.
 5. Format each comment as:
-   <!-- [GLM Reviewer] LINE {line_number}: INCORRECT: {explanation} -->
-   <!-- [GLM Reviewer] LINE {line_number}: SCOPE DRIFT: {explanation} -->
-   <!-- [GLM Reviewer] LINE {line_number}: MISINTERPRETATION: {explanation} -->
-   <!-- [GLM Reviewer] LINE {line_number}: CONTRADICTION: {explanation} -->
-   <!-- [GLM Reviewer] LINE {line_number}: WRONG REFERENCE: {explanation} -->
+   <!-- [Qwen Reviewer] LINE {line_number}: INCORRECT: {explanation} -->
+   <!-- [Qwen Reviewer] LINE {line_number}: SCOPE DRIFT: {explanation} -->
+   <!-- [Qwen Reviewer] LINE {line_number}: MISINTERPRETATION: {explanation} -->
+   <!-- [Qwen Reviewer] LINE {line_number}: CONTRADICTION: {explanation} -->
+   <!-- [Qwen Reviewer] LINE {line_number}: WRONG REFERENCE: {explanation} -->
 6. Replace {line_number} with the actual line number in the task list that your comment references.
 7. Do NOT comment about missing tasks (those can be filled in from spec during implementation).
 8. Do NOT modify or delete comments from other reviewers.
-9. IMPORTANT: Do NOT modify the original task list file. Only write your comments to {glm_comment_file}.
-10. IMPORTANT: Write ALL your comments to a single file at {glm_comment_file}.
+9. IMPORTANT: Do NOT modify the original task list file. Only write your comments to {qwen_comment_file}.
+10. IMPORTANT: Write ALL your comments to a single file at {qwen_comment_file}.
 
 This review is about accuracy, not completeness. Focus on details that would cause wrong implementations.
 
-Return when you have completed your review and written all comments to {glm_comment_file}."""
+Return when you have completed your review and written all comments to {qwen_comment_file}."""
 )
 ```
 
@@ -119,16 +119,16 @@ Return when you have completed your review and written all comments to {kimi_com
 )
 ```
 
-**MiniMax M2 Reviewer:**
+**DeepSeek Reviewer:**
 ```
 Task(
-  subagent_type="reviewer-minimax",
-  description="Review task list with MiniMax M2",
-  prompt=f"""You are [MiniMax Reviewer] reviewing a TASK LIST document.
+  subagent_type="reviewer-deepseek",
+  description="Review task list with DeepSeek",
+  prompt=f"""You are [DeepSeek Reviewer] reviewing a TASK LIST document.
 
 **Task list to review:** {task_path}
 **Source specification:** {spec_path}
-**Comment file to write:** {minimax_comment_file}
+**Comment file to write:** {deepseek_comment_file}
 
 **Review Process:**
 1. Read the task list completely. Extract the source specification path from the task list header.
@@ -143,22 +143,22 @@ Task(
    - MISINTERPRETATION: Tasks misunderstanding the spec's intent
    - CONTRADICTION: Task conflicts with another part of the spec
    - WRONG REFERENCE: File path, API, or component reference is wrong
-4. Write critical feedback to the comment file at {minimax_comment_file}.
+4. Write critical feedback to the comment file at {deepseek_comment_file}.
 5. Format each comment as:
-   <!-- [MiniMax Reviewer] LINE {line_number}: INCORRECT: {explanation} -->
-   <!-- [MiniMax Reviewer] LINE {line_number}: SCOPE DRIFT: {explanation} -->
-   <!-- [MiniMax Reviewer] LINE {line_number}: MISINTERPRETATION: {explanation} -->
-   <!-- [MiniMax Reviewer] LINE {line_number}: CONTRADICTION: {explanation} -->
-   <!-- [MiniMax Reviewer] LINE {line_number}: WRONG REFERENCE: {explanation} -->
+   <!-- [DeepSeek Reviewer] LINE {line_number}: INCORRECT: {explanation} -->
+   <!-- [DeepSeek Reviewer] LINE {line_number}: SCOPE DRIFT: {explanation} -->
+   <!-- [DeepSeek Reviewer] LINE {line_number}: MISINTERPRETATION: {explanation} -->
+   <!-- [DeepSeek Reviewer] LINE {line_number}: CONTRADICTION: {explanation} -->
+   <!-- [DeepSeek Reviewer] LINE {line_number}: WRONG REFERENCE: {explanation} -->
 6. Replace {line_number} with the actual line number in the task list that your comment references.
 7. Do NOT comment about missing tasks (those can be filled in from spec during implementation).
 8. Do NOT modify or delete comments from other reviewers.
-9. IMPORTANT: Do NOT modify the original task list file. Only write your comments to {minimax_comment_file}.
-10. IMPORTANT: Write ALL your comments to a single file at {minimax_comment_file}.
+9. IMPORTANT: Do NOT modify the original task list file. Only write your comments to {deepseek_comment_file}.
+10. IMPORTANT: Write ALL your comments to a single file at {deepseek_comment_file}.
 
 This review is about accuracy, not completeness. Focus on details that would cause wrong implementations.
 
-Return when you have completed your review and written all comments to {minimax_comment_file}."""
+Return when you have completed your review and written all comments to {deepseek_comment_file}."""
 )
 ```
 
@@ -172,14 +172,14 @@ Read the comment files and count comments by reviewer:
 
 ```python
 # Read comment files
-glm_content = read_file(glm_comment_file) if file_exists(glm_comment_file) else ""
+qwen_content = read_file(qwen_comment_file) if file_exists(qwen_comment_file) else ""
 kimi_content = read_file(kimi_comment_file) if file_exists(kimi_comment_file) else ""
-minimax_content = read_file(minimax_comment_file) if file_exists(minimax_comment_file) else ""
+deepseek_content = read_file(deepseek_comment_file) if file_exists(deepseek_comment_file) else ""
 
 # Count comments per reviewer
-glm_count = glm_content.count("<!-- [GLM Reviewer]")
+qwen_count = qwen_content.count("<!-- [Qwen Reviewer]")
 kimi_count = kimi_content.count("<!-- [Kimi Reviewer]")
-minimax_count = minimax_content.count("<!-- [MiniMax Reviewer]")
+deepseek_count = deepseek_content.count("<!-- [DeepSeek Reviewer]")
 ```
 
 ### 6. Identify Overlapping Concerns
@@ -192,37 +192,37 @@ def extract_lines(comment_content):
     pattern = r'<!-- \[.*? Reviewer\] LINE (\d+):'
     return sorted([int(line) for line in re.findall(pattern, comment_content)])
 
-glm_lines = extract_lines(glm_content)
+qwen_lines = extract_lines(qwen_content)
 kimi_lines = extract_lines(kimi_content)
-minimax_lines = extract_lines(minimax_content)
+deepseek_lines = extract_lines(deepseek_content)
 
 # Find overlapping line ranges (within 50 lines)
 overlap_threshold = 50
 overlaps = []
-for glm_line in glm_lines:
+for qwen_line in qwen_lines:
     for kimi_line in kimi_lines:
-        if abs(glm_line - kimi_line) < overlap_threshold:
+        if abs(qwen_line - kimi_line) < overlap_threshold:
             overlaps.append({
-                "line_range": f"{min(glm_line, kimi_line)}-{max(glm_line, kimi_line)}",
-                "reviewers": ["GLM Reviewer", "Kimi Reviewer"]
+                "line_range": f"{min(qwen_line, kimi_line)}-{max(qwen_line, kimi_line)}",
+                "reviewers": ["Qwen Reviewer", "Kimi Reviewer"]
             })
 
-# Check GLM<->MiniMax overlaps
-for glm_line in glm_lines:
-    for minimax_line in minimax_lines:
-        if abs(glm_line - minimax_line) < overlap_threshold:
+# Check Qwen<->DeepSeek overlaps
+for qwen_line in qwen_lines:
+    for deepseek_line in deepseek_lines:
+        if abs(qwen_line - deepseek_line) < overlap_threshold:
             overlaps.append({
-                "line_range": f"{min(glm_line, minimax_line)}-{max(glm_line, minimax_line)}",
-                "reviewers": ["GLM Reviewer", "MiniMax Reviewer"]
+                "line_range": f"{min(qwen_line, deepseek_line)}-{max(qwen_line, deepseek_line)}",
+                "reviewers": ["Qwen Reviewer", "DeepSeek Reviewer"]
             })
 
-# Check Kimi<->MiniMax overlaps
+# Check Kimi<->DeepSeek overlaps
 for kimi_line in kimi_lines:
-    for minimax_line in minimax_lines:
-        if abs(kimi_line - minimax_line) < overlap_threshold:
+    for deepseek_line in deepseek_lines:
+        if abs(kimi_line - deepseek_line) < overlap_threshold:
             overlaps.append({
-                "line_range": f"{min(kimi_line, minimax_line)}-{max(kimi_line, minimax_line)}",
-                "reviewers": ["Kimi Reviewer", "MiniMax Reviewer"]
+                "line_range": f"{min(kimi_line, deepseek_line)}-{max(kimi_line, deepseek_line)}",
+                "reviewers": ["Kimi Reviewer", "DeepSeek Reviewer"]
             })
 
 # Remove duplicates (same line range with same reviewers)
@@ -249,9 +249,9 @@ After all reviewers complete, provide a summary:
 ### Reviewer Status
 | Reviewer | Status | Comments Added |
 |----------|--------|----------------|
-| GLM 4.7  | {OK/Failed} | {N} |
+| Qwen3-Thinking  | {OK/Failed} | {N} |
 | Kimi K2  | {OK/Failed} | {N} |
-| MiniMax M2 | {OK/Failed} | {N} |
+| DeepSeek | {OK/Failed} | {N} |
 
 **Total Comments:** {N}
 

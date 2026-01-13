@@ -1,11 +1,11 @@
 ---
-description: Launch parallel multi-agent specification review (GLM, Kimi, MiniMax)
+description: Launch parallel multi-agent specification review (Qwen, Kimi, DeepSeek)
 argument-hint: <path to specification>
 ---
 
 # Multi-Agent Specification Review
 
-Orchestrate parallel specification reviews from GLM 4.7, Kimi K2, and MiniMax M2.
+Orchestrate parallel specification reviews from Qwen3-Thinking, Kimi K2, and DeepSeek.
 
 **Specification to review:** $ARGUMENTS
 
@@ -17,9 +17,9 @@ First, verify the specification file exists:
 - Read the specification to confirm it's accessible
 - Extract the filename (without path and extension) for logging
 - Generate unique comment file paths for each reviewer:
-  - `{spec_path}.review-glm.md`
+  - `{spec_path}.review-qwen.md`
   - `{spec_path}.review-kimi.md`
-  - `{spec_path}.review-minimax.md`
+  - `{spec_path}.review-deepseek.md`
 
 ### 2. Check for Existing Review Files
 
@@ -32,15 +32,15 @@ Verify that no previous review session is in progress:
 
 Launch ALL THREE reviewers in parallel using a single message with multiple Task tool calls:
 
-**GLM 4.7 Reviewer:**
+**Qwen3-Thinking Reviewer:**
 ```
 Task(
-  subagent_type="reviewer-glm",
-  description="Review spec with GLM 4.7 thinking",
-  prompt=f"""You are [GLM Reviewer] reviewing a SPECIFICATION document.
+  subagent_type="reviewer-qwen",
+  description="Review spec with Qwen3-Thinking",
+  prompt=f"""You are [Qwen Reviewer] reviewing a SPECIFICATION document.
 
 **Document to review:** {spec_path}
-**Comment file to write:** {glm_comment_file}
+**Comment file to write:** {qwen_comment_file}
 
 **Review Process:**
 1. Read the specification file completely. Understand:
@@ -55,10 +55,10 @@ Task(
    - Potential conflicts or integration challenges
    - Missing context that affects the specification
 
-3. Write critical feedback to the comment file at {glm_comment_file}.
+3. Write critical feedback to the comment file at {qwen_comment_file}.
 
 4. Format each comment as:
-   <!-- [GLM Reviewer] SECTION "{section_name}": {your critical feedback here. Be specific and actionable.} -->
+   <!-- [Qwen Reviewer] SECTION "{section_name}": {your critical feedback here. Be specific and actionable.} -->
 
 5. Replace {section_name} with the actual section heading from the specification that your comment references. This will help integration place your comment correctly.
 
@@ -74,13 +74,13 @@ Task(
    - Unclear success criteria
    - Scope creep or scope gaps
 
-7. IMPORTANT: Do NOT modify the original specification file. Only write your comments to {glm_comment_file}.
+7. IMPORTANT: Do NOT modify the original specification file. Only write your comments to {qwen_comment_file}.
 
-8. IMPORTANT: Write ALL your comments to a single file at {glm_comment_file}. This file should contain only your comments, arranged in logical order (not a copy of the specification).
+8. IMPORTANT: Write ALL your comments to a single file at {qwen_comment_file}. This file should contain only your comments, arranged in logical order (not a copy of the specification).
 
 Focus particularly on deep architectural analysis, system design concerns, long-term technical implications, scalability considerations, and technology choice implications.
 
-Return when you have completed your review and written all comments to {glm_comment_file}."""
+Return when you have completed your review and written all comments to {qwen_comment_file}."""
 )
 ```
 
@@ -136,15 +136,15 @@ Return when you have completed your review and written all comments to {kimi_com
 )
 ```
 
-**MiniMax M2 Reviewer:**
+**DeepSeek Reviewer:**
 ```
 Task(
-  subagent_type="reviewer-minimax",
-  description="Review spec with MiniMax M2",
-  prompt=f"""You are [MiniMax Reviewer] reviewing a SPECIFICATION document.
+  subagent_type="reviewer-deepseek",
+  description="Review spec with DeepSeek",
+  prompt=f"""You are [DeepSeek Reviewer] reviewing a SPECIFICATION document.
 
 **Document to review:** {spec_path}
-**Comment file to write:** {minimax_comment_file}
+**Comment file to write:** {deepseek_comment_file}
 
 **Review Process:**
 1. Read the specification file completely. Understand:
@@ -159,10 +159,10 @@ Task(
    - Potential conflicts or integration challenges
    - Missing context that affects the specification
 
-3. Write critical feedback to the comment file at {minimax_comment_file}.
+3. Write critical feedback to the comment file at {deepseek_comment_file}.
 
 4. Format each comment as:
-   <!-- [MiniMax Reviewer] SECTION "{section_name}": {your critical feedback here. Be specific and actionable.} -->
+   <!-- [DeepSeek Reviewer] SECTION "{section_name}": {your critical feedback here. Be specific and actionable.} -->
 
 5. Replace {section_name} with the actual section heading from the specification that your comment references.
 
@@ -178,13 +178,13 @@ Task(
    - Unclear success criteria
    - Scope creep or scope gaps
 
-7. IMPORTANT: Do NOT modify the original specification file. Only write your comments to {minimax_comment_file}.
+7. IMPORTANT: Do NOT modify the original specification file. Only write your comments to {deepseek_comment_file}.
 
-8. IMPORTANT: Write ALL your comments to a single file at {minimax_comment_file}.
+8. IMPORTANT: Write ALL your comments to a single file at {deepseek_comment_file}.
 
 Focus particularly on requirements completeness, edge cases and failure modes, user experience considerations, error handling and recovery, performance implications, security and privacy, and testing and validation approaches.
 
-Return when you have completed your review and written all comments to {minimax_comment_file}."""
+Return when you have completed your review and written all comments to {deepseek_comment_file}."""
 )
 ```
 
@@ -198,14 +198,14 @@ Read the comment files and count comments by reviewer:
 
 ```python
 # Read comment files
-glm_content = read_file(glm_comment_file) if file_exists(glm_comment_file) else ""
+qwen_content = read_file(qwen_comment_file) if file_exists(qwen_comment_file) else ""
 kimi_content = read_file(kimi_comment_file) if file_exists(kimi_comment_file) else ""
-minimax_content = read_file(minimax_comment_file) if file_exists(minimax_comment_file) else ""
+deepseek_content = read_file(deepseek_comment_file) if file_exists(deepseek_comment_file) else ""
 
 # Count comments per reviewer
-glm_count = glm_content.count("<!-- [GLM Reviewer]")
+qwen_count = qwen_content.count("<!-- [Qwen Reviewer]")
 kimi_count = kimi_content.count("<!-- [Kimi Reviewer]")
-minimax_count = minimax_content.count("<!-- [MiniMax Reviewer]")
+deepseek_count = deepseek_content.count("<!-- [DeepSeek Reviewer]")
 ```
 
 ### 6. Identify Overlapping Concerns
@@ -218,18 +218,18 @@ def extract_sections(comment_content):
     pattern = r'<!-- \[.*? Reviewer\] SECTION "(.*?)":'
     return re.findall(pattern, comment_content)
 
-glm_sections = extract_sections(glm_content)
+qwen_sections = extract_sections(qwen_content)
 kimi_sections = extract_sections(kimi_content)
-minimax_sections = extract_sections(minimax_content)
+deepseek_sections = extract_sections(deepseek_content)
 
 # Find overlapping sections
-all_sections = set(glm_sections + kimi_sections + minimax_sections)
+all_sections = set(qwen_sections + kimi_sections + deepseek_sections)
 overlaps = []
 for section in all_sections:
     section_reviewers = []
-    if section in glm_sections: section_reviewers.append("GLM Reviewer")
+    if section in qwen_sections: section_reviewers.append("Qwen Reviewer")
     if section in kimi_sections: section_reviewers.append("Kimi Reviewer")
-    if section in minimax_sections: section_reviewers.append("MiniMax Reviewer")
+    if section in deepseek_sections: section_reviewers.append("DeepSeek Reviewer")
     if len(section_reviewers) > 1:
         overlaps.append({
             "section": section,
@@ -250,9 +250,9 @@ After all reviewers complete, provide a summary:
 ### Reviewer Status
 | Reviewer | Status | Comments Added |
 |----------|--------|----------------|
-| GLM 4.7  | {OK/Failed} | {N} |
+| Qwen3-Thinking  | {OK/Failed} | {N} |
 | Kimi K2  | {OK/Failed} | {N} |
-| MiniMax M2 | {OK/Failed} | {N} |
+| DeepSeek | {OK/Failed} | {N} |
 
 **Total Comments:** {N}
 

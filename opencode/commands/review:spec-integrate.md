@@ -14,9 +14,19 @@ Integrate all reviewer comments from a multi-model specification review into the
 ### 0. Gather Comment Files
 
 Locate and read all comment files from reviewers:
-- `{spec_path}.review-glm.md`
+
+**Option 1 - Review file pattern** (if review files are in the same directory as spec):
+- `{spec_path}.review-qwen.md`
 - `{spec_path}.review-kimi.md`
-- `{spec_path}.review-minimax.md`
+- `{spec_path}.review-deepseek.md`
+
+**Option 2 - Filename-based pattern** (if review files match spec filename without extension):
+- Extract the filename (without path and extension) from `spec_path`
+- `{spec_filename}.review-qwen.md`
+- `{spec_filename}.review-kimi.md`
+- `{spec_filename}.review-deepseek.md`
+
+Check both patterns and read any files that exist.
 
 If a reviewer failed or produced no comments, that comment file may be missing - this is acceptable.
 
@@ -25,7 +35,7 @@ Read all available comment files. If none exist, inform the user that no review 
 ### 1. Read and Catalog All Comments
 
 From the comment files, extract all reviewer feedback and parse each comment to extract:
-- **Reviewer**: GLM, Kimi, or MiniMax
+- **Reviewer**: Qwen, Kimi, or DeepSeek
 - **Section**: Which section of the spec it references (from `SECTION "..."` format)
 - **Content**: The actual comment feedback
 
@@ -117,7 +127,7 @@ At the end of the specification, add or update a "Review Resolution Log" section
 
 ### Integrated Feedback - [Date]
 
-**Reviewers:** GLM, Kimi, MiniMax
+**Reviewers:** Qwen, Kimi, DeepSeek
 
 **Key Decisions Made:**
 - [Decision 1]: [Rationale]
@@ -135,9 +145,9 @@ At the end of the specification, add or update a "Review Resolution Log" section
 After successful integration, delete the comment files:
 
 ```bash
-rm -f {spec_path}.review-glm.md
+rm -f {spec_path}.review-qwen.md
 rm -f {spec_path}.review-kimi.md
-rm -f {spec_path}.review-minimax.md
+rm -f {spec_path}.review-deepseek.md
 ```
 
 The reviews are preserved in git history if committed, and the summary report documents all decisions.

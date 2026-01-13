@@ -13,19 +13,27 @@ Fix all inaccuracies identified by reviewers in the task list, ensuring tasks ac
 
 ### 0. Gather Comment Files
 
-Locate and read all comment files from reviewers:
-- `{task_path}.review-glm.md`
-- `{task_path}.review-kimi.md`
-- `{task_path}.review-minimax.md`
+Locate and read all comment files from reviewers.
 
-If a reviewer failed or produced no comments, that comment file may be missing - this is acceptable.
+**Option 1 - Review file pattern** (if review files are in the same directory as tasks):
+- `{task_path}.review-qwen.md`
+- `{task_path}.review-kimi.md`
+- `{task_path}.review-deepseek.md`
+
+**Option 2 - Filename-based pattern** (extract filename without path/extension):
+- Extract the filename (without path and extension) from `task_path`
+- `{task_filename}.review-qwen.md`
+- `{task_filename}.review-kimi.md`
+- `{task_filename}.review-deepseek.md`
+
+Check both patterns and read any files that exist. If a reviewer failed or produced no comments, that comment file may be missing - this is acceptable.
 
 Read all available comment files. If none exist, inform the user that no review data was found and abort.
 
 ### 1. Read and Catalog All Comments
 
 From the comment files, extract all reviewer feedback and parse each comment to extract:
-- **Reviewer**: GLM, Kimi, or MiniMax
+- **Reviewer**: Qwen, Kimi, or DeepSeek
 - **Line Number**: Which line of the task list it references
 - **Category**: INCORRECT, SCOPE DRIFT, MISINTERPRETATION, CONTRADICTION, or WRONG REFERENCE
 - **Content**: The actual comment feedback
@@ -106,9 +114,9 @@ If multiple reviewers commented on the same task or area with different opinions
 After successful integration, delete the comment files:
 
 ```bash
-rm -f {task_path}.review-glm.md
+rm -f {task_path}.review-qwen.md
 rm -f {task_path}.review-kimi.md
-rm -f {task_path}.review-minimax.md
+rm -f {task_path}.review-deepseek.md
 ```
 
 The reviews are preserved in git history if committed, and the summary report documents all corrections.
@@ -139,9 +147,9 @@ After all fixes are applied, provide a summary:
 - Corrections made: {N}
 - Tasks removed (scope drift): {N}
 - Comments per reviewer:
-  - GLM: {N}
+  - Qwen: {N}
   - Kimi: {N}
-  - MiniMax: {N}
+  - DeepSeek: {N}
 - Comments where reviewers agreed: {N}
 - Disputes resolved via spec: {N}
 

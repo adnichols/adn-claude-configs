@@ -156,8 +156,8 @@ The goal is to capture what the user truly needs, which may require dialogue to 
 version: 1
 fidelity_mode: strict
 agents:
-  developer: developer
-  reviewer: quality-reviewer
+  developer: developer-fidelity
+  reviewer: quality-reviewer-fidelity
 scope_preservation: true
 additions_allowed: none
 document_metadata:
@@ -235,8 +235,8 @@ Technical approach: To be determined during implementation phase
 
 ### Next Steps
 
-- Use developer agent for implementation planning
-- Use quality-reviewer agent for validation
+- Use developer-fidelity agent for implementation planning
+- Use quality-reviewer-fidelity agent for validation
 - Follow strict scope preservation throughout implementation
 
 ## Open Questions
@@ -254,7 +254,7 @@ Technical approach: To be determined during implementation phase
 1. **Absolute Fidelity:** User requirements are the complete and sole authority
 2. **Zero Additions:** No requirements, features, or scope beyond user specifications
 3. **Clear Boundaries:** Explicit documentation of what's included and excluded
-4. **Fidelity Agents:** Always use developer and quality-reviewer for implementation
+4. **Fidelity Agents:** Always use developer-fidelity and quality-reviewer-fidelity for implementation
 5. **Scope Preservation:** Maintain all limitations and boundaries from original requirements
 
 ## Output Format

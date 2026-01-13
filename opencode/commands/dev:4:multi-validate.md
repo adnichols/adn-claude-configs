@@ -1,11 +1,11 @@
 ---
-description: Post-implementation verification using multi-agent review (GLM, Kimi, MiniMax)
+description: Post-implementation verification using multi-agent review (GLM, Kimi, Llama Maverick)
 argument-hint: "<path to task list>"
 ---
 
 # Multi-Agent Validation
 
-Verify that a task list was correctly executed using parallel review from GLM 4.7, Kimi K2, and MiniMax M2.
+Verify that a task list was correctly executed using parallel review from GLM 4.7, Kimi K2, and Llama Maverick.
 
 Task file: $ARGUMENTS
 
@@ -200,12 +200,12 @@ Task(
 )
 ```
 
-**MiniMax M2 Reviewer:**
+**Llama Maverick Reviewer:**
 ```
 Task(
-  subagent_type="reviewer-minimax",
-  description="Validate with MiniMax M2 - Requirements focus",
-  prompt=f"""You are [MiniMax Reviewer] performing FINAL VALIDATION of an implementation.
+  subagent_type="reviewer-llamamav",
+  description="Validate with Llama Maverick - Requirements focus",
+  prompt=f"""You are [Llama Maverick Reviewer] performing FINAL VALIDATION of an implementation.
 
 **Task List:** {task_path}
 **Source Specification:** {spec_path}
@@ -235,7 +235,7 @@ Task(
    e. **WRONG REFERENCE**: File/API/component reference error
 
 4. **Add Validation Findings as HTML Comments**
-   Format: <!-- [MiniMax Reviewer] [CATEGORY] - Task X.Y: Your finding. -->
+   Format: <!-- [Llama Maverick Reviewer] [CATEGORY] - Task X.Y: Your finding. -->
 
 5. **Focus Your Evaluation on:**
    - Requirements completeness
@@ -277,18 +277,18 @@ task_content = read_file(task_path)
 # Count comments per reviewer
 glm_count = task_content.count("<!-- [GLM Reviewer]")
 kimi_count = task_content.count("<!-- [Kimi Reviewer]")
-minimax_count = task_content.count("<!-- [MiniMax Reviewer]")
+llamamav_count = task_content.count("<!-- [Llama Maverick Reviewer]")
 
 # Count by category
 categories = ["INCORRECT", "SCOPE DRIFT", "MISINTERPRETATION", "CONTRADICTION", "WRONG REFERENCE", "PASS", "CRITICAL"]
 glm_by_category = {cat: task_content.count(f"<!-- [GLM Reviewer] {cat}") for cat in categories}
 kimi_by_category = {cat: task_content.count(f"<!-- [Kimi Reviewer] {cat}") for cat in categories}
-minimax_by_category = {cat: task_content.count(f"<!-- [MiniMax Reviewer] {cat}") for cat in categories}
+llamamav_by_category = {cat: task_content.count(f"<!-- [Llama Maverick Reviewer] {cat}") for cat in categories}
 
 # Extract comment locations for overlap detection
 glm_comments = find_all_with_context("<!-- [GLM Reviewer] -->", task_content)
 kimi_comments = find_all_with_context("<!-- [Kimi Reviewer] -->", task_content)
-minimax_comments = find_all_with_context("<!-- [MiniMax Reviewer] -->", task_content)
+llamamav_comments = find_all_with_context("<!-- [Llama Maverick Reviewer] -->", task_content)
 ```
 
 ### 6. Identify Consensus Issues
@@ -308,7 +308,7 @@ for i, (glm_start, glm_context) in enumerate(glm_comments):
         "contexts": (glm_context, kimi_context)
       })
 
-# Also check GLM<->MiniMax and Kimi<->MiniMax overlaps
+# Also check GLM<->Llama Maverick and Kimi<->Llama Maverick overlaps
 ```
 
 ### 7. Determine Overall Status
@@ -347,7 +347,7 @@ spec_file: [Path to source specification]
 |----------|--------|--------------|-----------------|---------------|
 | GLM 4.7  | {PASS/FAIL} | {N} | {N} | Architecture, Design, Scalability |
 | Kimi K2  | {PASS/FAIL} | {N} | {N} | Integration, API, Component Contracts |
-| MiniMax M2 | {PASS/FAIL} | {N} | {N} | Requirements, Edge Cases, UX, Error Handling |
+| Llama Maverick | {PASS/FAIL} | {N} | {N} | Requirements, Edge Cases, UX, Error Handling |
 
 **Total Comments:** {N}
 
@@ -371,7 +371,7 @@ spec_file: [Path to source specification]
 | Task | Status | Reviewers | Notes |
 |------|--------|-----------|-------|
 | [Task Name] | [pass/fail] | [GLM,Kimi] | [Brief note from reviewers] |
-| [Task Name] | [pass/fail] | [MiniMax] | [Brief note from reviewers] |
+| [Task Name] | [pass/fail] | [Llama Maverick] | [Brief note from reviewers] |
 
 **Overall Status**: [PASS / FAIL / PARTIAL]
 
@@ -384,7 +384,7 @@ spec_file: [Path to source specification]
 **Validation Summary:**
 - [GLM]: {PASS/FAIL} - {Summary of findings}
 - [Kimi]: {PASS/FAIL} - {Summary of findings}
-- [MiniMax]: {PASS/FAIL} - {Summary of findings}
+- [Llama Maverick]: {PASS/FAIL} - {Summary of findings}
 
 **Consensus:** {All reviewers agreed / Mixed / No consensus}
 
@@ -447,7 +447,7 @@ Options:
 Question: "Reviewers disagree on [feature/issue]:
 - GLM Reviewer: [concern and rationale]
 - Kimi Reviewer: [view and rationale]
-- MiniMax Reviewer: [view if present]
+- Llama Maverick Reviewer: [view if present]
 
 How should we resolve this?"
 Header: "Reviewers Disagree"
