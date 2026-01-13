@@ -35,6 +35,12 @@ The user will provide:
 4. **Save PRD:** Save as `prd-[feature-name].md` in `thoughts/plans/` directory with fidelity preservation settings
 5. **End Command:** The command completes after saving the PRD. Implementation is a separate phase.
 
+**IMPORTANT:** If you encounter write permission errors when saving to `thoughts/plans/`, you are likely in **plan mode** (read-only). STOP and ask the user:
+- "I'm in plan mode and cannot write files. Would you like me to:"
+  - "A) Present the PRD here for review, then you can save it"
+  - "B) Wait until we exit plan mode to save it"
+  - "C) Save to a different location (please specify)"
+
 ## Clarifying Questions for Scope Definition
 
 Use the **AskUserQuestion tool** to gather precise requirements through structured questions. This provides a better user experience than plain text questions.

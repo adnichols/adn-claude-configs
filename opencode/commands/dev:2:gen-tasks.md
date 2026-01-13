@@ -61,13 +61,19 @@ The user will provide:
 
 3. **Create and Save Task List:** Generate and save tasks that implement:
 
-   - What's specified in the document (engage user if gaps are found)
-   - Testing as specified (propose additions only if critical gaps exist)
-   - Security as specified (flag concerns but don't add unilaterally)
-   - Performance measures as specified
-   - Documentation as specified
-   - Save tasks to `thoughts/plans/tasks-fidelity-[spec-name].md`
-   - Inform user of draft location for review
+    - What's specified in the document (engage user if gaps are found)
+    - Testing as specified (propose additions only if critical gaps exist)
+    - Security as specified (flag concerns but don't add unilaterally)
+    - Performance measures as specified
+    - Documentation as specified
+    - Save tasks to `thoughts/plans/tasks-[spec-name].md`
+    - Inform user of draft location for review
+
+**IMPORTANT:** If you encounter write permission errors when saving to `thoughts/plans/`, you are likely in **plan mode** (read-only). STOP and ask the user:
+- "I'm in plan mode and cannot write files. Would you like me to:"
+  - "A) Present the task list here for review, then you can save it"
+  - "B) Wait until we exit plan mode to save it"
+  - "C) Save to a different location (please specify)"
 
 ## Parallel Analysis Strategy
 
@@ -137,7 +143,7 @@ Example:
 
 ## Final Task File Format
 
-The final task file at `thoughts/plans/tasks-fidelity-[spec-name].md`:
+The final task file at `thoughts/plans/tasks-[spec-name].md`:
 
 ```markdown
 # [Specification Title] - Implementation Tasks

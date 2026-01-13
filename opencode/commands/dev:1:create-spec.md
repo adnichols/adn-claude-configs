@@ -81,6 +81,12 @@ You are expected to exercise judgment throughout this process. Your role is **co
 6. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
 7. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
+**IMPORTANT:** If you encounter write permission errors when saving to `thoughts/specs/`, you are likely in **plan mode** (read-only). STOP and ask the user:
+- "I'm in plan mode and cannot write files. Would you like me to:"
+  - "A) Present the specification here for review, then you can save it"
+  - "B) Wait until we exit plan mode to save it"
+  - "C) Save to a different location (please specify)"
+
 **Throughout the process:**
 - Challenge assumptions when evidence suggests they're incorrect
 - Don't preserve the user's original framing if research shows it's misguided
