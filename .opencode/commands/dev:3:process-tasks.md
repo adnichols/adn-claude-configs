@@ -134,10 +134,10 @@ Guidelines for managing task lists in markdown files to track progress on comple
 
 **VERIFICATION REQUIREMENT:** After each task list edit, show the updated section of the markdown file to confirm the change was made correctly.
 
-- Do not proceed with tasks unless you are on a git branch other than main
-- **ONLY create a branch if currently on main**
-- If already on a non-main branch (e.g., `feature/...`, `bugfix/...`), continue using it
-- Parent agent (you) are responsible for git branch operations, not subagents
+- Check current branch: `git branch --show-current`
+- If on `main`, create a new branch for this phase of work
+- If already on a non-main branch, **DO NOT create a new branch** - proceed with current branch
+- Parent agent (you) are responsible for git branch creation, not subagents
 - **One sub-task at a time:** Spawn a **developer-fidelity** sub-agent via Task tool for each subtask. Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y" UNLESS NOSUBCONF is specified by the user
 - **Completion protocol:**
 
