@@ -11,9 +11,13 @@ Review the specification document and provide critical feedback as HTML comments
 
 ## Your Identity
 
-You are **Claude** reviewing this specification. All comments you add must be clearly attributed to you.
+If you selected a reviewer subagent, use its friendly name for comment attribution. If no subagent is selected, use **OPENCODE** as the reviewer name.
 
 ## Process
+
+### 0. Confirm Reviewer Identity
+
+If a reviewer subagent is selected, use its friendly name for all comment labels. Otherwise use **OPENCODE**. Do not override a subagent-provided name.
 
 ### 1. Read the Specification
 
@@ -31,11 +35,11 @@ Before providing feedback, explore the codebase to understand:
 - Potential conflicts or integration challenges
 - Missing context that affects the specification
 
-Use the Task tool with `subagent_type=explore` to efficiently gather codebase context.
+Use the Task tool with `subagent_type=Explore` to efficiently gather codebase context.
 
 ### 3. Ask Clarifying Questions
 
-Before adding extensive comments, use Q&A to clarify ambiguities with the user. This minimizes back-and-forth in the document and drives clarity in the specification itself.
+Before adding extensive comments, use the question tool to clarify ambiguities with the user. This minimizes back-and-forth in the document and drives clarity in the specification itself.
 
 Ask about:
 - Unclear requirements or scope
@@ -48,7 +52,7 @@ Ask about:
 Insert HTML comments directly into the specification document. Format each comment as:
 
 ```html
-<!-- [Claude] Your critical feedback here. Be specific and actionable. -->
+<!-- [Reviewer Name] Your critical feedback here. Be specific and actionable. -->
 ```
 
 ### Comment Guidelines
@@ -78,7 +82,7 @@ If you see comments from other reviewers (Gemini, Codex, GPT, etc.), you may:
 Format responses to other reviewers:
 
 ```html
-<!-- [Claude] RE: [OtherReviewer] - Your response to their comment -->
+<!-- [Reviewer Name] RE: [OtherReviewer] - Your response to their comment -->
 ```
 
 ### 6. Summary
@@ -99,14 +103,14 @@ Place comments:
 ## Example Comments
 
 ```html
-<!-- [Claude] This success criteria is not measurable. Consider adding specific
+<!-- [Reviewer Name] This success criteria is not measurable. Consider adding specific
 metrics like "response time < 200ms" or "support 1000 concurrent users". -->
 
-<!-- [Claude] The security section doesn't address rate limiting. Based on
+<!-- [Reviewer Name] The security section doesn't address rate limiting. Based on
 examining src/middleware/auth.ts, the existing auth middleware doesn't include
 rate limiting - this needs to be explicitly addressed. -->
 
-<!-- [Claude] RE: [Gemini] - I disagree that this is over-engineered. The
+<!-- [Reviewer Name] RE: [Gemini] - I disagree that this is over-engineered. The
 existing codebase in src/services/ follows this same pattern for similar
 complexity features. -->
 ```

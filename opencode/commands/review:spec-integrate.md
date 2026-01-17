@@ -5,32 +5,52 @@ argument-hint: "<path to specification>"
 
 # Integrate Specification Review Comments
 
-Integrate all reviewer comments from a multi-model specification review into the specification itself, resolving all open questions and concerns.
+Integrate all inline reviewer comments in a specification into the specification itself, resolving all open questions and concerns.
 
 **Specification to integrate:** $ARGUMENTS
 
 ## Process
 
-### 1. Read and Catalog All Comments
+### 1. Read the Specification
 
-Read the specification and extract all HTML comments from reviewers. Catalog each comment by:
-- **Reviewer**: Claude, Gemini, Codex, GPT, or other identifiers
-- **Type**: Question, concern, suggestion, missing requirement, feasibility issue
-- **Section**: Which part of the spec it references
-- **Response comments**: Any `RE:` responses from other reviewers
+Read the specification file to understand the full context and to locate inline review comments.
+
+### 2. Extract Inline Comments
+
+Scan the specification for inline HTML comments using the reviewer format:
+
+- Preferred format with explicit section:
+  ```markdown
+  <!-- [Reviewer Name] SECTION "Section Title": comment text -->
+  ```
+- Supported fallback without explicit section:
+  ```markdown
+  <!-- [Reviewer Name] comment text -->
+  ```
+
+For comments without a section marker, associate the comment with the nearest following section header.
+
+If no inline review comments exist, inform the user that no review data was found and abort.
+
+### 3. Read and Catalog All Comments
+
+From the inline comments, extract all reviewer feedback and parse each comment to extract:
+- **Reviewer**: The reviewer name from the comment prefix
+- **Section**: `SECTION "..."` when present, otherwise nearest following header
+- **Content**: The actual comment feedback
 
 Create a working list of all feedback items to address.
 
-### 2. Explore Codebase for Resolution Context
+### 4. Explore Codebase for Resolution Context
 
 Before resolving comments, gather codebase context that informs decisions:
 - Existing patterns that answer feasibility questions
 - Related implementations that inform technical decisions
 - Constraints or conventions that resolve ambiguities
 
-Use the Task tool with `subagent_type=explore` to efficiently research.
+Use the Task tool with `subagent_type=Explore` to efficiently research.
 
-### 3. Triage Comments by Confidence
+### 5. Triage Comments by Confidence
 
 For each comment, determine your confidence level in resolving it:
 
@@ -49,9 +69,9 @@ For each comment, determine your confidence level in resolving it:
 - Requirements that need stakeholder input
 - Ambiguities where codebase doesn't provide guidance
 
-### 4. Batch User Questions
+### 6. Batch User Questions
 
-Collect all low-confidence items and ask the user using the `question` tool. Group related questions together. For each question:
+Collect all low-confidence items and ask the user. Group related questions together. For each question:
 - Provide context from the reviewer comments
 - Explain the options or trade-offs
 - Indicate which reviewers raised the concern
@@ -61,8 +81,8 @@ Example:
 ```
 Multiple reviewers raised concerns about error handling scope:
 
-[Claude] asked: "Should we handle network timeouts differently from API errors?"
-[Gemini] noted: "Error retry logic not specified - is this in scope?"
+[Reviewer] SECTION "Error Handling": Should we handle network timeouts differently from API errors?
+[Reviewer] noted: Error retry logic not specified - is this in scope?
 
 Options:
 A) Unified error handling - treat all errors the same way
@@ -72,13 +92,18 @@ C) Defer to existing patterns - use whatever error handling exists in codebase
 Recommendation: B seems appropriate given the complexity, but this affects scope.
 ```
 
-### 5. Integrate Resolutions
+### 7. Integrate Resolutions
 
 For each resolved comment:
 
-1. **Update the specification** - Modify the relevant section to address the feedback
-2. **Remove the comment** - Delete the HTML comment after integration
-3. **Add clarifying content** - Where comments identified gaps, add the missing information
+1. **Locate the section** in the specification that was referenced
+2. **Update the specification** - Insert an HTML comment at the beginning of the referenced section with the integrated feedback:
+   ````markdown
+   <!-- [Integrated {reviewer_name} feedback]: {resolved feedback} -->
+   ````
+3. **Add clarifying content** - Where comments identified gaps, add the missing information to the specification text
+4. **Modify the relevant section** - Update to address the feedback directly in the section content
+5. **Remove the original inline comment** - Delete the resolved inline review comment from the spec
 
 Integration principles:
 - Preserve the spec's voice and structure
@@ -87,7 +112,7 @@ Integration principles:
 - Add constraints or requirements that were missing
 - Update technical approach based on feasibility feedback
 
-### 6. Document Decisions
+### 8. Document Decisions
 
 At the end of the specification, add or update a "Review Resolution Log" section:
 
@@ -96,7 +121,7 @@ At the end of the specification, add or update a "Review Resolution Log" section
 
 ### Integrated Feedback - [Date]
 
-**Reviewers:** Claude, Gemini, Codex
+**Reviewers:** {Reviewer Name}
 
 **Key Decisions Made:**
 - [Decision 1]: [Rationale]
@@ -109,21 +134,22 @@ At the end of the specification, add or update a "Review Resolution Log" section
 - [Item]: [Reason for deferral]
 ```
 
-### 7. Final Validation
+### 9. Final Validation
 
 After integration:
 - Re-read the full specification for coherence
-- Verify no HTML comments remain (all should be resolved)
+- Verify all sections referenced in comments have been addressed
 - Check that all reviewer concerns are addressed
 - Ensure the spec is internally consistent
 
-### 8. Summary Report
+### 10. Summary Report
 
 Provide the user with:
 - Number of comments integrated
+- Number of comments by reviewer name
 - Key decisions made autonomously (with brief rationale)
 - Decisions made based on user input
-- Any items deferred or flagged for future consideration
+- Confirmation that inline review comments were removed
 - Confirmation that spec is ready for next phase
 
 ## Decision-Making Guidelines
@@ -145,10 +171,11 @@ Provide the user with:
 ## Output
 
 The specification file should be updated in place with:
-- All reviewer comments removed
-- Feedback integrated into relevant sections
+- All feedback integrated from inline review comments
 - Review Resolution Log added/updated
 - Clean, coherent specification ready for implementation
+
+The inline review comments should be deleted after successful integration. If integration fails, keep the inline comments for debugging.
 
 ---
 

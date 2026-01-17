@@ -81,7 +81,7 @@ Use the Task tool to spawn parallel analysis subagents for efficient specificati
 
 ### Subagent Delegation
 
-Spawn parallel Task agents with `subagent_type=explore`:
+Spawn parallel Task agents with `subagent_type=Explore`:
 
 ```
 Task 1: Specification Parsing
