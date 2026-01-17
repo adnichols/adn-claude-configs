@@ -211,7 +211,7 @@ Examples of discoveries requiring this protocol:
 
 ### Proactive User Engagement for Discoveries
 
-Use **AskUserQuestion** to engage the user when discoveries warrant input.
+Use **`question`** to engage the user when discoveries warrant input.
 
 **Validation Question (confirm impact assessment):**
 ```
@@ -270,7 +270,7 @@ If a sub-agent reports an issue during implementation:
 
 1. **Sub-agent reports issue** - Agent describes what they found
 2. **You (orchestrator) evaluate** - Is this a blocker or solvable within scope?
-3. **If blocker or scope question**: Use AskUserQuestion before spawning more agents
+3. **If blocker or scope question**: Use `question` before spawning more agents
 4. **If solvable within spec**: Guide the sub-agent, log decision if it deviates from plan
 
 ## Deviations Log Protocol

@@ -229,7 +229,7 @@ For Added:
 
 ## Collaborative Divergence Resolution
 
-When divergences are found, use **AskUserQuestion** proactively to determine the right approach.
+When divergences are found, use **`question`** proactively to determine the right approach.
 
 ### Initial Triage Question
 

@@ -62,7 +62,7 @@ Use the Task tool to spawn parallel verification subagents for efficient task-by
 
 #### Subagent Delegation
 
-For each major task/phase, spawn a Task agent with `subagent_type=Explore`:
+For each major task/phase, spawn a Task agent with `subagent_type=explore`:
 
 ```
 Task: Verify Phase [N] - [Phase Name]
@@ -145,7 +145,7 @@ task_file: [Path to validated task file]
 
 ### 5. User Engagement for Concerning Patterns
 
-When validation reveals issues that require user input, use **AskUserQuestion** before finalizing the report.
+When validation reveals issues that require user input, use **`question`** before finalizing the report.
 
 **Failure Resolution Question (when validation fails):**
 ```

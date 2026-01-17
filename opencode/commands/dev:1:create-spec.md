@@ -9,6 +9,24 @@ argument-hint: "[Idea/Feature Description]"
 
 To guide an AI assistant in researching a user's idea and creating a focused, practical specification document in Markdown format with YAML front-matter. This document will serve as input to downstream task generation commands. Think harder.
 
+## Non-Negotiable Guardrails (Spec-Only)
+
+You are in SPEC-ONLY mode.
+
+Forbidden:
+- Editing or creating product code files (anything outside `thoughts/specs/`)
+- Running implementation steps (installs, builds, migrations, dev servers, refactors)
+- Creating tasks/PRs/commits or moving toward implementation
+- Making documentation changes in the repository (no writing under `docs/`, no updating `CLAUDE.md`)
+
+Allowed:
+- Read-only codebase inspection (search, read files, git history inspection)
+- Asking clarifying questions
+- Producing ONE output artifact: the spec document (or printing it in-chat if write is unavailable)
+
+Stop condition:
+- After producing the spec, STOP. Do not proceed to task generation or implementation.
+
 ## Research Approach
 
 This command uses a standard research depth approach to create comprehensive specification documents that include:
@@ -58,7 +76,7 @@ You are expected to exercise judgment throughout this process. Your role is **co
 1. Document your finding clearly
 2. Explain why the original approach is problematic
 3. Present alternatives with trade-offs
-4. Use AskUserQuestion to get user input on the direction
+4. Use `question` to get user input on the direction
 5. Proceed with the user's chosen direction (which may be original or modified)
 
 **Key principle:** Fidelity to user intent ≠ fidelity to user's initial words. Users often benefit most when the agent pushes back thoughtfully.
@@ -66,20 +84,22 @@ You are expected to exercise judgment throughout this process. Your role is **co
 ## Process
 
 1. **Initial Research:** Conduct preliminary research to understand the idea's scope and characteristics
-2. **Documentation Discovery:** Identify and optionally fetch documentation for key technologies (see Documentation Discovery section below)
-3. **Requirements Analysis:** Based on research findings:
+2. **Codebase Research Protocol:** Perform comprehensive codebase research (read-only) to establish the baseline of what exists today (see Codebase Research Protocol section below)
+3. **Traceability Metadata:** Capture git metadata (commit hash + branch) and include it in the spec front-matter
+4. **Documentation Discovery (Read-Only):** Identify relevant documentation sources, but do not fetch/write/update docs during this command (see Documentation Discovery section below)
+5. **Requirements Analysis:** Based on research findings:
    - Analyze impact scope and integration needs
    - Identify functional requirements
    - Assess technical constraints and decisions
    - Evaluate integration complexity
-4. **Deep Research Phase:** Conduct comprehensive research covering:
+6. **Deep Research Phase:** Conduct comprehensive research covering:
    - Core functionality and integration patterns
    - Testing approaches and security considerations
    - Performance considerations and reliability features
    - Implementation planning and dependencies
-5. **Generate Specification:** Create complete document with all necessary sections
-6. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
-7. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
+7. **Generate Specification:** Create complete document with all necessary sections
+8. **Save Specification:** Save as `spec-[idea-name].md` in `thoughts/specs/` directory
+9. **End Command:** The command completes after saving the specification. Task generation and implementation are separate phases.
 
 **IMPORTANT:** If you encounter write permission errors when saving to `thoughts/specs/`, you are likely in **plan mode** (read-only). STOP and ask the user:
 - "I'm in plan mode and cannot write files. Would you like me to:"
@@ -93,166 +113,94 @@ You are expected to exercise judgment throughout this process. Your role is **co
 - Present findings honestly, even if they contradict the initial request
 - The goal is the best solution, not faithful reproduction of the original idea
 
-## Parallel Research Strategy
+## Codebase Research Protocol (Required)
 
-Use the Task tool to spawn parallel research subagents for efficient codebase exploration. This accelerates research while preserving orchestrator context for synthesis.
+This command incorporates the core codebase research approach from `/cmd:research`, but extends it with explicit option evaluation (spec work requires judgment).
 
-### Subagent Delegation
+Phase A - Baseline (Document-only)
+- Document the codebase as it exists today: what exists, where it exists, and how components interact.
+- Do not critique or propose changes during this phase.
+- Avoid solutioning until a baseline snapshot is captured.
 
-Spawn parallel Task agents with `subagent_type=Explore`:
+Phase B - Options & Recommendation (Evaluate)
+- Identify multiple viable approaches grounded in the baseline.
+- Compare trade-offs and recommend a direction.
+
+### Step 1: Read Mentioned Files First
+
+If the user mentions specific files or paths:
+- Read them fully before spawning sub-tasks.
+
+### Step 2: Analyze and Decompose
+
+Break down the research question into:
+- Components to investigate
+- Patterns to find
+- Connections to trace
+- Directories and files to explore
+
+Track this as a checklist (`todowrite`).
+
+### Step 3: Parallel Research Strategy
+
+Use the Task tool to spawn parallel research subagents for efficient codebase exploration. Spawn parallel Task agents with `subagent_type=explore`.
+
+Each subagent must:
+- Return specific `path/to/file.ts:line` references for each claim
+- Clearly separate "confirmed in code" from "inferred"
+
+Recommended task split:
 
 ```
-Task 1: Core Functionality Research
-- Find existing implementations and patterns in codebase
-- Locate relevant utilities and shared components
-- Document integration points with existing systems
+Task: Find WHERE things live
+- Search for file patterns
+- Locate key modules and entry points
 
-Task 2: Technical Research
-- Analyze data modeling requirements
-- Review security patterns used in codebase
-- Identify testing approaches from existing tests
-- **Identify paired dependencies requiring version alignment** (client/server packages, protocol pairs)
-- **Flag infrastructure that may need smoke testing** before feature work
+Task: Understand HOW it works today
+- Read specific implementations
+- Trace data flow and boundaries
 
-Task 3: Production Readiness Research
-- Find performance patterns and optimization examples
-- Locate monitoring/observability implementations
-- Review deployment and configuration patterns
+Task: Find PATTERNS & PRECEDENTS
+- Look for similar implementations
+- Document conventions and shared utilities
+
+Task: Production Readiness Patterns
+- Find performance and observability patterns
+- Identify testing patterns (unit/integration/e2e)
+- Identify paired dependencies requiring version alignment (client/server, protocol pairs)
+- Flag infrastructure that may need smoke testing before feature work
 ```
 
-### Orchestrator Responsibilities
+### Step 4: Synthesize Findings
+
+Wait for ALL subagents to complete before synthesis.
 
 The parent agent (you) handles:
 - Initial scope analysis and question formulation
-- Synthesizing findings from all subagents
-- Generating the final specification document
+- Synthesizing baseline findings into the spec
+- Option generation + trade-off evaluation
 - User communication and clarifications
 
-Wait for ALL subagents to complete before synthesizing findings into the specification.
+## Documentation Discovery (Read-Only; No Repo Changes)
 
-## Documentation Discovery
+This command must NOT fetch, write, or modify documentation in the repository.
 
-After Initial Research identifies the technologies involved, proactively evaluate documentation needs before proceeding with deep research.
+Allowed:
+- Inspect existing local docs (read-only)
+- Link to official documentation URLs in the spec
+- Include brief extracted notes in the spec itself
 
-### Step 1: Identify Key Technologies
+Forbidden:
+- Writing anything under `docs/`
+- Updating `CLAUDE.md`
+- Running documentation commands that create/modify files
 
-From Initial Research findings, extract:
-- **Frameworks**: React, Vue, Next.js, Express, FastAPI, etc.
-- **Libraries**: Lodash, Axios, Zod, Prisma, etc.
-- **Languages/Runtimes**: TypeScript, Python, Rust, Node.js, etc.
-- **Infrastructure**: PostgreSQL, Redis, Docker, Kubernetes, etc.
-
-Focus on technologies that are:
-- Core to the feature implementation
-- Not already well-understood from codebase patterns
-- Likely to require API reference during implementation
-
-### Step 2: Check Existing Documentation
-
-Check the `docs/` directory for existing documentation:
-
-```bash
-# Check what documentation is already available
-ls -la docs/
-```
-
-Also check CLAUDE.md's "Available Documentation" section for reference.
-
-### Step 3: Assess Documentation Needs
-
-For each identified technology, determine:
-1. **Already Available**: Documentation exists in `docs/` - no action needed
-2. **Codebase Sufficient**: Existing code provides enough patterns - no action needed
-3. **Should Fetch**: Would benefit from official documentation - offer to fetch
-4. **Manual Required**: Documentation source not supported - guide user
-
-### Step 4: Request User Permission
-
-Use **AskUserQuestion** to present documentation options:
-
-```
-Question: "Should I fetch documentation for the following libraries to improve implementation guidance?"
-Header: "Fetch docs"
-multiSelect: true
-Options:
-- [Library 1] - Available via Context7 MCP
-- [Library 2] - Available via Context7 MCP
-- [Library 3] - Requires manual URL (not in Context7)
-- Skip documentation fetching for now
-```
-
-**Checking Context7 Availability:**
-
-Before presenting options, verify which libraries are available in Context7:
-```
-Use mcp__context7__resolve-library-id for each library
-- If successful: Library is available via Context7
-- If fails: Library requires manual URL or is not available
-```
-
-**Important Notes:**
-- Always make documentation fetching optional
-- The user may prefer to proceed without it
-- Some documentation may require manual fetching
-
-### Step 5: Fetch or Guide
-
-**If user approves fetching:**
-
-For libraries available in Context7, fetch directly using MCP tools:
-
-```
-1. mcp__context7__resolve-library-id(library_name)
-2. mcp__context7__get-library-docs(resolved_id, topic="getting started")
-3. Save to docs/libraries/[library-name]/
-4. Update CLAUDE.md references
-```
-
-Alternatively, use the `/doc:fetch` command which handles this automatically:
-
-```bash
-/doc:fetch [library-name]
-# or with version/topic
-/doc:fetch [library-name] --version [version] --topic [topic]
-```
-
-Example:
-```bash
-/doc:fetch react --topic hooks
-/doc:fetch prisma --version 5
-/doc:fetch zod
-```
-
-**If documentation source is not available in Context7:**
-
-Guide the user to fetch documentation manually:
-
-```
-The documentation for [library] is not available in Context7.
-
-To add it manually:
-1. Find the official documentation URL
-2. Run: /doc:fetch [library] --url [documentation-url]
-
-Or provide the URL and I can attempt to fetch it.
-```
-
-**Note:** Even without local documentation, you can still use Context7 directly during implementation by adding "use context7" to prompts.
-
-### Step 6: Continue with Research
-
-After documentation is fetched (or skipped), proceed to Requirements Analysis with enhanced context from:
-- Newly fetched documentation in `docs/`
-- Updated CLAUDE.md references
-- Better API understanding for implementation decisions
-
-### Documentation Discovery Best Practices
-
-1. **Be Selective**: Only suggest fetching documentation that will meaningfully improve the specification
-2. **Respect User Time**: Don't block on documentation - make it optional
-3. **Batch Requests**: If multiple libraries need fetching, present them together
-4. **Version Awareness**: Fetch documentation for the versions used in the project
-5. **Fallback Gracefully**: If fetching fails, continue with codebase research
+If documentation gaps are discovered:
+- Record them explicitly in the specification under `## Implementation Plan` as `### Documentation Tasks (Post-Spec)` including:
+  - What doc should be added/updated
+  - Proposed location (path in repo)
+  - Why it's needed
+  - Who/when (later; not executed in create-spec)
 
 ## Research Areas
 
@@ -286,7 +234,7 @@ The research should comprehensively cover:
 
 ## User Engagement & Feedback
 
-Use the **AskUserQuestion tool** proactively throughout the research process. This creates a collaborative specification rather than a one-way documentation exercise.
+Use the `question` tool proactively throughout the research process. This creates a collaborative specification rather than a one-way documentation exercise.
 
 ### When to Engage the User
 
@@ -348,12 +296,12 @@ The best specifications emerge from dialogue, not dictation. Your role is:
 - **Advisor** who surfaces issues, not just documenter who records requirements
 - **Partner** in problem-solving, not passive executor
 
-### AskUserQuestion Usage Notes
+### `question` Tool Usage Notes
 
 - Keep headers short (max 12 chars) - they appear as chips/tags
-- Use `multiSelect: true` when choices aren't mutually exclusive
+- Use `multiple: true` when choices aren't mutually exclusive
 - Provide clear descriptions for each option
-- Users always have an "Other" option for custom responses
+- A freeform "Type your own answer" option is added automatically; do not add an "Other" option
 - Ask 1-4 questions at a time, grouped logically
 
 ## Specification Template
@@ -361,27 +309,43 @@ The best specifications emerge from dialogue, not dictation. Your role is:
 The specification document uses this comprehensive structure:
 
 ```markdown
+---
+date: [ISO timestamp]
+author: [your name]
+git_commit: [git rev-parse HEAD]
+branch: [git branch --show-current]
+repository: [repository name]
+type: spec
+status: draft
+tags: [relevant, tags]
+---
+
 # [Idea Name] - Research Specification
 
-## 🎯 Executive Summary
+## Executive Summary
 
-[Comprehensive problem, solution, value, and success criteria]
+[Problem, solution, value, and success criteria]
 
-## 🔍 Core Research Findings
+## Existing System Snapshot (From Codebase Research)
 
-### Technical Approach
+[What exists today, grounded in file references. Focus on current reality before solutioning.]
 
-[Implementation patterns and architecture decisions from codebase research]
+## Code References
+
+- `path/to/file.ts:123` - Description
+- `another/file.ts:45` - Description
+
+## Core Research Findings
 
 ### Integration Points
 
 [System integration considerations and existing code patterns]
 
-### Performance Considerations
+### Constraints & Invariants
 
-[Performance requirements, scalability needs, and optimization approach]
+[Auth/RLS, data access patterns, environment constraints, conventions]
 
-## 📊 Problem & Solution
+## Problem & Solution
 
 ### Core Problem
 
@@ -395,65 +359,66 @@ The specification document uses this comprehensive structure:
 
 [Measurable success indicators and acceptance criteria]
 
-## 🏗️ Technical Design
+## Technical Design
 
-### Implementation Strategy
+## Alternatives Considered (Decision Matrix)
 
-[Comprehensive technical architecture and approach]
+Include at least 2 viable approaches grounded in codebase findings.
 
-### Data Requirements
+| Option | Fit w/ patterns | Complexity | Security | Performance | Testing impact | Notes |
+|-------:|------------------|------------|----------|-------------|----------------|------|
+| A      |                  |            |          |             |                |      |
+| B      |                  |            |          |             |                |      |
 
-[Detailed data modeling, storage, and management considerations]
+## Recommendation
 
-### Security & Reliability
+[Chosen option + why + explicit non-goals + rejected alternatives]
 
-[Security best practices, reliability features, and compliance requirements]
-
-## 🎨 User Interface
+## User Interface
 
 ### User Flow
 
-[Detailed user journeys and interaction patterns]
+[User journeys and interaction patterns]
 
 ### Interface Needs
 
-[Comprehensive UI/UX requirements and design considerations]
+[UI/UX requirements and design considerations]
 
-## 🧪 Testing Approach
+## Testing Approach
 
 ### Test Strategy
 
-[Comprehensive testing including unit, integration, e2e, and performance tests]
+[Unit, integration, e2e, performance as relevant]
 
 ### Quality Assurance
 
-[Quality gates, validation processes, and acceptance testing]
+[Quality gates, validation processes, acceptance testing]
 
-## ⚡ Performance & Reliability
+## Performance & Reliability
 
 ### Performance Requirements
 
-[Performance targets, monitoring, and optimization strategies]
+[Targets, monitoring, optimization strategies]
 
 ### Error Handling
 
-[Comprehensive error handling strategy and resilience patterns]
+[Error handling strategy and resilience patterns]
 
 ### Monitoring & Observability
 
-[Logging, monitoring, metrics, and debugging considerations]
+[Logging, monitoring, metrics, debugging considerations]
 
-## 🔒 Security & Compliance
+## Security & Compliance
 
 ### Security Architecture
 
-[Security framework, authentication, authorization, and data protection]
+[AuthN/AuthZ, data protection]
 
 ### Compliance Requirements
 
-[Regulatory compliance, industry standards, and security policies]
+[Only if applicable]
 
-## 🔄 Compatibility & Migration
+## Compatibility & Migration
 
 ### Backward Compatibility
 
@@ -461,9 +426,9 @@ The specification document uses this comprehensive structure:
 
 ### Integration Requirements
 
-[API compatibility, data migration, and system integration needs]
+[API compatibility, data migration, system integration needs]
 
-## 📈 Implementation Plan
+## Implementation Plan
 
 ### Development Phases
 
@@ -471,7 +436,11 @@ The specification document uses this comprehensive structure:
 
 ### Key Dependencies
 
-[Technical dependencies, external systems, and critical requirements]
+[Technical dependencies, external systems, critical requirements]
+
+### Documentation Tasks (Post-Spec)
+
+[List any documentation changes needed; do not perform them during create-spec.]
 
 ### Paired Dependencies (Version Alignment Required)
 
@@ -483,19 +452,13 @@ The specification document uses this comprehensive structure:
 
 ### Risk Analysis
 
-[Risk assessment, mitigation strategies, and contingency planning]
+[Risk assessment, mitigations, contingencies]
 
-## 📚 Research References
+## Research References
 
-### Technical References
+- [Links to official docs, internal specs, prior art]
 
-[Documentation, frameworks, libraries, and technical resources]
-
-### Standards & Best Practices
-
-[Industry standards, patterns, and recommended practices]
-
-## 📋 Specification Complete
+## Specification Complete
 
 [This specification contains all necessary information for task generation and implementation]
 ```

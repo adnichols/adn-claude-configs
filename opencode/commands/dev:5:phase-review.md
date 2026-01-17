@@ -79,7 +79,7 @@ Use these to supplement or fill gaps when no Deviations Log exists:
 
 *Git History Analysis:*
 
-Use Task tool with `subagent_type=Explore` to search:
+Use Task tool with `subagent_type=explore` to search:
 ```bash
 # Commits related to this phase
 git log --oneline --all --grep="Phase [N]" --grep="phase-[n]"
@@ -259,7 +259,7 @@ Categorize all proposed changes by confidence level:
 
 **Step 1: Display the Full Report**
 
-Output the complete report to the user (do NOT use AskUserQuestion yet):
+Output the complete report to the user (do NOT use `question` yet):
 
 ```
 ================================================================================
@@ -393,7 +393,7 @@ Low-Confidence:  [M] (inferred from git/docs)
 
 **Step 2: Clarify Low-Confidence Decisions (if any)**
 
-If there are low-confidence decisions, use AskUserQuestion to get clarification BEFORE finalizing annotations. Group related questions together (max 4 per call).
+If there are low-confidence decisions, use `question` to get clarification BEFORE finalizing annotations. Group related questions together (max 4 per call).
 
 For each low-confidence decision, ask:
 
@@ -426,7 +426,7 @@ After receiving answers:
 
 **Step 3: Final Batch Approval**
 
-After all clarifications are integrated, use AskUserQuestion for final approval:
+After all clarifications are integrated, use `question` for final approval:
 
 ```
 Question: "Ready to apply [N] annotations to [M] future phase specs. Proceed?"

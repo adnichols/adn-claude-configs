@@ -43,15 +43,15 @@ The user will provide:
 
 ## Clarifying Questions for Scope Definition
 
-Use the **AskUserQuestion tool** to gather precise requirements through structured questions. This provides a better user experience than plain text questions.
+Use the **`question` tool** to gather precise requirements through structured questions. This provides a better user experience than plain text questions.
 
 ### Question Strategy
 
-Ask 1-4 targeted questions at a time using AskUserQuestion. Group related questions logically:
+Ask 1-4 targeted questions at a time using `question`. Group related questions logically:
 
 ### Core Scope Questions
 
-Use AskUserQuestion with questions like:
+Use `question` with questions like:
 
 ```
 Question 1: "What specific problem does this feature solve?"
@@ -60,7 +60,7 @@ Options:
 - [Suggested interpretation 1]
 - [Suggested interpretation 2]
 - [Suggested interpretation 3]
-(Users can always select "Other" for custom input)
+(A freeform "Type your own answer" option is added automatically)
 
 Question 2: "Who is the primary user of this feature?"
 Header: "User type"
@@ -86,7 +86,7 @@ Header: "Exclusions"
 Options:
 - No restrictions - implement all related functionality
 - Keep minimal - exclude complex features
-- Exclude certain capabilities (specify in Other)
+- Exclude certain capabilities (specify using Type your own answer)
 - Exclude integration with other systems
 ```
 
@@ -108,12 +108,12 @@ Options:
 - Security scope to be determined later
 ```
 
-### AskUserQuestion Usage Notes
+### `question` Usage Notes
 
-- Use `multiSelect: true` when choices aren't mutually exclusive
+- Use `multiple: true` when choices aren't mutually exclusive
 - Keep headers short (max 12 chars) - they appear as chips/tags
 - Provide clear descriptions for each option to explain trade-offs
-- Users always have an "Other" option for custom responses
+- A freeform "Type your own answer" option is added automatically; do not add an "Other" option
 - Ask follow-up questions if initial answers need clarification
 
 ## Collaborative Refinement
@@ -122,7 +122,7 @@ While user requirements are the primary source, the agent should proactively fla
 
 ### When to Challenge Requirements
 
-Challenge (with AskUserQuestion) when:
+Challenge (with `question`) when:
 - **Stated requirements conflict with each other**
 - **Requirements would cause technical issues** based on domain knowledge
 - **Scope seems mismatched with stated problem** (too broad or too narrow)
@@ -134,7 +134,7 @@ Challenge (with AskUserQuestion) when:
 1. Document the concern clearly
 2. Explain potential impact
 3. Present alternatives with trade-offs
-4. Use AskUserQuestion to get user's decision
+4. Use `question` to get user's decision
 5. Proceed with user's chosen direction
 
 Example challenge question:

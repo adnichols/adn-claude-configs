@@ -34,11 +34,11 @@ Break down the research question into:
 - Connections to trace
 - Directories and files to explore
 
-Create a research plan using TodoWrite.
+Create a research plan using `todowrite`.
 
 ### 3. Spawn Parallel Research Tasks
 
-Use the Task tool with `subagent_type=Explore` to research different aspects concurrently:
+Use the Task tool with `subagent_type=explore` to research different aspects concurrently:
 
 ```
 Task: Find WHERE components live
@@ -141,7 +141,7 @@ If user has follow-up questions:
 
 ## Guidelines
 
-- Use parallel Task agents with `subagent_type=Explore` for efficiency
+- Use parallel Task agents with `subagent_type=explore` for efficiency
 - Focus on concrete file paths and line numbers
 - Document cross-component connections
 - Research documents should be self-contained

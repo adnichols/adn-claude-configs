@@ -5,7 +5,7 @@ argument-hint: "<path to specification>"
 
 # Integrate Multi-Agent Review Feedback
 
-Synthesize feedback from Qwen, Kimi, and DeepSeek reviews into the specification, resolving open questions with user input.
+Synthesize feedback from Claude, Codex, and Gemini reviews into the specification, resolving open questions with user input.
 
 **Specification to integrate:** $ARGUMENTS
 
@@ -13,27 +13,19 @@ Synthesize feedback from Qwen, Kimi, and DeepSeek reviews into the specification
 
 ### 1. Read All Review Files
 
-Read all available review files.
+Read all available review files from `thoughts/reviews/`:
+- `{spec-name}-claude.md`
+- `{spec-name}-codex.md`
+- `{spec-name}-gemini.md`
 
-**Option 1 - Review file pattern** (if review files are in the same directory as spec):
-- `{spec_path}.review-qwen.md`
-- `{spec_path}.review-kimi.md`
-- `{spec_path}.review-deepseek.md`
-
-**Option 2 - Filename-based pattern** (extract filename without path/extension):
-- Extract the filename (without path and extension) from `spec_path`
-- `{spec_filename}.review-qwen.md`
-- `{spec_filename}.review-kimi.md`
-- `{spec_filename}.review-deepseek.md`
-
-Check both patterns and read any files that exist. Note which reviewers provided feedback (some may have failed).
+Note which reviewers provided feedback (some may have failed).
 
 ### 2. Catalog All Concerns
 
 Create a consolidated list of all concerns from all reviewers:
 
 For each concern, track:
-- **Reviewer**: Who raised it (Qwen, Kimi, DeepSeek)
+- **Reviewer**: Who raised it (Claude, Codex, Gemini)
 - **Section**: Which part of the spec it references
 - **Severity**: Critical, Major, Minor
 - **Type**: Missing requirement, Feasibility, Ambiguity, etc.
@@ -44,7 +36,7 @@ Group related concerns from different reviewers together (they may have identifi
 
 ### 3. Explore Codebase for Resolution Context
 
-Use Task tool with `subagent_type=Explore` to research:
+Use Task tool with `subagent_type=explore` to research:
 - Existing patterns that answer feasibility questions
 - Related implementations that inform technical decisions
 - Constraints or conventions that resolve ambiguities
@@ -71,7 +63,7 @@ For each concern (or group of related concerns), determine resolution confidence
 
 ### 5. Batch User Questions
 
-For low-confidence items, use AskUserQuestion to get user decisions.
+For low-confidence items, use `question` to get user decisions.
 
 Group related questions together. For each:
 - Provide context from the reviewer comments
@@ -92,7 +84,7 @@ A) Unified error handling - treat all errors the same
 B) Differentiated handling - separate strategies by error type
 C) Defer - use existing patterns in codebase
 
-Recommendation: B, with exponential backoff as DeepSeek suggested
+Recommendation: B, with exponential backoff as Gemini suggested
 ```
 
 ### 6. Integrate Resolutions
@@ -116,7 +108,7 @@ At the end of the specification, add:
 
 ### Multi-Agent Review - {Date}
 
-**Reviewers:** Qwen, Kimi, DeepSeek
+**Reviewers:** Claude, Codex, Gemini
 
 **Key Decisions Made (Autonomous):**
 - [Decision]: [Rationale based on codebase/best practices]
@@ -139,9 +131,9 @@ At the end of the specification, add:
 After successful integration, delete the review files:
 
 ```bash
-rm -f {spec_path}.review-qwen.md
-rm -f {spec_path}.review-kimi.md
-rm -f {spec_path}.review-deepseek.md
+rm -f thoughts/reviews/{spec-name}-claude.md
+rm -f thoughts/reviews/{spec-name}-codex.md
+rm -f thoughts/reviews/{spec-name}-gemini.md
 ```
 
 The reviews are preserved in git history.

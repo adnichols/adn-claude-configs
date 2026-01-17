@@ -31,7 +31,7 @@ Before providing feedback, explore the codebase to understand:
 - Potential conflicts or integration challenges
 - Missing context that affects the specification
 
-Use the Task tool with `subagent_type=Explore` to efficiently gather codebase context.
+Use the Task tool with `subagent_type=explore` to efficiently gather codebase context.
 
 ### 3. Ask Clarifying Questions
 

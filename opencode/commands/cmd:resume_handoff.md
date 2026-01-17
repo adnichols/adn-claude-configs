@@ -8,9 +8,6 @@ You are tasked with resuming work from a handoff document through an interactive
 
 ## Initial Response
 
-If provided, the handoff document is below, along with any additional instructions:
-$ARGUMENTS
-
 When this command is invoked:
 
 1. **If the path to a handoff document was provided**:
@@ -119,7 +116,7 @@ Then wait for the user's input.
 
 ### Step 3: Create Action Plan
 
-1. **Use TodoWrite to create task list**:
+1. **Use `todowrite` to create task list**:
    - Convert action items from handoff into todos
    - Add any new tasks discovered during analysis
    - Prioritize based on dependencies and handoff guidance
@@ -161,7 +158,7 @@ Then wait for the user's input.
    - Build on discovered solutions
 
 4. **Track Continuity**:
-   - Use TodoWrite to maintain task continuity
+   - Use `todowrite` to maintain task continuity
    - Reference the handoff document in commits
    - Document any deviations from original plan
    - Consider creating a new handoff when done

@@ -37,7 +37,7 @@ Then wait for the user's research query.
    - Break down the user's query into composable research areas
    - Take time to ultrathink about the underlying patterns, connections, and architectural implications the user might be seeking
    - Identify specific components, patterns, or concepts to investigate
-   - Create a research plan using TodoWrite to track all subtasks
+   - Create a research plan using `todowrite` to track all subtasks
    - Consider which directories, files, or architectural patterns are relevant
 
 3. **Spawn parallel sub-agent tasks for comprehensive research:**

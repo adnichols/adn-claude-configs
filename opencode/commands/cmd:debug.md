@@ -87,7 +87,7 @@ Wait for all agents to complete, then compile:
 
 ### 4.5. User Engagement for Hypothesis Selection
 
-When multiple viable hypotheses exist, use **AskUserQuestion** to engage the user before deep-diving into a fix.
+When multiple viable hypotheses exist, use **`question`** to engage the user before deep-diving into a fix.
 
 **Trade-off Questions (when hypotheses have different implications):**
 ```
